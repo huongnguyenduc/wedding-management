@@ -15,12 +15,17 @@ function Navbar() {
                 <Link to="#" className="menu-bars">
                     <FaIcons.FaBars onClick={showSidebar}/>
                 </Link>
-                <div class="recent-item">
-                    <div class="recent-info">
-                        <h3 class="recent-author">Nguyễn Đức Hướng</h3>
-                        <span class="recent-position">Admin</span>
+                
+                <div className="recent-item">
+                    <div class="bell-noti">
+                        <FaIcons.FaRegBell class="bell-noti-icon"></FaIcons.FaRegBell>
+                        <div class="bell-noti-status"></div>
                     </div>
-                    <img src="./assets/user.jpg" alt="" class="recent-image" />
+                    <div className="recent-info">
+                        <h3 className="recent-author">Nguyễn Đức Hướng</h3>
+                        <span className="recent-position">Admin</span>
+                    </div>
+                    <img src="https://images.complex.com/complex/images/fl_lossy,q_auto/c_crop,h_1400,w_1374,x_0,y_100/v1/el91rtzrnvpaeemkjegt/girl-in-red-3" alt="" className="recent-image" />
                 </div>
             </div>
             <nav className={sidebar ? 'nav-menu active' : 'nav-menu'}>

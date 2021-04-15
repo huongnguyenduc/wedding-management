@@ -11,6 +11,12 @@ export const SidebarData = [
         cName: 'nav-text'
     },
     {
+        title: 'Tiệc cưới',
+        path: '/wedding',
+        icon: <MdIcons.MdCardGiftcard />,
+        cName: 'nav-text'
+    },
+    {
         title: 'Sảnh',
         path: '/lobby',
         icon: <GiIcons.GiTempleDoor />,

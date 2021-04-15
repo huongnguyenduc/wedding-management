@@ -4,6 +4,7 @@ import './App.css';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Lobby from './pages/Lobby';
+import Wedding from './pages/Wedding/Wedding';
 import Navbar from './components/Navbar';
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
           <Route exact path="/" component={Home}/>
           <Route exact path="/login" component={Login}/>
           <Route exact path="/lobby" component={Lobby}/>
+          <Route exact path="/wedding" component={Wedding}/>
         </Switch>      
       </Router>
     </>
