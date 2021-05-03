@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Typography, Container, Grid, TextField, MuiThemeProvider, FormControl, MenuItem, InputLabel, Select, Fab, Button, ButtonGroup } from '@material-ui/core';
 import { MuiPickersUtilsProvider, KeyboardDatePicker, } from '@material-ui/pickers';
 import AddIcon from '@material-ui/icons/Add';
@@ -7,14 +7,16 @@ import useStyles from './styles';
 import theme from './MuiTheme';
 import Search from '@material-ui/icons/SearchOutlined';
 import EnhancedTable from './WeddingDataTable';
-import { useSelector } from 'react-redux'
-
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux'
+import { getDataTable } from './actions/getData';
 
 function Wedding() {
     const classes = useStyles();
     const [selectedDate, setSelectedDate] = React.useState(new Date());
     const [searchKind, setSearchKind] = React.useState('Tên chú rể');
     const selectedWedding = useSelector(state => state.selectedRow);
+    const dispatch = useDispatch();
 
     const handleChange = (event) => {
         setSearchKind(event.target.value);
@@ -22,7 +24,11 @@ function Wedding() {
     const handleDateChange = (date) => {
         setSelectedDate(date);
     };
-    
+
+  useEffect(() => {
+        dispatch(getDataTable());
+    });
+
 
     return (
         <>
@@ -199,13 +205,13 @@ function Wedding() {
                                         },
                                     }}/>
                                 </Grid>
-                                <Grid item xs={12} md={6} lg={3} align='center' >
-                                    <Button variant="outlined" color="primary" label="Chi tiết" fullfill>
+                                <Grid item xs={12} md={6} lg={3} align='center' alignItems='center'>
+                                    <Button variant="outlined" color="primary" label="Chi tiết" fullfill size='large'>
                                         Mở Đặt bàn và Dịch vụ
                                     </Button>
                                 </Grid>
                                 <Grid item xs={12} md={6} lg={3} align='left' >
-                                    <ButtonGroup variant="text" color="primary" aria-label="text primary button group">
+                                    <ButtonGroup variant="text" color="primary" aria-label="text primary button group" size='large'>
                                         <Button>Hoàn tất</Button>
                                         <Button>Hủy</Button>
                                     </ButtonGroup>

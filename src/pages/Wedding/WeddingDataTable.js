@@ -2,28 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { lighten, makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
-import Checkbox from '@material-ui/core/Checkbox';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
-import DeleteIcon from '@material-ui/icons/Delete';
+import {Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel} from '@material-ui/core/';
+import {Toolbar, Typography, Paper, Checkbox, IconButton, Tooltip, FormControlLabel, Switch} from '@material-ui/core/';
+import {DeleteIcon} from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import FilterListIcon from '@material-ui/icons/FilterList';
-import rows from './WeddingModel'
 import { clickRow } from './actions'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+function createData(id, groomName, brideName, phoneNumber, lobby, weddingDate, shift, note, deposit) {
+  return {id, groomName, brideName, phoneNumber, lobby, weddingDate, shift, note, deposit };
+}
+var rows = [];
 
 
 function descendingComparator(a, b, orderBy) {
@@ -214,6 +203,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function EnhancedTable() {
+  const dispatch = useDispatch();
+  rows = useSelector(state => state.getDataTable).map((e) => createData(e.id || "alo" , e.groomname || "alo", e.bridename || "alo", e.phone || "alo", "alo",new Date(2021, 10, 24), e.id_shift || "alo", e.note || "alo", e.deposit ));
   const classes = useStyles();
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState( 'brideName');
@@ -221,7 +212,6 @@ export default function EnhancedTable() {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const dispatch = useDispatch();
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';

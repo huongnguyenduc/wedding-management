@@ -1,5 +1,3 @@
-
-
 const selectedRowReducer = (state = [], action) => {
     switch(action.type) {
         case 'CLICK_ROW':
