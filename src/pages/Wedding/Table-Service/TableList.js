@@ -1,17 +1,16 @@
-import React, { useEffect } from 'react';
+import React , { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { lighten, makeStyles } from '@material-ui/core/styles';
-import {Table, TableBody, Grid,FormControl, MenuItem, InputLabel, Select,TextField, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel} from '@material-ui/core/';
+import {Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Grid, TextField} from '@material-ui/core/';
 import {Toolbar, Typography, Paper, IconButton, Tooltip, FormControlLabel, Switch} from '@material-ui/core/';
-import { Edit, Delete, Search, Add } from '@material-ui/icons/';
-import clickRow from './actions/index'
-import { useDispatch, useSelector } from 'react-redux'
-import { connect } from 'react-redux';
-import { actDeleteWeddingRequest } from '../../action/index'
-import addState from './actions/weddingState/add';
-import editState from './actions/weddingState/edit';
-import { NORMAL } from './reducers/weddingState';
+import { Edit, Delete, Add, Search } from '@material-ui/icons/';
+import clickRowTable from '../actions/clickRowTable'
+import { useDispatch, useSelector, connect } from 'react-redux'
+import addState from '../actions/tableState/add';
+import editState from '../actions/tableState/edit';
+import { NORMAL } from '../reducers/tableState';
+import {actDeleteTableRequest} from '../../../action/table'
 
 var rows = [];
 
@@ -43,17 +42,15 @@ function stableSort(array, comparator) {
 }
 
 const headCells = [
-  { id: 'groomName', numeric: false, disablePadding: true, label: 'Tên chú rể' },
-  { id: 'brideName', numeric: false, disablePadding: false, label: 'Tên cô dâu' },
-  { id: 'phone', numeric: false, disablePadding: false, label: 'Điện thoại' },
-  { id: 'lobbyName', numeric: false, disablePadding: false, label: 'Sảnh' },
-  { id: 'weddingDate', numeric: true, disablePadding: false, label: 'Ngày tổ chức' },
-  { id: 'nameShift', numeric: true, disablePadding: false, label: 'Ca' },
-  { id: 'note', numeric: true, disablePadding: false, label: 'Ghi chú' },
+  { id: 'tableKind', numeric: false, disablePadding: true, label: 'Loại bàn' },
+  { id: 'numberTables', numeric: false, disablePadding: false, label: 'Số lượng' },
+  { id: 'reverseTables', numeric: false, disablePadding: false, label: 'Số lượng dự trữ' },
+  { id: 'unitPriceTable', numeric: false, disablePadding: false, label: 'Đơn giá bàn' },
+  { id: 'note', numeric: false, disablePadding: false, label: 'Ghi chú' },
 ];
 
 function EnhancedTableHead(props) {
-  const { classes, order, orderBy, onRequestSort } = props;
+  const { classes, order, orderBy, numSelected, rowCount, onRequestSort } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
@@ -121,45 +118,43 @@ const useToolbarStyles = makeStyles((theme) => ({
 
 const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
-  const { numSelected, selectedRow } = props;
-  const currentWeddingState = useSelector(state => state.weddingState);
+  const { numSelected } = props;
   const dispatch = useDispatch();
-  const onDeleteWedding = () => {
+  const currentTableState = useSelector(state => state.tableState);
+  const selectedTable = useSelector(state => state.selectedRowTable);
+  const changeToAddState = () => {
+      if (currentTableState.state === NORMAL) {
+          dispatch(addState());
+          dispatch(clickRowTable([]))            
+      }
+      else {
+          alert("Bạn phải hoàn thành / hủy bỏ tác vụ thêm / sửa đặt bàn!");
+      }
+  }
+  const changeToEditState = () => {
+      if (currentTableState.state === NORMAL) {
+          dispatch(editState());            
+      }
+      else {
+          alert("Bạn phải hoàn thành / hủy bỏ tác vụ thêm / sửa đặt bàn!");
+      }
+  }
+    const onDeleteTable = () => {
     if (confirm('Bạn chắc chắn muốn xóa ?')) { //eslint-disable-line
-      dispatch(actDeleteWeddingRequest(selectedRow.id));
+      dispatch(actDeleteTableRequest([selectedTable.id]));
     }
   }
-
-  const changeToAddState = () => {
-      if (currentWeddingState.state === NORMAL) {
-          dispatch(clickRow([]))
-          dispatch(addState());
-          document.getElementById("formWedding").scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});            
-      }
-      else {
-          alert("Bạn phải hoàn thành / hủy bỏ tác vụ thêm / sửa tiệc cưới!");
-      }
-  }
-
-  const changeToEditState = () => {
-      if (currentWeddingState.state === NORMAL) {
-          dispatch(editState());
-          document.getElementById("formWedding").scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});            
-      }
-      else {
-          alert("Bạn phải hoàn thành / hủy bỏ tác vụ thêm / sửa tiệc cưới!");
-      }
-  }
-
   return (
     <Toolbar
-      className={clsx(classes.root)}
+      className={clsx(classes.root, {
+        [classes.highlight]: numSelected > 0,
+      })}
     >
-      {(
+      {
         <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
-          Danh sách tiệc cưới
+          Danh sách đặt bàn
         </Typography>
-      )}
+        }
 
       {numSelected > 0 ? (
         <>
@@ -169,18 +164,18 @@ const EnhancedTableToolbar = (props) => {
             </IconButton>
             </Tooltip>
             <Tooltip title="Xóa">
-            <IconButton aria-label="delete" onClick={()=>{onDeleteWedding()}}>
+            <IconButton aria-label="delete" onClick={onDeleteTable}>
                 <Delete />
             </IconButton>
             </Tooltip>
-            <Tooltip title="Thêm">
+            <Tooltip title="Filter list">
           <IconButton aria-label="filter list" onClick={changeToAddState}>
             <Add />
           </IconButton>
         </Tooltip>
         </>
       ) : (
-          <Tooltip title="Thêm">
+          <Tooltip title="Filter list">
           <IconButton aria-label="filter list" onClick={changeToAddState}>
             <Add />
           </IconButton>
@@ -219,45 +214,25 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-function EnhancedTable(props) {
+
+function TableList(props) {
   const dispatch = useDispatch();
   const [state, setState] = React.useState( {
     searchValue: '',
-    data: props.weddings,
-    filterData: props.weddings,
+    data: props.rows,
+    filterData: props.rows,
   });
   useEffect(() => {
-    if (props.weddings)
-      setState({...state, data: (props.weddings), filterData: (props.weddings)});
-  }, [props.weddings])// eslint-disable-line
+    if (props.rows)
+      setState({...state, data: (props.rows), filterData: (props.rows)});
+  }, [props.rows])// eslint-disable-line
   rows = state.filterData;
-  const classes = useStyles();
-  const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState( 'groomName');
-  const [selected, setSelected] = React.useState([]);
-  const [selectedRow, setSelectedRow] = React.useState([]);
-  const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [searchKind, setSearchKind] = React.useState({name: 'Tên chú rể', kind: 'groomName'});
-  const searchKindPropertyName = name => {
-    switch(name) {
-      case 'Tên chú rể':
-        return 'groomName';
-      case 'Tên cô dâu':
-        return 'brideName';
-      case 'Số điện thoại':
-        return 'phone';
-      default:
-        return 'groomName'
-    }
-  }
 
-  const handleSearch = (event) => {
+const handleSearch = (event) => {
       let filteredDatas = [];
       filteredDatas = state.data.filter((e) => {
           let retVal = true;
-          let element = e[searchKind.kind];
+          let element = e['tableKind'];
           const regex = new RegExp(event.target.value, 'gi');
           if (typeof element == 'string')
               retVal = element.match(regex)
@@ -267,9 +242,13 @@ function EnhancedTable(props) {
       setState({...state, filterData: filteredDatas, searchValue: event.target.value})
   }
 
-  const handleChange = (event) => {
-      setSearchKind({name: event.target.value, kind: searchKindPropertyName(event.target.value)});
-  };
+  const classes = useStyles();
+  const [order, setOrder] = React.useState('asc');
+  const [orderBy, setOrderBy] = React.useState( 'numberTables');
+  const [selected, setSelected] = React.useState([]);
+  const [page, setPage] = React.useState(0);
+  const [dense, setDense] = React.useState(false);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -279,18 +258,15 @@ function EnhancedTable(props) {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.id);
+      const newSelecteds = rows.map((n) => n.tableKind);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
   };
-  console.log('sort')
-    console.log(rows);
+
   const handleClick = (event, id, row) => {
-    row = {...row, weddingDate: convertDateToStringMDY(row.weddingDate)}
-    dispatch(clickRow(row));
-    setSelectedRow(row);
+    dispatch(clickRowTable(row));
     setSelected([id]);
   };
 
@@ -312,47 +288,27 @@ function EnhancedTable(props) {
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
   return (
-    <Grid container spacing={2} direction='row'>
-      <Grid item xs={12} md={7}>
-          <Grid container spacing={1} alignItems="flex-end">
-              <Grid item xs={3} align='right'>
-                  <Search />
-              </Grid>
-              <Grid item xs={9}>
-                  <TextField 
-                      id="searchWedding" 
-                      fullWidth 
-                      label={"Tìm kiếm theo " + searchKind.name.toLowerCase()}
-                      onChange={handleSearch}
-                      InputProps={{
-                          classes: {
-                              input: classes.resize,
-                          },
-                      }} />
-              </Grid>
+    <>
+      <Grid container spacing={1} alignItems="flex-end">
+          <Grid item xs={1} align='right'>
+              <Search />
+          </Grid>
+          <Grid item xs={4}>
+              <TextField 
+                  id="search" 
+                  fullWidth 
+                  label={"Tìm kiếm theo loại bàn"}
+                  onChange={handleSearch}
+                  InputProps={{
+                      classes: {
+                          input: classes.resize,
+                      },
+                  }} />
           </Grid>
       </Grid>
-      <Grid item xs={12} md={5}>
-          <FormControl className={classes.formControl} style={{minWidth: 300}} >
-              <InputLabel id="select-search-kind-label" >Tìm kiếm theo</InputLabel>
-              <Select
-              fullWidth
-              labelId="select-search-kind-label"
-              id="select-search-kind"
-              value={searchKind.name}
-              onChange={handleChange}
-              label="Tìm kiếm theo"
-              >
-              <MenuItem value={'Tên chú rể'}>Tên chú rể</MenuItem>
-              <MenuItem value={'Tên cô dâu'}>Tên cô dâu</MenuItem>
-              <MenuItem value={'Số điện thoại'}>Số điện thoại</MenuItem>
-              </Select>
-          </FormControl>
-      </Grid>
-    <Grid item xs={12}>
       <div className={classes.root}>
         <Paper className={classes.paper}>
-          <EnhancedTableToolbar numSelected={selected.length} selectedRow={selectedRow} />
+          <EnhancedTableToolbar numSelected={selected.length} />
           <TableContainer>
             <Table
               className={classes.table}
@@ -382,20 +338,18 @@ function EnhancedTable(props) {
                         role="checkbox"
                         aria-checked={isItemSelected}
                         tabIndex={-1}
-                        key={row.id}
+                        key={row.tableKind}
                         selected={isItemSelected}
                       >
                         <TableCell padding="checkbox">
                         </TableCell>
                         <TableCell component="th" id={labelId} scope="row" padding="none">
-                          {row.groomName}
+                          {row.tableKind}
                         </TableCell>
-                        <TableCell align="left">{row.brideName}</TableCell>
-                        <TableCell align="left">{row.phone}</TableCell>
-                        <TableCell align="left">{row.lobbyName}</TableCell>
-                        <TableCell align="right">{row.weddingDate}</TableCell>
-                        <TableCell align="right">{row.nameShift}</TableCell>
-                        <TableCell align="right">{row.note}</TableCell>    
+                        <TableCell align="left">{row.numberTables}</TableCell>
+                        <TableCell align="left">{row.reverseTables}</TableCell>
+                        <TableCell align="left">{row.unitPriceTable}</TableCell>
+                        <TableCell align="left">{row.note}</TableCell>  
                       </TableRow>
                     );
                   })}
@@ -422,23 +376,14 @@ function EnhancedTable(props) {
           label="Khoảng cách dòng"
         />
       </div>
-    </Grid>
-    </Grid>
+    </>
   );
 }
 
-const mapStateToProps = state => {
-    return {
-        weddings : state.weddings
-    }
-}
-function convertDateToStringMDY(date) {
-    if (date == null) return;
-        let day = date.substring(0, 2);
-        let month = date.substring(3, 5);
-        let year = date.substring(6, 10);
-        let result = month + "/" + day + "/" +  year;
-        return result;
-}
+// const mapStateToProps = state => {
+//     return {
+//         tables : state.tables.feastTables
+//     }
+// }
 
-export default connect(mapStateToProps, null)(EnhancedTable);
+export default connect(null, null)(TableList);

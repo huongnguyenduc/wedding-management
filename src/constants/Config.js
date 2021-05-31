@@ -1,0 +1,1 @@
+export const API_URL = 'https://wedding-management.herokuapp.com/api';
