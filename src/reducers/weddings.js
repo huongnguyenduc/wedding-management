@@ -33,7 +33,8 @@ const weddings = (state = initialState, action) => {
             index = findIndex(state, wedding.id);
             state[index] = wedding;
             return [...state];
-        default: return [...state];
+        default: 
+            return [...state];
     }
 };
 

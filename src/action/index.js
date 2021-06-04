@@ -4,7 +4,12 @@ import callApi from './../utils/apiCaller';
 export const actFetchWeddingsRequest = () => {
     return dispatch => {
         return callApi('feast', 'GET', null).then(function (res) {
-            dispatch(actFetchWeddings(res.data));
+            if (res) {
+                dispatch(actFetchWeddings(res.data));
+            }
+            else {
+                dispatch(actFetchWeddings([]));
+            }
         });
     };
 }

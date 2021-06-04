@@ -181,13 +181,6 @@ function Service(props) {
 
   return (
     <div>
-        <AppBar className={classes.appBar}>
-          <Toolbar>
-            <Typography variant="h6" className={classes.title}>
-              Đặt dịch vụ
-            </Typography>
-          </Toolbar>
-        </AppBar>
         <Grid container className={classes.foodForm}>
             <Grid item xs={7} >
                 <ServiceList services={mapServiceKindProperty(props.services)}/>

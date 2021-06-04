@@ -70,8 +70,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 function TableDetailDialog(props) {
   const classes = useStyles();
-  const [openTableFoodDialog, setOpenTableFoodDialog] = React.useState(false);
-  
+
   const dispatch = useDispatch();
 
   const handleIncrement = (prop) => (event) => {
@@ -90,7 +89,7 @@ function TableDetailDialog(props) {
   const validate = (fieldValues = values) => {
         let temp = {...errors};
         if ('count' in fieldValues)
-             temp.count = fieldValues.count ? "" :"Không được bỏ trống";
+            temp.count = fieldValues.count ? "" :"Không được bỏ trống";
         setErrors({
             ...temp
         })

@@ -9,7 +9,6 @@ import TableList from './TableList'
 import { connect } from 'react-redux';
 import clickRowTable from '../actions/clickRowTable';
 import normalState from '../actions/tableState/normal';
-import * as tableService from './service/TableService';
 import { useForm, Form } from './useForm';
 import { ADD_TABLE, EDIT_TABLE, NORMAL } from '../reducers/tableState';
 import TableDetailDialog from './TableDetail/TableDetail';
@@ -22,9 +21,9 @@ import {actAddTableRequest, actUpdateTableRequest} from '../../../action/table';
 import { addMiddleware } from 'redux-dynamic-middlewares'
 
 const WhiteTextTypography = withStyles({
-  root: {
-    color: "#FFFFFF"
-  }
+    root: {
+        color: "#FFFFFF"
+    }
 })(Typography);
 
 const useStyles = makeStyles((theme) => ({
@@ -89,12 +88,12 @@ function Table(props) {
         };
 
     var selectedTableValues = {
-          id: props.selectedTable.id || 0,
-          tableKind: props.selectedTable.tableKind || "",
-          numberTables: props.selectedTable.numberTables || 0,
-          reverseTables: props.selectedTable.reverseTables || 0,
-          unitPriceTable: props.selectedTable.unitPriceTable || 0, 
-          note: props.selectedTable.note || "", 
+        id: props.selectedTable.id || 0,
+        tableKind: props.selectedTable.tableKind || "",
+        numberTables: props.selectedTable.numberTables || 0,
+        reverseTables: props.selectedTable.reverseTables || 0,
+        unitPriceTable: props.selectedTable.unitPriceTable || 0, 
+        note: props.selectedTable.note || "", 
       };
     const classes = useStyles();
 
@@ -129,10 +128,10 @@ function Table(props) {
                 console.log(createTable())
                 props.addTable(createTable());
             }
-             if (props.currentTableState.state === EDIT_TABLE) {
+            if (props.currentTableState.state === EDIT_TABLE) {
                 console.log('chuan bi edit table')
                 console.log(createTable())
-                props.addTable(createTable());
+                props.editTable(updateTable());
             }
             resetForm()
             changeToNormalState()
@@ -198,6 +197,18 @@ function Table(props) {
             reverseTables: values.reverseTables,
             tableCategoryId: values.tableKind,
             unitPriceTable: values.unitPriceTable
+        }
+    }
+
+    const updateTable = () => {
+        return {
+            feastId: props.selectedWedding.id,
+            note: values.note,
+            numberTables: values.numberTables,
+            reverseTables: values.reverseTables,
+            tableCategoryId: values.tableKind,
+            unitPriceTable: values.unitPriceTable,
+            id: props.selectedTable.id
         }
     }
 

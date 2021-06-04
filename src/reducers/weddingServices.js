@@ -5,49 +5,45 @@ function isEmpty(obj) {
 }
 const weddingServices = (state = initialState, action) => {
     var index = -1;
-    var { weddingService } = action;
     switch (action.type) {
         case Types.FETCH_WEDDINGSERVICES:
             console.log("fetchweddingServices")
             console.log(action.weddingServices)
             state = action.weddingServices;
-            return {...state};
+            return state;
         case Types.DELETE_WEDDINGSERVICE:
             console.log("deleteweddingService")
-            if ('services' in state)
-                {index = state.services.findIndex( (service) => service.id === action.serviceId);
-                state.services.splice(index, 1);}
-            else {
-                index = state.findIndex( (service) => service.id === action.serviceId);
-                state.splice(index, 1);
-            }
-            return {...state};
+            index = state.services.findIndex( (service) => service.service.id === action.serviceId);
+            state.services.splice(index, 1);
+            return state;
         case Types.ADD_WEDDINGSERVICE:
             console.log("addweddingService")
-            console.log(action.weddingService)
-            if ('services' in state)
-                state.services.push(action.weddingService);
-            else {
-                console.log(state)
-                if (isEmpty(state)) state = [];
-                state.push(action.weddingService);
+            if (isEmpty(state)) {
+                let {feast, service, count, note, totalPrice} = action.weddingService;
+                state = {
+                    feast: feast,
+                    services: [{service, count, note, totalPrice}]
+                };
+            } else {
+                index = state.services.findIndex( (service) => service.service.id === action.weddingService.id.serviceId);
+                if (index === -1) {
+                    let {service, count, note, totalPrice} = action.weddingService;
+                    state.services.push({service, count, note, totalPrice});
+                    return state;
+                } else {
+                    let {service, count, note, totalPrice} = action.weddingService;
+                    state.services[index] = {service, count, note, totalPrice};
+                }
             }
-            return {...state};
+            return state;
         case Types.UPDATE_WEDDINGSERVICE:
             console.log("updateweddingService")
-            if ('services' in state)
-                {index = state.services.findIndex( (service) => service.service.id === action.weddingService.id.serviceId);
-                state.services[index] = weddingService;
-            }
-            else {
-                console.log(action.weddingService);
-                index = state.findIndex( (service) => service.service.id === action.weddingService.id.serviceId);
-                state[index] = weddingService;
-            }
-            console.log("updatedweddingService")
-            return {...state};
+            index = state.services.findIndex( (service) => service.service.id === action.weddingService.id.serviceId);
+            let {service, count, note, totalPrice} = action.weddingService;
+            if (index !== -1 ) state.services[index] = {service, count, note, totalPrice};
+            return state;
         default: 
-            return {...state};
+            return state;
     }
 };
 

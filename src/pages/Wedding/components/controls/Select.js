@@ -22,7 +22,7 @@ export default function Select(props) {
                         value={item.id} 
                         hover={hover? "true" : "false"}
                         onMouseLeave={onMouseLeave} 
-                        onMouseEnter={(event) => onMouseEnter(event, item.moreInfo)}>
+                        onMouseEnter={item.moreInfo ? (event) => onMouseEnter(event, item.moreInfo) : () => {}}>
                             {item.name}
                         </MenuItem>)
                     )}
