@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import {Button, Grid, TextField, ButtonGroup, Dialog, AppBar, Toolbar, IconButton, Typography, Slide, OutlinedInput, FormControl} from '@material-ui/core/';
+import {Button, Grid, TextField, ButtonGroup, Dialog, AppBar, Toolbar, IconButton, Typography, Slide, OutlinedInput, FormControl, FormHelperText} from '@material-ui/core/';
 import CloseIcon from '@material-ui/icons/Close';
 import FoodList from './FoodList'
 import FoodOrderList from './FoodOrderList';
@@ -13,6 +13,8 @@ import { NORMAL, EDIT_ORDER_FOOD } from '../../reducers/foodState';
 import { addMiddleware } from 'redux-dynamic-middlewares'
 import {actAddTableFoodRequest} from '../../../../action/tableFood';
 import {actUpdateTableFoodRequest} from '../../../../action/tableFood';
+import {actFetchTablesRequest} from './../../../../action/table';
+import clickRowTable from '../../actions/clickRowTable'
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -125,9 +127,6 @@ function TableDetailDialog(props) {
         if ('totalPrice' in action.payload) { //Table-Food
           setValues({...action.payload, foodId: action.payload.food.id});
         } 
-        // else {//Food
-        //   setValues({...values, name: action.payload.name, price: action.payload.price, foodId: action.payload.id, totalPrice: action.payload.price * values.count});
-        // }
       }
       else {
         if ('totalPrice' in action.payload) { //Table-Food
@@ -184,9 +183,35 @@ function TableDetailDialog(props) {
     }
   }
 
+  const recentLobby = () => {
+        var index = -1;
+        index = props.lobbies.findIndex((lobby) => lobby.id === props.selectedWedding.lobbyId);
+        if (index !== -1) {
+            return props.lobbies[index];
+        }
+    }
+
+  const calculateUnitPriceTable = () => {
+    let totalPriceFoods = 0;
+        if (props.tableFoods)
+            props.tableFoods.forEach((food) => {totalPriceFoods+=parseInt(food.totalPrice)});
+        if (totalPriceFoods < recentLobby().min_unitpricetable)
+          totalPriceFoods = recentLobby().min_unitpricetable;
+        return totalPriceFoods;
+  }
+
   return (
     <div>
-      <Dialog maxWidth='lg' fullWidth='true' open={props.openTableFoodDialog} onClose={props.handleCloseTableFoodDialog} TransitionComponent={Transition}>
+      <Dialog 
+      maxWidth='lg' 
+      fullWidth='true' 
+      open={props.openTableFoodDialog} 
+      onClose={props.handleCloseTableFoodDialog} 
+      TransitionComponent={Transition}
+      onExiting={() => {
+        props.fetchAllTablesInfo(props.selectedWedding.id);
+        props.updateSelectedTable({...props.selectedTable, unitPriceTable: calculateUnitPriceTable()})
+      }}>
         <AppBar className={classes.appBar}>
           <Toolbar>
             <IconButton edge="start" color="inherit" onClick={props.handleCloseTableFoodDialog} aria-label="close">
@@ -223,7 +248,7 @@ function TableDetailDialog(props) {
             </Grid>
             <Grid item xs={2} className={classes.textField}>
               <Form onSubmit={handleSubmit}>
-                <TextField className={classes.textFieldForm} fullWidth value={50000}></TextField>
+                <TextField className={classes.textFieldForm} fullWidth value={calculateUnitPriceTable()}></TextField>
                 <TextField 
                 className={classes.textFieldForm} 
                 fullWidth
@@ -249,6 +274,11 @@ function TableDetailDialog(props) {
                                 </InputAdornment>
                                 }
                             />
+                            {!!errors.count && (
+                                <FormHelperText error id="'count-error">
+                                {errors.count}
+                                </FormHelperText>
+                            )}
                             </FormControl>
                 <TextField 
                 name='totalPrice'
@@ -284,6 +314,8 @@ const mapStateToProps = state => {
         selectedFood: state.selectedRowFood,
         currentFoodState: state.foodState,
         selectedTable : state.selectedRowTable,
+        selectedWedding: state.selectedRow,
+        lobbies: state.lobbies
     }
 }
 
@@ -294,7 +326,13 @@ const mapDispatchToProps = (dispatch, props) => {
         },
         updateTableFood : (tableFood) => {
             dispatch(actUpdateTableFoodRequest(tableFood));
-        }
+        },
+        fetchAllTablesInfo : (idWedding) => {
+            dispatch(actFetchTablesRequest(idWedding));
+        },
+        updateSelectedTable: (updateTable) => {
+            dispatch(clickRowTable(updateTable));
+        },
     }
 }
 

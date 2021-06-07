@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import { Grid, Typography, Container, TextField, ButtonGroup, Button } from '@material-ui/core';
+import { Grid, Typography, Container, TextField, ButtonGroup, Button, FormHelperText } from '@material-ui/core';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -71,19 +71,30 @@ const useStyles = makeStyles((theme) => ({
     },
     popover: {
     pointerEvents: 'none',
-  },
-  paperPopover: {
-    padding: theme.spacing(1),
-  },
+    },
+    paperPopover: {
+        padding: theme.spacing(1),
+    },
+    unitPriceText: {
+        marginTop: '25px',
+        marginBottom: '25px', 
+    }
 }));
 
 function Table(props) {
+    const recentLobby = () => {
+        var index = -1;
+        index = props.lobbies.findIndex((lobby) => lobby.id === props.selectedWedding.lobbyId);
+        if (index !== -1) {
+            return props.lobbies[index];
+        }
+    }
     var initialValues = {
             id: 0,
             tableKind: "",
             numberTables: 0,
             reverseTables: 0,
-            unitPriceTable: props.tables.feast ? props.tables.feast.id_lobby.min_unitpricetable : 0, 
+            unitPriceTable: recentLobby().min_unitpricetable, 
             note: "", 
         };
 
@@ -94,20 +105,22 @@ function Table(props) {
         reverseTables: props.selectedTable.reverseTables || 0,
         unitPriceTable: props.selectedTable.unitPriceTable || 0, 
         note: props.selectedTable.note || "", 
-      };
+    };
     const classes = useStyles();
 
-  const handleIncrement = (prop) => (event) => {
-    setValues({ ...values, [prop]: parseInt(values[prop]) + 1 });
-  };
+    const handleIncrement = (prop) => (event) => {
+        setValues({ ...values, [prop]: parseInt(values[prop]) + 1 });
+    };
 
-  const handleDecrement = (prop) => (event) => {
-    setValues({ ...values, [prop]: parseInt(values[prop]) - 1 });
-  };
-  const validate = (fieldValues = values) => {
+    const handleDecrement = (prop) => (event) => {
+        setValues({ ...values, [prop]: parseInt(values[prop]) - 1 });
+    };
+    const validate = (fieldValues = values) => {
         let temp = {...errors};
-        // if ('groomName' in fieldValues)
-        //     temp.groomName = fieldValues.groomName ? "" :"Không được bỏ trống";
+        if ('numberTables' in fieldValues)
+            temp.numberTables = 
+                (+fieldValues.numberTables === 0 ? "Số lượng bàn phải lớn hơn 0" : +fieldValues.numberTables + totalTables(props.tables.feastTables) <= recentLobby().maxtable) 
+                    ? "" :"Tổng số lượng bàn đã đặt vượt quá số lượng bàn tối đa!";
         setErrors({
             ...temp
         })
@@ -173,8 +186,8 @@ function Table(props) {
     
     const totalTables = (tables) => {
         let totalTables = 0;
-        tables.forEach((table) => {totalTables+=parseInt(table.numberTables)});
-        console.log(totalTables);
+        if (tables)
+            tables.forEach((table) => {totalTables+=parseInt(table.numberTables)});
         return totalTables;
     }
 
@@ -213,6 +226,9 @@ function Table(props) {
     }
 
     const clickRowTableMiddleware = store => next => action => {
+        if (action.type === 'ADD_TABLE_STATE') {
+            setValues(initialValues);
+        }
         if (action.type === 'CLICK_ROW_TABLE') {
             console.log('middleware clickrow ne')
             if (action.payload.tableCategory){
@@ -255,7 +271,7 @@ function Table(props) {
                             Đơn giá bàn tối thiểu
                         </WhiteTextTypography>
                         <WhiteTextTypography variant="h6" align="center">
-                            { props.tables.feast ? props.tables.feast.id_lobby.min_unitpricetable : '' }
+                            { props.selectedWedding.lobbyId ? recentLobby().min_unitpricetable : 0 }
                         </WhiteTextTypography>
                     </Grid>
                     <Grid item sm={4} xs={12} className={classes.tableInfoItem}>
@@ -263,7 +279,7 @@ function Table(props) {
                             Số lượng bàn tối đa
                         </WhiteTextTypography>
                         <WhiteTextTypography variant="h6" align="center">
-                            { props.tables.feast ? props.tables.feast.id_lobby.maxtable : '' }
+                            { props.selectedWedding.lobbyId ? recentLobby().maxtable : '' }
                         </WhiteTextTypography>
                     </Grid>
                     <Grid item sm={3} xs={12} className={classes.tableInfoItem}>
@@ -305,11 +321,12 @@ function Table(props) {
                                 onMouseLeave={handlePopoverClose}
                                 handleClickOpen={handleClickOpen}
                                 hover={true}/>}
-                            <FormControl className={classes.tableInfoFormItem} variant="outlined" fullWidth>
+                            <FormControl className={classes.tableInfoFormItem} variant="outlined" fullWidth >
                             <InputLabel htmlFor="outlined-adornment-password">Số lượng</InputLabel>
                             <OutlinedInput
                                 id="outlined-adornment-password"
                                 labelWidth={60}
+                                name="numberTables"
                                 value={props.currentTableState.state === NORMAL ? selectedTableValues.numberTables :  values.numberTables}
                                 onChange={handleInputChange}
                                 {...(errors.numberTables && {error:true,helperText:errors.numberTables})}
@@ -323,11 +340,17 @@ function Table(props) {
                                 </InputAdornment> : <></>
                                 }
                             />
+                            {!!errors.numberTables && (
+                                <FormHelperText error id="'numberTables-error">
+                                {errors.numberTables}
+                                </FormHelperText>
+                            )}
                             </FormControl>
                             <FormControl className={classes.tableInfoFormItem} variant="outlined" fullWidth>
                             <InputLabel htmlFor="outlined-adornment-password">Số lượng dự trữ</InputLabel>
                             <OutlinedInput
                                 id="outlined-adornment-password"
+                                name="reverseTables"
                                 labelWidth={100}
                                 value={props.currentTableState.state === NORMAL ? selectedTableValues.reverseTables :  values.reverseTables}
                                 onChange={handleInputChange}
@@ -342,19 +365,26 @@ function Table(props) {
                                 </InputAdornment> : <></>
                                 }
                             />
+                            {!!errors.reverseTables && (
+                                <FormHelperText error id="'reverseTables-error">
+                                {errors.reverseTables}
+                                </FormHelperText>
+                            )}
                             </FormControl>
                         </Grid>
                         <Grid item xs={12} sm={6} align='center'>
-                            <TextField
+                            {/* <TextField
                                 variant="outlined"
                                 fullWidth
                                 value={props.currentTableState.state === NORMAL ? selectedTableValues.unitPriceTable : values.unitPriceTable }
                                 id="unitPriceTable"
                                 name="unitPriceTable"
+                                disabled
                                 onChange={handleInputChange} 
                                 {...(errors.unitPriceTable && {error:true,helperText:errors.unitPriceTable})}
                                 label="Đơn giá bàn"
-                                className={classes.tableInfoFormItem} />
+                                className={classes.tableInfoFormItem} /> */}
+                            <Typography className={classes.unitPriceText}>Đơn giá bàn:    {props.currentTableState.state === NORMAL ? selectedTableValues.unitPriceTable : values.unitPriceTable}</Typography>
                             <TextField
                                 variant="outlined"
                                 fullWidth
@@ -403,10 +433,11 @@ function Table(props) {
 const mapStateToProps = state => {
     return {
         tables : state.tables,
-        selectedTable : state.selectedRowTable,
         currentTableState : state.tableState,
         tableCategories: state.tableCategories,
-        selectedWedding: state.selectedRow
+        selectedWedding: state.selectedRow,
+        selectedTable : state.selectedRowTable,
+        lobbies: state.lobbies
     }
 }
 

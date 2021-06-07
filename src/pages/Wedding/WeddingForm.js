@@ -1,10 +1,10 @@
 import React from 'react'
-import { Grid, ButtonGroup, Button } from '@material-ui/core';
+import { Grid, ButtonGroup, Button, Typography, Popover } from '@material-ui/core';
 import { useForm, Form } from './components/useForm';
 import Controls from './components/controls/Controls'
 import { useDispatch, connect } from 'react-redux'
 import normalState from './actions/weddingState/normal';
-import { NORMAL } from './reducers/weddingState';
+import { NORMAL, ADD_WEDDING_STATE } from './reducers/weddingState';
 import clickRow from './actions';
 import { actAddWeddingRequest, actUpdateWeddingRequest } from './../../action/index';
 import { addMiddleware } from 'redux-dynamic-middlewares'
@@ -13,6 +13,7 @@ import {actFetchTablesRequest} from './../../action/table';
 import {actFetchServicesRequest} from './../../action/service';
 import {actFetchWeddingServicesRequest} from './../../action/weddingService';
 import {actFetchTableCategoriesRequest} from './../../action/tableCategory';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 
 const initialValues = {
         groomName: "",
@@ -28,8 +29,15 @@ const initialValues = {
         lobbyId: 1,
 }
 
+const useStyles = makeStyles((theme) => ({
+    popover: {
+    pointerEvents: 'none',
+    },
+}));
+
 function WeddingForm(props) {
     const dispatch = useDispatch();
+    const classes = useStyles();
 
     var selectedRowValues = {
         groomName: props.selectedWedding.groomName || "",
@@ -50,6 +58,8 @@ function WeddingForm(props) {
             temp.brideName = fieldValues.brideName ? "" : "Không được bỏ trống";
         if ('phone' in fieldValues)
             temp.phone = fieldValues.phone.length > 9 ? "" :"Tối thiểu 10 chữ số";
+        if ('weddingDate' in fieldValues && props.currentWeddingState.state === ADD_WEDDING_STATE)
+            temp.weddingDate = checkDateValidate(fieldValues.weddingDate) ? "" :"Ngày không hợp lệ";
         setErrors({
             ...temp
         })
@@ -121,8 +131,38 @@ function WeddingForm(props) {
         return next(action)
     }
     addMiddleware(clickRowEditWeddingMiddleware);
+    const [moreInfo, setMoreInfo] = React.useState('');
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const open = Boolean(anchorEl);
+    const id = open ? 'simple-popover' : undefined;
+    const handlePopoverOpen = (event, moreInfoInput) => {
+        setAnchorEl(event.currentTarget);
+        setMoreInfo(moreInfoInput);
+    };
+
+    const handlePopoverClose = () => {
+        setAnchorEl(null);
+    };
     return (
     <>
+        <Popover
+            className={classes.popover}
+            id={id}
+            open={open}
+            anchorEl={anchorEl}
+            onClose={handlePopoverClose}
+            anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+            }}
+            transformOrigin={{
+            vertical: 'top',
+            horizontal: 'left',
+            }}
+            disableRestoreFocus
+        >
+            <Typography variant='h6' align='center'>{moreInfo}</Typography>
+        </Popover>
         <Form onSubmit={handleSubmit}>
             <Grid container spacing={6} direction='row'>
                     <Grid item md={6} xs={12} align='center' >
@@ -165,7 +205,10 @@ function WeddingForm(props) {
                                 value={values.idShift}
                                 onChange={handleInputChange}
                                 options={props.shifts}
-                                error={errors.nameShift}/> :
+                                error={errors.nameShift}
+                                onMouseEnter={handlePopoverOpen}
+                                onMouseLeave={handlePopoverClose}
+                                hover={true}/> :
                             <Controls.Input
                             name="nameShift" 
                             label="Ca"
@@ -235,6 +278,25 @@ function convertDateToStringDMY(date) {
         let result =  (day.toString().length === 1 ? ("0" + day.toString()) : day.toString()) + "/" + (month.toString().length === 1 ? "0" + month.toString() : month.toString()) + "/" +  year; // That's your formatted date.
         console.log(result);
         return result;
+}
+
+function convertDateToStringYMD(date) {
+    if (date == null) return;
+        let day = date.getDate();
+        console.log(date);
+        let month = date.getMonth() + 1;
+        let year = date.getFullYear();
+        let result = year +  "-" + (month.toString().length === 1 ? "0" + month.toString() : month.toString()) + "-" + (day.toString().length === 1 ? ("0" + day.toString()) : day.toString()) ; // That's your formatted date.
+        console.log(result);
+        return result;
+}
+
+function checkDateValidate(date) {
+    let dateCheck = Date.parse(convertDateToStringYMD(date));
+    let dateNow = Date.parse(convertDateToStringYMD(new Date()));
+    if (dateCheck < dateNow) return false;
+    return true;
+
 }
 
 const mapStateToProps = state => {

@@ -5,7 +5,7 @@ import useStyles from '../../styles';
 
 export default function DatePicker(props) {
 
-    const { name, label, value, onChange } = props
+    const { error=null, name, label, value, onChange } = props
     const classes = useStyles();
 
     const convertToDefEventPara = (name, value) => ({
@@ -29,6 +29,7 @@ export default function DatePicker(props) {
                                 },
                             }}
                 onChange={date =>onChange(convertToDefEventPara(name,date))}
+                {...(error && {error:true,helperText:error})}
 
             />
         </MuiPickersUtilsProvider>
