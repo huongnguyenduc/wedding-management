@@ -57,7 +57,9 @@ function WeddingForm(props) {
         if ('brideName' in fieldValues)
             temp.brideName = fieldValues.brideName ? "" : "Không được bỏ trống";
         if ('phone' in fieldValues)
-            temp.phone = fieldValues.phone.length > 9 ? "" :"Tối thiểu 10 chữ số";
+            temp.phone = fieldValues.phone.length > 9 ? "" : fieldValues.phone.length === 0 ? "Không được bỏ trống" : "Tối thiểu 10 chữ số";
+        if ('deposit' in fieldValues)
+            temp.deposit = fieldValues.deposit.length > 0 ? "" :"Không được bỏ trống";
         if ('weddingDate' in fieldValues && props.currentWeddingState.state === ADD_WEDDING_STATE)
             temp.weddingDate = checkDateValidate(fieldValues.weddingDate) ? "" :"Ngày không hợp lệ";
         setErrors({
@@ -161,7 +163,13 @@ function WeddingForm(props) {
             }}
             disableRestoreFocus
         >
-            <Typography variant='h6' align='center'>{moreInfo}</Typography>
+            <Typography 
+            variant='h6' 
+            align='center'>
+                {moreInfo.timeBegin !== undefined ? 
+                    "Thời gian bắt đầu: " + moreInfo.timeBegin.toString() + ". Thời gian kết thúc: " + moreInfo.timeEnd.toString() 
+                    : moreInfo.maxtable !== undefined ? "Tổng số bàn: " + moreInfo.maxtable + ". Đơn giá bàn tối thiểu: " + moreInfo.min_unitpricetable : ""}
+            </Typography>
         </Popover>
         <Form onSubmit={handleSubmit}>
             <Grid container spacing={6} direction='row'>
@@ -223,7 +231,10 @@ function WeddingForm(props) {
                                 value={values.lobbyId}
                                 onChange={handleInputChange}
                                 options={props.lobbies}
-                                error={errors.lobbyName}/> :
+                                error={errors.lobbyName}
+                                onMouseEnter={handlePopoverOpen}
+                                onMouseLeave={handlePopoverClose}
+                                hover={true}/> :
                             <Controls.Input
                             name="lobbyName" 
                             label="Sảnh"

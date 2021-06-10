@@ -25,11 +25,11 @@ export function useForm(initialFValues, validateOnChange = false, validate) {
             ...values,
             [name]: value
         })}
-        if (name === 'deposit' && isNumeric(value))
+        if (name === 'deposit' && (isNumeric(value) || value === ""))
         {
             setValues({
             ...values,
-            [name]: value[0] == 0 ? value[1] : value // eslint-disable-line
+            [name]: value 
         })}
         if (validateOnChange)
             validate({ [name]: value })

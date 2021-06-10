@@ -156,7 +156,7 @@ function Table(props) {
     const [moreInfo, setMoreInfo] = React.useState('');
     const handlePopoverOpen = (event, moreInfoInput) => {
         setAnchorEl(event.currentTarget);
-        setMoreInfo(moreInfoInput);
+        setMoreInfo(moreInfoInput.moreInfo);
     };
 
     const handlePopoverClose = () => {
@@ -209,7 +209,8 @@ function Table(props) {
             numberTables: values.numberTables,
             reverseTables: values.reverseTables,
             tableCategoryId: values.tableKind,
-            unitPriceTable: values.unitPriceTable
+            unitPriceTable: values.unitPriceTable,
+            totalPrice: values.unitPriceTable * values.numberTables
         }
     }
 
@@ -221,7 +222,8 @@ function Table(props) {
             reverseTables: values.reverseTables,
             tableCategoryId: values.tableKind,
             unitPriceTable: values.unitPriceTable,
-            id: props.selectedTable.id
+            id: props.selectedTable.id,
+            totalPrice: values.unitPriceTable * values.numberTables
         }
     }
 

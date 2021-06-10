@@ -167,6 +167,7 @@ function Service(props) {
       count: values.count,
       note: values.note,
       totalPrice: values.count * values.price,
+      unitPrice: values.price,
     }
   }
   const updateWeddingService = () => {
@@ -176,6 +177,7 @@ function Service(props) {
       count: values.count,
       note: values.note,
       totalPrice: values.count * values.price,
+      unitPrice: values.price,
     }
   }
 
