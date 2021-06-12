@@ -36,19 +36,19 @@ export const SidebarData = [
     },
     {
         title: 'Món ăn',
-        path: '/',
+        path: '/Food',
         icon: <IoIcons.IoFastFoodOutline />,
         cName: 'nav-text'
     },
     {
         title: 'Dịch vụ',
-        path: '/',
+        path: '/Service',
         icon: <BiIcons.BiShapeTriangle />,
         cName: 'nav-text'
     },
     {
         title: 'Quy định',
-        path: '/',
+        path: '/Policy',
         icon: <GiIcons.GiFlatHammer />,
         cName: 'nav-text'
     },
