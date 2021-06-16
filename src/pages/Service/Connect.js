@@ -1,4 +1,4 @@
-import {actInsertServices, actUpdateService, actDeleteService,actInitServices, actError} from './actions/actions';
+import {actInsertServices, actUpdateService, actDeleteService,actInitServices, actError, actPending} from './actions/actions';
 
 export const API_SERVER = "https://wedding-management.herokuapp.com/api/";
 const SERVICE_API = 'service'
@@ -20,7 +20,7 @@ export function CallAPI(endpoint, method='GET', body)
 
 export function GetServices() {
     return dispatch =>
-    {   
+    {   dispatch(actPending())
         CallAPI(SERVICE_API, "GET")
         .then(res=>{
             if(!res.ok)
@@ -38,13 +38,18 @@ export function DeleteService(service) {
     const id = [service.id]
     return dispatch =>
     {
+        dispatch(actPending())
         CallAPI(SERVICE_API,'DELETE', id)
         .then(res=>{
             if(!res.ok)
                 throw new Error('ERROR:' + res.status + res.statusText)
             dispatch(actDeleteService(service))
         })
-        .catch(()=>(dispatch(actError("xoá dịch vụ không thành công!"))))
+        .catch((err)=>{
+            console.log(err)
+            dispatch(actError("xoá dịch vụ không thành công!"))
+        
+        })
     }
 }
 
@@ -54,6 +59,7 @@ export function UpdateService(service) {
     {
         if(service.img)
         {
+            dispatch(actPending())
             UploadImage(service.img)
                 .then((res)=>{
                     if(!res.ok)
@@ -74,14 +80,20 @@ export function UpdateService(service) {
                                 throw new Error('ERROR:'+ res.status + res.statusText)
                             dispatch(actUpdateService(data))
                         })
-                        .catch( dispatch(actError("Cập nhật dịch vụ không thành công!")))
+                        .catch((err)=>{
+                            console.log(err)
+                            dispatch(actError("Cập nhật dịch vụ không thành công!"))
+                        
+                        })
                 })
                 .catch(err=>{
                     console.log(err);
-                    dispatch(actError("Cập nhật dịch vụ không thành công!"))})
+                    dispatch(actError("Cập nhật dịch vụ không thành công!"))
+                })
         }
         else
         {
+            dispatch(actPending())
             const data = {
                 id:service.id,
                 img:service.imgURL,
@@ -106,6 +118,7 @@ export  function InsertService(service)
 {
     
     return dispatch =>{
+        dispatch(actPending())
         UploadImage(service.img)
             .then((res)=>{
                 if(!res.ok)

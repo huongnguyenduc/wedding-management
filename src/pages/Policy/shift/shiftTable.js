@@ -1,16 +1,60 @@
-import { IconButton, Paper, Snackbar, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TablePagination, TableRow, TableSortLabel, TextField } from "@material-ui/core"
-import { Close, Delete, Done, Edit } from "@material-ui/icons";
-import react, { useEffect, useState } from "react"
+import {Paper, Snackbar, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel, Typography, Toolbar, TextField, IconButton, Grid, Backdrop, CircularProgress} from "@material-ui/core"
+import { useEffect, useState } from "react"
 import useStyles from './shiftTableStyles'
-import {GetShift, InsertShift, UpdateShift, DeleteShift} from '../connect'
+import {GetShift} from '../connect'
 import { Alert } from "@material-ui/lab";
-import {EnhancedTableToolbar} from "../policy/policyTable"
+import { Search } from "@material-ui/icons";
+
+const EnhancedTableToolbar = (props) => {
+    const classes = useStyles();
+    const {FilterHandler, title } = props;
+    const [keyword, setKeyword] = useState('')
+  
+    function onEnter(event){
+        console.log(typeof(event.key))
+        if(event.key==='Enter')
+            FilterHandler(keyword)
+    }
+    function onChange(event)
+    {
+        setKeyword(event.target.value)
+    }
+    return (
+      <Toolbar
+        className={classes.Toolbar}
+      >
+        <Typography
+          className={classes.ToolbarTitle}
+          id="tableTitle"
+          component="div"
+        >
+        {title}
+        </Typography>
+
+        <Grid className={classes.SearchBox}>
+            <TextField 
+                fullWidth
+                className={classes.ToolbarFilter}
+                variant="outlined"
+                placeholder="Tìm kiếm ca"
+                onKeyDown={onEnter}
+                value={keyword}
+                onChange={onChange}
+                />
+            <IconButton aria-label="filter list" classes={{root:classes.Button,label:classes.ButtonLabel}} onClick={()=>FilterHandler(keyword)}>
+                    <Search style={{fontSize:'25px'}}/>
+            </IconButton>
+        </Grid>
+      </Toolbar>
+    );
+  };
+
 
 function EnhancedTableHead(props)
 {
     const {orderBy, order, onRequestSort} = props;
     const classes = useStyles()
-    const headRows = [{name:'name',title:'Ca', align:'center', width:'30%'},
+    const headRows = [{name:'name',title:'Ca', align:'center', width:'40%'},
     {name:'timeBegin',title:'Thời gian bắt đầu', align:'center', width:'30%'},
     {name:'timeFinish',title:'Thời gian kết thúc', align:'center', width:'30%'},]
 
@@ -41,9 +85,6 @@ function EnhancedTableHead(props)
                             </TableCell>
                         )})
                 }   
-                <TableCell>
-
-                </TableCell>
             </TableRow>
         </TableHead>
     )
@@ -76,10 +117,10 @@ function tableSort(array, comparator) {
 }
 
 function tableFilter(array, keyword){
-    if(keyword=="")
+    if(keyword==="")
       return array;
     return array.filter(item=>{
-      return item.name.toLowerCase().search(keyword)!=-1
+      return item.name.toLowerCase().search(keyword)!==-1
     })
   }
 
@@ -87,20 +128,12 @@ function ShiftTable(){
     const classes = useStyles()
     const [shiftData,setShiftData] = useState([]);
     const [tableState, setTableState] = useState({keyword:'',order:"asc", orderBy:'id',rowsPerPage:5,page:0})
+    const [pendding, setPending] = useState(true)
     const [alert, setAlert] = useState({open:false,severity:'', message:''})
     function handleRequestSort(event, property) {
-        const isAsc = tableState.orderBy == property && tableState.order == 'asc';
+        const isAsc = tableState.orderBy === property && tableState.order === 'asc';
         setTableState({...tableState,orderBy:property, order:isAsc?'desc':'asc'})
     };
-
-    function handleChangeRowsPerPage(event){
-        setTableState({...tableState,rowsPerPage:event.target.value})
-    }
-
-    function handleChangePage(event, newpage){
-        setTableState({...tableState,page:newpage})
-    }
-
     function FilterHandler(keyword)
     {
         setTableState({...tableState,keyword:keyword.toLowerCase()});
@@ -109,16 +142,39 @@ function ShiftTable(){
     function CloseAlert(){
         setAlert({...alert,open:false})
     }
+    
+    function SuccesHandler(status, data)
+    {
+        switch(status)
+        {
+            case "INIT":{
+                setShiftData(data)
+                break;
+            }
+            case "ERROR":
+            {
+                setAlert({open:true, severity:'error', message:data})
+                break
+            }
+            default:{
+                break
+            }   
+        }
+        setPending(false)
+    }
 
     useEffect(()=>{
-        GetShift(setShiftData)
+        GetShift(SuccesHandler)
     },[])
 
-    const emptyRows = tableState.rowsPerPage - Math.min(tableState.rowsPerPage, shiftData.length - tableState.page * tableState.rowsPerPage);
-    const insertRow = shiftData.length - (tableState.page + 1) * tableState.rowsPerPage;
-
+    if(pendding)
+        return(
+            <Backdrop open={true} className={classes.backdrop}>
+                <CircularProgress color="inherit"/>
+            </Backdrop>
+        )
     return(
-        <Paper>
+        <Paper className={classes.shiftTable}>
             <TableContainer>
                 <EnhancedTableToolbar FilterHandler={FilterHandler} title="CA"/>
                 <Table>
@@ -138,24 +194,8 @@ function ShiftTable(){
                             })
                           
                     }
-                    {emptyRows>1? 
-                        <TableRow style={{ height: 54* (emptyRows - 1) }}> 
-                            <TableCell colSpan={3}/>
-                        </TableRow>:null}
                         
                     </TableBody>
-                    <TableFooter  className={classes.TableFooter}>
-                        <TableRow>
-                            <TablePagination
-                                    rowsPerPageOptions={[5,10,15]}
-                                    rowsPerPage={tableState.rowsPerPage}
-                                    onChangeRowsPerPage={handleChangeRowsPerPage}
-                                    page={tableState.page}
-                                    count={shiftData.length}
-                                    onChangePage={handleChangePage}
-                                    />
-                        </TableRow>
-                    </TableFooter>
                 </Table>
             </TableContainer>
             <Snackbar open={alert.open} autoHideDuration={3000} onClose={CloseAlert} className={classes.Snackbar}>
@@ -170,25 +210,26 @@ function ShiftTable(){
 export default ShiftTable
 
 function Row(props){
-    const {shift, onUpdate} = props
+    const {shift} = props
     const classes = useStyles()
     return (
         <TableRow className={classes.BodyRow}>
             <TableCell
                 align='center'
-                className={classes.InputCell}
+                className={classes.InfoCell}
             >{shift.name}
             </TableCell>
             <TableCell
                 align='center'
-                className={classes.InputCell}
+                className={classes.InfoCell}
             >
             {shift.timeBegin}  
             </TableCell>
             <TableCell
                 align='center'
+                className={classes.InfoCell}
             >
-            {shift.timeFinish}
+            {shift.timeEnd}
             </TableCell>
         </TableRow>
     )

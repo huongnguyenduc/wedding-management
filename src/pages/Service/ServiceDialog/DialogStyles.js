@@ -5,16 +5,23 @@ const useStyles = makeStyles(theme=>(
 {
     DialogBackGround:{
         backgroundColor:'rgb(25,25,25,0.6)',
-        width:'100%',
-        height:'100%',
-        maxWidth:'100%',
+        width:'100vw',
+        height:'100vh',
+        maxWidth:'100vw',
+        maxHeight:'100vh',
         position:'fixed',
         bottom:'50%',
         right:'50%',
         transform:'translate(50% , 50%)',
         zIndex:'2',
+        display:'flex',
+        justifyContent:'center',
+        alignContent:'center',
+        overflow:'auto'
     },
     DialogBody:{
+        position:'relative',
+        alignSelf:'center',
         display:'flex',
         flexDirection:'row',
         justifyContent:'center',
@@ -23,12 +30,9 @@ const useStyles = makeStyles(theme=>(
         padding:0,
         boxShadow:'0 70px 40px -35px rgba(51, 51, 51, 0.18)',
         backgroundColor:'#f8f8f8',
-        position:'absolute',
-        bottom:'50%',
-        right:'50%',
-        transform:'translate(50% , 50%)',
+        height:'min-content',
         borderRadius:'5px',
-        zIndex:'5',
+        zIndex:'3',
         animation: "$opacity 1s 1"
 
     },
@@ -50,7 +54,7 @@ const useStyles = makeStyles(theme=>(
         top:'0',
         bottom:'0',
         width:'100%',
-        '@media (max-width: 600px)' : {
+        [theme.breakpoints.down('xs')]: {
             position:'relative',
             paddingTop:'56.25%',
             width:'100%'
@@ -109,10 +113,19 @@ const useStyles = makeStyles(theme=>(
     },
     ListAction:{
         position:'absolute',
-        top:'20px',
+        bottom:'0',
         right:'0px',
         zIndex:'3',
-        fontWeight:600
+        fontWeight:600,
+        animation:'$grow 0.3s forwards',
+    },
+    "@keyframes grow": {
+        from: { transform:'translate(0,50%)', opacity:'0.5' },
+        to: {transform:'translate(0,100%)', opacity:'1'}
+      }
+    ,
+    listControl:{
+
     },
     ControlItem:
     {
@@ -128,10 +141,13 @@ const useStyles = makeStyles(theme=>(
         fontSize:'1.8rem',
         fontFamily:'"Raleway", sans-serif',
         paddingLeft:'1rem',
+        width:'100%',
+        minWidth:'100%',
+        height:'100%',
         "&.MuiInputBase-root.Mui-disabled": {
             color: '#4b4b4b',
         },
-        marginBottom:'4rem'
+        marginBottom:'4rem',
     },
     Footer:{
         display:'flex',
@@ -150,7 +166,9 @@ const useStyles = makeStyles(theme=>(
       },
     ControlButton:{
         fontSize:'15px',
-        
+        [theme.breakpoints.down('xs')]: {
+            fontSize:'13px',
+        },
 
     }
     

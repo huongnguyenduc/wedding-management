@@ -1,214 +1,268 @@
-const FOOD_API = "https://wedding-management.herokuapp.com/api/food";
-const CATEGORY_API = "https://wedding-management.herokuapp.com/api/food-category"
+import {actPending ,actError, actInitFood, actDeleteFood , actInsertFood, actUpdateFood, actInitFoodCategory, actDeleteFoodCategory, actUpdateFoodCategory, actInsertFoodCategory} from './actions/actions'
 
-class FoodService {
-    
-    GetFoodData(callBack){
-        fetch("https://wedding-management.herokuapp.com/api/food")
-            .then(res=>{
-                if(!res.ok)
-                    throw new Error("Server error:" + res.statusText+ "    "+ res.url)
-                return res.json()
-            })
-            .then(res=> {callBack(res)})
-            .catch(err=> console.log(err))
+const API_SERVER = "https://wedding-management.herokuapp.com/api/";
+const FOOD_API = "food";
+const FOOD_CATEGORY_API = "food-category"
+
+export function CallAPI(endpoint, method='GET', body)
+{
+    const config = {
+        method: method,
+        headers: { 'Content-Type': 'application/json' },
     }
 
-    DeleteFood(id, callBack, alert)
+    if (body) {
+        config.body = JSON.stringify(body)
+    }
+    const URL = API_SERVER + endpoint
+    return fetch(URL, config)
+
+}
+
+export function GetFood() {
+    return dispatch =>
+    {   
+        dispatch(actPending())
+        CallAPI(FOOD_API, "GET")
+        .then(res=>{
+            if(!res.ok)
+                throw new Error('err'+res.status)
+            return res.json()
+        })
+        .then(data=>{
+            dispatch(actInitFood(data))})
+        .catch(err=>{
+            console.log(err)
+        })
+    }
+   
+}
+
+export function DeleteFood(Food, success) {
+    return dispatch =>
     {
-        let data = [id]
+        dispatch(actPending())
+        let data = [Food.id]
         var option = {
             method:'DELETE',
             headers: {'Content-Type': 'application/json'},
             body:JSON.stringify(data)
         }
-        fetch(FOOD_API , option)
+        fetch(API_SERVER+FOOD_API , option)
             .then(response => {
                 if(!response.ok)
                     throw new Error("Server error:" + response.statusText+ "    "+ response.url)
-                alert("success","Xoá thông tin thành công")
-                callBack("DELETE", id)
+                success()
+                dispatch(actDeleteFood(Food))
                     
             })
             .catch((error) => {
-                alert("error","Xoá thông tin không thành công")
-                console.error('Error:', error);
-            });
+                console.log(error)
+                dispatch(actError("Xoá thông tin món ăn không thành công!"))
+            }); 
     }
+}
 
-    async InsertFood(info, callBack, alert)
+
+export function UpdateFood(Food, success) {
+    
+    return dispatch =>
     {
-        var imgURL ;
-        if(info.img)
-            imgURL = await this.UploadImage(info.img);
+        dispatch(actPending())
+        if(Food.img)
+        {
+            UploadImage(Food.img)
+                .then((res)=>{
+                    if(!res.ok)
+                        throw new Error("Upload image error:"+ res.status + res.statusText)
+                    return res.json()
+                })
+                .then((res)=>{
+
+                        const data ={
+                            id:Food.id,
+                            categoryId:Food.category.id,
+                            img:res.url,
+                            moreInfo:Food.moreInfo,
+                            name:Food.name,
+                            price:Food.price
+                        }
+
+                        CallAPI(FOOD_API,'PUT',data)
+                        .then(res=>{
+                            if(!res.ok)
+                                throw new Error('ERROR:'+ res.status + res.statusText)
+                            return res.json();
+                        })
+                        .then(res=>{
+                            success()
+                            dispatch(actUpdateFood(res))
+                        })
+                        .catch(err => {
+                            console.log(err)
+                            dispatch(actError("Cập nhật thông tin món ăn không thành công!"))})
+                })
+                .catch(err=>{
+                    console.log(err);
+                    dispatch(actError("Cập nhật thông tin món ăn không thành công!"))})
+        }
         else
-            imgURL = info.imgURL;
-        
-        var detail={
-            name:info.name,
-            img: imgURL,
-            price: info.price,
-            moreInfo: info.moreInfo,
-            categoryId: info.category
-        }
+        {
+            const data = {
+                id:Food.id,
+                categoryId:Food.category.id,
+                img:Food.imgURL,
+                moreInfo:Food.moreInfo,
+                name:Food.name,
+                price:Food.price
+            }
 
-        var option = {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(detail)
-        }
-
-        fetch(FOOD_API, option)
-            .then(response => {
-                if(!response.ok) 
-                    throw new Error("Server error:" + response.statusText+ "    "+ response.url)
-                return response.json()                    
+            CallAPI(FOOD_API,'PUT',data)
+            .then(res=>{
+                if(!res.ok)
+                    throw new Error('ERROR:'+ res.status + res.statusText)
+                
+                return res.json()
+                
             })
-            .then(data => {
-                callBack("INSERT", data);
-                alert("success","Thêm thông tin thành công");
+            .then(res=>{
+                success()
+                dispatch(actUpdateFood(res))
             })
-            .catch((error) => {
-                alert("error","Thêm thông tin không thành công");
-                console.error('Error:', error);
-            });
-
+            .catch(err=>{
+                console.log(err);
+                dispatch(actError("Cập nhật thông tin món ăn không thành công!"))})
+        }
     }
+}
 
-    async EditFood(info, callBack, alert)
-    {
-        var imgURL ;
-
-        if(info.img)
-            imgURL = await this.UploadImage(info.img);
-        else
-            imgURL = info.imgURL;
-        
-        var detail={
-            id:info.id,
-            name:info.name,
-            img: imgURL,
-            price: info.price,
-            moreInfo: info.moreInfo,
-            categoryId: info.category
-        }
-
-        var option = {
-            method:'PUT',
-            headers:{'Content-Type': 'application/json'},
-            body: JSON.stringify(detail)
-        }
-
-        fetch(FOOD_API,option)
-            .then(response => {
-                if(!response.ok) 
-                    throw new Error("Server error:" + response.statusText+ "    "+ response.url)
-                return response.json();
+export  function InsertFood(Food, success)
+{
+    return dispatch =>{
+        dispatch(actPending())
+        UploadImage(Food.img)
+            .then((res)=>{
+                if(!res.ok)
+                    throw new Error("ERROR:"+ res.status + res.statusText)
+                return res.json()
             })
-            .then(data => {;
-                callBack("EDIT",data)
-                alert("success","Cập nhật thông tin thành công")
+            .then((res)=>{
+                    const data ={
+                            categoryId:Food.category.id,
+                            img:res.url,
+                            moreInfo:Food.moreInfo,
+                            name:Food.name,
+                            price:Food.price
+                    }
+                    CallAPI(FOOD_API,'POST',data)
+                    .then(res=>{
+                        if(!res.ok)
+                            throw new Error('ERROR:'+ res.status + res.statusText)
+                        return res.json()})
+                    .then(res=>{
+                        success()
+                        dispatch(actInsertFood(res))
+                    })
+                    .catch(err=>{
+                        console.log(err)
+                        dispatch(actError("Thêm thông tin món ăn không thành công!"))
+                    })
             })
-            .catch((error) => {
-                alert("error","Cập nhật thông tin không thành công")
-                console.error('Error:', error);
-            });
+            .catch(err=>{
+                console.log(`ERROR upload image: ${err}`);
+                dispatch(actError("Thêm thông tin món ăn không thành công!"))
+            })
     }
+}
 
-    async GetCategoryData(callBack)
+export function GetFoodCategory() {
+    return dispatch =>
+    {   
+        dispatch(actPending())
+        CallAPI(FOOD_CATEGORY_API, "GET")
+        .then(res=>{
+            if(!res.ok)
+                throw new Error('err'+res.status)
+            return res.json()
+        })
+        .then(data=>{
+            dispatch(actInitFoodCategory(data))})
+        .catch(err=>{
+            console.log(err)
+        })
+    }   
+}
+
+export function DeleteFoodCategory(FoodCategory) {
+    return dispatch =>
     {
-
-        fetch("https://wedding-management.herokuapp.com/api/food-category")
-            .then(response => {
-                if(!response.ok)
-                    throw new Error("Server error:" + response.statusText+ "    "+ response.url)
-                return response.json();
-            })
-            .then( (data)=>{
-                callBack(data)
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    }
-
-    async DeleteCategory(id, callBack,alert)
-    {
-        var data = [id];
-        var option = {
-            method:'DELETE',
-            headers: {'Content-Type': 'application/json'},
-            body:JSON.stringify(data)
-        }
-        fetch(CATEGORY_API,option)
-            .then(response => {
-                if(!response.ok) 
-                    throw new Error("Server error:" + response.statusText+ response.url)
-                callBack(id);
-                alert("success","Xoá thành công")
-            })
-            .catch((error) => {
-                alert("error","Xoá không thành công")
-                console.error(error);
-            });
-
-    }
-
-    async EditCategory(info, callBack, alert)
-    {
-        const URL = CATEGORY_API+"/"+info.id        
-        var option = {
-            method: 'PUT',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(info)
-        }
-
-        fetch(URL, option)
-            .then(response => {
-                if(!response.ok)
-                    throw new Error("Server error:" + response.statusText + response.url)
-                callBack(info)  
-                alert("success","Cập nhật thông tin thành công")
-            })
-
-            .catch((error) => {
-                alert("error","Cập nhật thông tin không thành công")
-                console.error('Error:', error);
-            });
-    }
-
-    async InsertCategory(info, callBack,alert)
-    {
-        var data = JSON.stringify(info);
-        var option = {
-            method: 'POST',
-            headers:{'Content-Type': 'application/json'},
-            body: data
-        }
-        fetch(CATEGORY_API,option)
-            .then(response => {
-                if(!response.ok) 
-                    throw new Error(response.status)
-                return response.json();
-            })
-            .then((data)=>{
-                callBack(data);
-                alert("success","Thêm thông tin thành công")
+        let id = [FoodCategory.id]
+        dispatch(actPending())
+        CallAPI(FOOD_CATEGORY_API,'DELETE',id)
+        .then(res=>{
+            if(!res.ok)
+                throw new Error('ERROR:' + res.status + res.statusText)
+            dispatch(actDeleteFoodCategory(FoodCategory))
+           
+        })
+        .catch(err=>{
+                dispatch(actError("Xoá thông tin loại món ăn không thành công"))
+                console.log(err)
             }
         )
-            .catch((error) => {
-                alert("error","Thêm thông tin không thành công")
-                console.error(error);
-            });
     }
+}
 
-    async UploadImage(image)
+export function UpdateFoodCategory(FoodCategory,Success) {
+    
+    return dispatch =>
+    {
+        dispatch(actPending())
+        CallAPI(FOOD_CATEGORY_API+'/'+FoodCategory.id,"PUT",FoodCategory)
+        .then(res=>{
+            if(!res.ok)
+                throw new Error("ERROR: "+ res.status)
+            Success()
+            dispatch(actUpdateFoodCategory(FoodCategory))
+            
+        })
+        .catch(err=>{
+            dispatch(actError("Cập nhật thông tin loại món ăn không thành công!"))
+            console.log(err)
+        })
+    }
+}
+
+export  function InsertFoodCategory(FoodCategory,Success)
+{
+    
+    const data = FoodCategory
+    return dispatch =>{
+        dispatch(actPending())
+       CallAPI(FOOD_CATEGORY_API,"POST",data)
+       .then(res=>{
+           if(!res.ok)
+                throw new Error("ERROR: "+ res.status)
+            return res.json();
+           
+       })
+       .then(data=>{
+           Success()
+           dispatch(actInsertFoodCategory(data))
+       })
+       .catch(err=>{
+           dispatch(actError("Thêm thông tin loại món ăn không thành công!"))
+           console.log(err)
+       })
+    }
+}
+
+export function UploadImage(image)
     {
         const data = new FormData()
         data.append("file", image)
         data.append("name", "test")
         data.append("upload_preset", "heheupload")
-        // data.append("public_id",'WeddingManagerment')
         data.append("folder",'WeddingManagerment')
         var url = "https://api.cloudinary.com/v1_1/hehohe/image/upload"
 
@@ -216,24 +270,6 @@ class FoodService {
             method: 'POST',
             body: data
         }
-        const response = fetch(url, option)
-            .then(res=>{
-                if(!res.ok)
-                    throw new Error(res.status + res.statusText + res.url)
-                return res.json();
-                
-            })
-            .then(res=>{
-                return res.url
-            })
-            .catch(
-                 err => console.log(err)
-            )
-        return await response;
+
+        return fetch(url, option)
     }
-
-
-
-}
-
-export default new FoodService();

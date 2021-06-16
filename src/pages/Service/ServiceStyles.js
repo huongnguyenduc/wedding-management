@@ -3,12 +3,27 @@ import {makeStyles} from '@material-ui/core/styles'
 
 const useStyles = makeStyles(theme=>(
 {
+    ServicePage:{
+        backgroundColor:'#EEEEEE',
+        minWidth:'100vw',
+        minHeight:'100vh'
+    },
+    backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
+    },
     Header:{
         display:'flex',
         flexDirection:'row',
         alignContent:'center',
         justifyContent:'space-around',
         flexWrap:'wrap',
+        padding:'0 2rem',
+        [theme.breakpoints.down('xs')]: {
+            fjustifyContent:'space-between',
+            padding:'0rem',
+        }, 
+        maxWidth:'100%'
         
     },
     HeaderScroll:{
@@ -22,10 +37,17 @@ const useStyles = makeStyles(theme=>(
         right:'50%',
         transform:'translateX(50%)',
         zIndex:'2',
-        backgroundColor:'#ffffff'
+        backgroundColor:'#ffffff',
+        [theme.breakpoints.down('xs')]: {
+            fjustifyContent:'space-between',
+            padding:'0 1rem',
+        }, 
     },
     HeaderControl:{
-        margin:'1rem 0 1rem 0rem'
+        margin:'1rem 0 1rem 0rem',
+        [theme.breakpoints.down('xs')]: {
+            margin:'0.5rem 0 0.5rem 0rem',
+        }, 
     
     },
     PriceControl:{
@@ -61,20 +83,22 @@ const useStyles = makeStyles(theme=>(
         flexWrap:'nowrap',
         flexDirection:'row',
         justifyContent:'flex-end',
+        
+       
     },
     SortLabel:{
         minWidth:'70px',
         fontSize:'1.5rem',
         fontWeight:'700',
-        alignSelf:'center'
+        alignSelf:'center',
+        
     },
     SelectSort:{
         fontSize:'1.5rem',
         '& .MuiOutlinedInput-input':{
             padding:'7px 20px 7px 7px'
         },
-        minWidth:'70px'
-        
+        minWidth:'70px',        
     },
     tfPrice:{
         '& .MuiInputBase-input':{
@@ -93,7 +117,10 @@ const useStyles = makeStyles(theme=>(
     TextSearch:{
         '& .MuiInputBase-input':{
             fontSize:'1.5rem',
-            padding:'7px',
+            padding:'7px 0px',
+        },
+        "& .MuiOutlinedInput-adornedStart":{
+            paddingLeft:'5px'
         },
         minWidth:'150px'
     },
@@ -110,7 +137,12 @@ const useStyles = makeStyles(theme=>(
         position: 'fixed',
         bottom: theme.spacing(6),
         right: theme.spacing(6),  
-        fontSize:'1.2rem'      
+        fontSize:'1.2rem',
+        [theme.breakpoints.down('xs')]: {
+            bottom: theme.spacing(2),
+            right: theme.spacing(3),  
+            fontSize:'1rem',
+        },      
     },
     InsertContainer:
     {

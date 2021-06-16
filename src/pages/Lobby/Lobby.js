@@ -1,4 +1,4 @@
-import {Box, Button, Container, Grid, Snackbar } from '@material-ui/core';
+import {Backdrop, CircularProgress, Container, Snackbar } from '@material-ui/core';
 import React, { useEffect, useState } from 'react'
 import CategoryTable from "./LobbyCategory/CategoryTable"
 import LobbyPage from './LobbyPage/LobbyPage'
@@ -12,7 +12,8 @@ function Lobby() {
     const classes = useStyles();
     const dispatch = useDispatch();
     const StoreData = useSelector(state => state.changeLobbyData);
-    const Status = StoreData.Status
+    const Pending = StoreData.Pending;
+    const Status = StoreData.Status;
     const [page, setPage] = useState("lobby")
    
     const scrollHandler = (event)=>{
@@ -25,7 +26,6 @@ function Lobby() {
         dispatch(GetLobbyCategory())
         dispatch(GetLobby())  
         window.addEventListener("scroll", scrollHandler) 
-        
     },[]);
 
     function CloseAlert()
@@ -35,8 +35,11 @@ function Lobby() {
 
     return (
         <div className={classes.MainPage}>
-            <LobbyPage style={{display:page=='lobby'?'':'none'}}/>
-            <Container style={{display:page=='lobbyCategory'?'':'none'}} className={classes.CategoryPage}> 
+            <Backdrop open={Pending} className={classes.backdrop} onClick={(e)=>{e.stopPropagation()}}>
+                <CircularProgress color="inherit"/>
+            </Backdrop>
+            <LobbyPage style={{display:page==='lobby'?'':'none'}}/>
+            <Container style={{display:page==='lobbyCategory'?'':'none'}} className={classes.CategoryPage}> 
                 <CategoryTable/>
             </Container>
             
@@ -44,10 +47,10 @@ function Lobby() {
                 <Alert severity={Status.severity} onClose={CloseAlert}>{Status.message}</Alert>
             </Snackbar>
             <div className={classes.SwitchButton}>
-                <div name='lobby' className={`${classes.button}  ${page=='lobby'?classes.actButton:''}`} onClick={()=>{setPage('lobby')}}>
+                <div name='lobby' className={`${classes.button}  ${page==='lobby'?classes.actButton:''}`} onClick={()=>{setPage('lobby')}}>
                     SẢNH
                 </div>
-                <div name='lobbyCategory' className={`${classes.button} ${page=='lobbyCategory'?classes.actButton:''}`} onClick={()=>{setPage('lobbyCategory')}}>
+                <div name='lobbyCategory' className={`${classes.button} ${page==='lobbyCategory'?classes.actButton:''}`} onClick={()=>{setPage('lobbyCategory')}}>
                     LOẠI SẢNH   
                 </div>
             </div>
@@ -59,23 +62,4 @@ function Lobby() {
 export default Lobby;
 
 
-function TabPanel(props) {
-    const { children, value, index, ...other } = props;
-  
-    return (
-      <div
-        role="tabpanel"
-        hidden={value !== index}
-        id={`scrollable-auto-tabpanel-${index}`}
-        aria-labelledby={`scrollable-auto-tab-${index}`}
-        {...other}
-      >
-        {value === index && (
-          <Box p={4}>
-           {children}   
-          </Box>
-        )}
-      </div>
-    );
-  }
   

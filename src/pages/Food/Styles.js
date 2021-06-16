@@ -2,20 +2,10 @@ import {makeStyles} from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme=>(
 {
-    Header:{
-        position:'relative',
-        top:'80px',
-        right:'50%',
-        transform:'translateX(50%)',
-        height:'40px'
-    },
-    ScrollHeader:{
-        position:'fixed',
-        top:'0',
-        right:'50%',
-        transform:'translateX(50%)',
-        zIndex:'2',
-        backgroundColor:'#ffffff'      
+    
+    backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
     },
     buttonArea:
     {

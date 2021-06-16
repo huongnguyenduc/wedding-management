@@ -12,6 +12,10 @@ const useStyles = makeStyles(theme=>(
         justifyContent:'center',
         alignContent:'center',
     },
+    backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
+    },
     CategoryPage:{
         width:'100%',
         backgroundColor:"transparent",
@@ -35,7 +39,17 @@ const useStyles = makeStyles(theme=>(
         backgroundColor:'#fff',
         display:'flex',
         flexDirection:'row',
-        borderRadius:'50px'
+        borderRadius:'50px',
+        [theme.breakpoints.down('md')]: {
+            right:'20px',
+            bottom:'10px',
+            width:'150px'
+          },
+        [theme.breakpoints.down('xs')]: {
+           right:'10px',
+           bottom:'5px',
+           width:'120px'
+         },
        
     },
     button:{
@@ -47,7 +61,17 @@ const useStyles = makeStyles(theme=>(
         fontSize:'15px',
         fontWeight:'600',
         padding:'10px 0',
-        borderRadius:'50px'
+        borderRadius:'50px',
+        [theme.breakpoints.down('md')]: {
+            fontSize:'12px',
+            fontWeight:'600',
+            padding:'10px 0',
+          },
+        [theme.breakpoints.down('xs')]: {
+            fontSize:'10px',
+            fontWeight:'600',
+            padding:'7px 0',
+          },
 
     },
     actButton:{

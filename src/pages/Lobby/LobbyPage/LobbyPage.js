@@ -46,7 +46,7 @@ function LobbyPage(props) {
     }
     function changeKeyword(event)
     {
-        if(event.key=='Enter')
+        if(event.key==='Enter')
            setKeyword({...keyword,value:event.target.value})
     }
 
@@ -60,6 +60,15 @@ function LobbyPage(props) {
         setKeyword({...keyword,open:!keyword.open})
     }
 
+    function PagePriceItemSort(array , order) {
+        if(order==='asc')
+            return array.sort((item1, item2) =>{
+                return item1.minUnitPriceTable - item2.minUnitPriceTable
+            })
+        else
+            return array.sort((item1, item2)=>{
+                return item2.minUnitPriceTable - item1.minUnitPriceTable})
+    }
 
     useEffect(()=>{
         window.addEventListener("scroll", scrollHandler)
@@ -68,7 +77,7 @@ function LobbyPage(props) {
     return (
         <>
          <Container fixed className={classes.page} {...other}>
-            <AppBar position='relative' className={`AppBar ${classes.AppBar}`}>
+            <AppBar className={`AppBar ${classes.AppBar}`}>
                 <Tabs 
                     value={tab} 
                     onChange={changePage} 
@@ -85,9 +94,9 @@ function LobbyPage(props) {
                     }                
                 </Tabs>
                 <IconButton classes={{root:classes.SearchButton, label:classes.LabelButton}} onClick={OpenSearchBox}>
-                    <SearchIcon className={`${keyword.value==''?classes.SearchIcon:classes.actSearchIcon}`}/>
+                    <SearchIcon className={`${keyword.value===''?classes.SearchIcon:classes.actSearchIcon}`}/>
                 </IconButton>
-                <Grid className={`${classes.SearchBox}`} style={{display:keyword.open?'flex':'none'}}>
+                <Grid className={classes.SearchBox} style={{display:keyword.open?'flex':'none'}}>
                     <TextField
                         fullWidth
                         variant='outlined'
@@ -108,7 +117,7 @@ function LobbyPage(props) {
             <TabPanel value={tab} index={0} className={classes.TabPanel}>
                 <Container maxWidth="lg" className={classes.container} >
                     {
-                        Lobby.map((lobby)=>{
+                       PagePriceItemSort(Lobby,'asc').map((lobby)=>{
                             return(<LobbyCard key={lobby.id} xs={12} sm={6} md={4} lg={4} lobby={lobby} />)})
                     }
                     <LobbyCard id="insert_lobby"  xs={12} sm={6} md={4} lg={4} />
@@ -120,10 +129,10 @@ function LobbyPage(props) {
                         <TabPanel key={category.id} value={tab} index={index+1} >
                             <Container maxWidth="lg" className={classes.container}>
                                 {
-                                    FilterCategory(Lobby,category).map((lobby)=>{
+                                    PagePriceItemSort(FilterCategory(Lobby,category),'asc').map((lobby)=>{
                                         return(<LobbyCard key={lobby.id} xs={12} sm={6} md={4} lg={4} lobby={lobby} />)})
                                 }
-                                <LobbyCard id="insert_lobby"  xs={12} sm={6} md={4} lg={4} />
+                                <LobbyCard id="insert_lobby"  xs={12} sm={6} md={4} lg={4} lobbyCategory={category}/>
                             </Container>
                         </TabPanel>
                     )

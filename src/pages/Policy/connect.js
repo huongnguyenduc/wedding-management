@@ -1,7 +1,6 @@
-// export const API_SERVER = "https://wedding-management.herokuapp.com/api/";
-const API_SERVER ="http://localhost:4000/"
-const POLICY_API = 'policy'
-const SHIFT_API = 'Shift'
+const API_SERVER ="https://wedding-management.herokuapp.com/api/"
+const POLICY_API = 'fines'
+const SHIFT_API = 'shift'
 export function CallAPI(endpoint, method='GET', body)
 {
     const config = {
@@ -29,15 +28,16 @@ export function GetPolicy(FinishHandle)
     .then(data=>{
         FinishHandle("INIT", data)
     })
-    .catch(err=>console.log(err))
+    .catch(err=>{
+        FinishHandle("ERROR", "Lấy thông tin qui định không thành công")})
 }
 
 export function UpdatePolicy(policy, FinishHandle) 
 {
-    CallAPI(POLICY_API +'/'+policy.name, "PUT",policy)
+    CallAPI(POLICY_API , "PUT",policy)
     .then(res=>{
         if(!res.ok)
-            throw new Error(res.status + " Failed Fetch ");
+            throw new Error(res.status + res.statusText);
         else
             return res.json();
     })
@@ -45,36 +45,10 @@ export function UpdatePolicy(policy, FinishHandle)
         FinishHandle("UPDATE", data)
     })
     .catch(err=>{
-        FinishHandle("ERROR", "Cập nhật không thành công")})
+        console.log(err)
+        FinishHandle("ERROR", "Cập nhật thông tin qui định không thành công")})
 }
 
-export function InsertPolicy(policy, FinishHandle)
-{
-    const body = policy;
-    CallAPI(POLICY_API, "POST", body)
-    .then(res=>{
-        if(!res.ok)
-            throw new Error(res.status + " Failed Fetch ");
-        return res.json()
-    })
-    .then(data=>{
-        FinishHandle("INSERT", data);
-    })
-    .catch(err=>FinishHandle("ERROR", "Thêm không thành công"))
-}
-
-export function DeletePolicy(policy, FinishHandle)
-{
-    const id = [policy.id]
-    CallAPI(POLICY_API,"DELETE",id)
-    .then(res=>{
-        if(!res.ok)
-            throw new Error( res.status + res.statusText)
-        FinishHandle("DELETE", policy)
-    })
-    .catch( err=> FinishHandle("ERROR", "Xoá không thành công")
-    )
-}
 
 
 export function GetShift(FinishHandle)
@@ -86,7 +60,9 @@ export function GetShift(FinishHandle)
         return res.json();
     })
     .then(data=>{
-        FinishHandle(data)
+        FinishHandle("INIT",data)
     })
-    .catch(err=>console.log(err))
+    .catch(err=>{
+        FinishHandle("ERROR", "Lấy thông tin ca không thành công")
+    })
 }

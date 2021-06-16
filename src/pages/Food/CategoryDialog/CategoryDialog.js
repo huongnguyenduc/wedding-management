@@ -1,12 +1,13 @@
-import { CircularProgress, Dialog, Fade, IconButton, Paper, Snackbar, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TablePagination, TableRow, TableSortLabel, TextField} from "@material-ui/core"
-import React,{useEffect, useState} from "react"
+import { CircularProgress, Dialog, Fade, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TablePagination, TableRow, TableSortLabel, TextField} from "@material-ui/core"
+import React,{useState} from "react"
 import useStyles from './CategoryStyle';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CloseIcon from '@material-ui/icons/Close';
 import DoneIcon from '@material-ui/icons/Done';
-import FoodService from '../FoodService'
-import { Alert } from "@material-ui/lab";
+import { DeleteFoodCategory, InsertFoodCategory, UpdateFoodCategory } from '../FoodService'
+import { useDispatch, useSelector } from "react-redux";
+import { actError } from "../actions/actions";
 
 
 function EnhancedTableHead(props) {
@@ -79,7 +80,7 @@ function stableSort(array, comparator) {
     const stabilizedThis = array.map((el, index) => [el, index]);
     stabilizedThis.sort((a, b) => {
         const order = comparator(a[0], b[0]);
-        if (order != 0) return order;
+        if (order !== 0) return order;
         return a[1] - b[1];
     });
     return stabilizedThis.map((el) => el[0]);
@@ -89,35 +90,20 @@ function stableSort(array, comparator) {
 
 function CategoryDialog(props) {
     const {Open, handleClose} = props;
+    const dispatch = useDispatch()
     const classes = useStyles();
     const [order,setOrder] = useState("asc");
     const [orderBy, setOrderBy] = useState("id");
-    const [categoryData, setCategoryData]= useState([]);
+    const StoreData = useSelector(state=>state.ChangeFoodData)
+    const categoryData = StoreData.FoodCategory;
+    const Pending = StoreData.Pending
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [page, setPage] = useState(0);
     const [rowEdit,SetRowEdit] = useState({id:'', name:'', moreInfo:''});
     const [rowInsert, setRowInsert] = useState({name:'', moreInfo:''})
-    const [status, setStatus] = useState({open:false, mesage:"", severity:"error"})
-    const [inProgress, setInProgress] = useState(false);
-
-    const InitData = (data)=> {
-        setCategoryData(data);
-        setInProgress(false);
-    }
-
-    useEffect( () =>{
-        setInProgress(true)
-        FoodService.GetCategoryData(InitData);
-        
-    },[])
-
-    const handleCloseAlert = ()=>
-    {
-        setStatus({...status,open:false})
-    }
 
     const handleRequestSort = (event, property) => {
-        const isAsc = orderBy == property && order == 'asc';
+        const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
     };
@@ -136,84 +122,53 @@ function CategoryDialog(props) {
         SetRowEdit({...rowEdit,id:id, name:name,moreInfo:moreInfo})
     }
 
-    const DeleteData =(id)=>
-    {
-        let term = categoryData.filter(item=>{return item.id!=id})
-        setCategoryData(term)
-    }
+    
 
-    const AlertHandler = (status, mesage) =>
+    const handleDelete = (category) =>
     {
-        setInProgress(false);
-        setStatus({open:true, mesage:mesage, severity:status})
-    }
-
-    const handleDelete = (id) =>
-    {
-        setInProgress(true);
-        FoodService.DeleteCategory(id,DeleteData,AlertHandler);
+        dispatch(DeleteFoodCategory(category))
     }
     const handleCloseEdit = () =>
     {    
         SetRowEdit({...rowEdit,id:"", name:"",moreInfo:""})
     }
 
-    const FinishEdit = (info)=>
-    {
-        let term= categoryData.filter((item)=>{return (item.id!=info.id)});
-        term.push(info)
-        setCategoryData(term);
-        SetRowEdit({...rowEdit,id:"", name:"",moreInfo:""})
-    }
-
-    const finish = (status, mesage)=>
-    {
-        setInProgress(false)
-        AlertHandler(status, mesage)
-    }
-
     const handleFinishEdit = ()=>
     {
         if(rowEdit.id&&rowEdit.name&&rowEdit.moreInfo)
         {
-            setInProgress(true)
-            FoodService.EditCategory(rowEdit, FinishEdit,finish);
+           dispatch(UpdateFoodCategory(rowEdit, handleCloseEdit))
         }
         else
         {
-            setStatus({open:true, mesage:"Vui lòng nhập đầy đủ thông tin", severity:"error"})
+            dispatch(actError("Vui lòng nhập đầy đủ thông tin"))
         }
         
         
     }
     const handleReset =(index)=>
     {
-        if(index!=rowEdit.id&&rowEdit.id!="")
+        if(index!==rowEdit.id&&rowEdit.id!=="")
         {
             SetRowEdit({...rowEdit,id:"", name:"",moreInfo:""})
         }
        
     }
 
-    const InsertData = (info)=>
-    {
-       
-        let term= categoryData.slice();
-        term.push(info)
-        setCategoryData(term);
-        
+    const success = ()=>{
+        setRowInsert({name:'', moreInfo:''})
     }
 
     const handleInsert = () =>
     {
         if(rowInsert.name&&rowInsert.moreInfo)
         {
-            FoodService.InsertCategory(rowInsert, InsertData,AlertHandler)
+            dispatch(InsertFoodCategory(rowInsert,success))
             setRowInsert({name:'', moreInfo:''})
         }
         else
         {
-            setStatus({open:true, mesage:"Vui lòng nhập đầy đủ thông tin", severity:"error"})
+            dispatch(actError("Lỗi: Vui lòng nhập đầy đủ thông tin!"))
         }
     }
     
@@ -259,8 +214,8 @@ function CategoryDialog(props) {
                                                         disableUnderline:true,
                                                         className:classes.inputText
                                                     }}
-                                                    value={row.id==rowEdit.id?rowEdit.name:row.name}
-                                                    disabled={row.id==rowEdit.id?false:true}
+                                                    value={row.id===rowEdit.id?rowEdit.name:row.name}
+                                                    disabled={row.id===rowEdit.id?false:true}
                                                     onChange={handleChange} 
                                                     multiline
                                                 />
@@ -274,27 +229,27 @@ function CategoryDialog(props) {
                                                         disableUnderline:true,
                                                         className:classes.inputText
                                                     }}
-                                                    value={row.id==rowEdit.id?rowEdit.moreInfo:row.moreInfo}
+                                                    value={row.id===rowEdit.id?rowEdit.moreInfo:row.moreInfo}
                                                     onChange={handleChange} 
-                                                    disabled={row.id==rowEdit.id?false:true}
+                                                    disabled={row.id===rowEdit.id?false:true}
                                                     multiline
                                                 />
                                             </TableCell>
                                             <TableCell>
                                                 <div className={classes.CellControl}>
                                                     {
-                                                        rowEdit.id==row.id?(<>
-                                                            <IconButton classes={{ label: classes.ButtonLabel }} onClick={handleFinishEdit} disabled={inProgress} >
+                                                        rowEdit.id===row.id?(<>
+                                                            <IconButton classes={{ label: classes.ButtonLabel }} onClick={handleFinishEdit} disabled={Pending} >
                                                                 <DoneIcon/>
                                                             </IconButton>
-                                                            <IconButton classes={{ label: classes.ButtonLabel }}  onClick={handleCloseEdit} disabled={inProgress}>
+                                                            <IconButton classes={{ label: classes.ButtonLabel }}  onClick={handleCloseEdit} disabled={Pending}>
                                                                 <CloseIcon/>
                                                             </IconButton>
                                                             </>):(<>
-                                                            <IconButton  classes={{ label: classes.ButtonLabel }}  onClick={()=>handleEdit(row.id,row.name, row.moreInfo)} disabled={inProgress}>
+                                                            <IconButton  classes={{ label: classes.ButtonLabel }}  onClick={()=>handleEdit(row.id,row.name, row.moreInfo)} disabled={Pending}>
                                                                 <EditIcon/>
                                                             </IconButton>
-                                                            <IconButton classes={{ label: classes.ButtonLabel }}  onClick={()=>handleDelete(row.id)} disabled={inProgress}>
+                                                            <IconButton classes={{ label: classes.ButtonLabel }}  onClick={()=>handleDelete(row)} disabled={Pending}>
                                                                 <DeleteIcon />
                                                             </IconButton></>)
                                                     }
@@ -310,13 +265,18 @@ function CategoryDialog(props) {
                                     <TableCell>
     
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell
+                                         align='center'
+                                    >
                                         <TextField
                                             name = "name"
                                             placeholder="Tên loại món"
                                             fullWidth
                                             InputProps={{
                                                 disableUnderline:true,
+                                            }}
+                                            inputProps={{
+                                                style: { textAlign: 'center' }
                                             }}
                                             classes={{
                                                 root:classes.inputDisabled
@@ -326,14 +286,20 @@ function CategoryDialog(props) {
                                             multiline
                                         />
                                     </TableCell>
-                                    <TableCell className={classes.CellInfo}>
+                                    <TableCell 
+                                        className={classes.CellInfo}
+                                        align='center'
+                                    >
                                         <TextField 
                                             name="moreInfo"
                                             placeholder="Mô tả"
                                             fullWidth
                                             value={rowInsert.moreInfo}
                                             InputProps={{
-                                                disableUnderline:true,
+                                                disableUnderline:true
+                                            }}
+                                            inputProps={{
+                                                style: { textAlign: 'center' }
                                             }}
                                             classes={{
                                                 root:classes.inputDisabled
@@ -344,7 +310,7 @@ function CategoryDialog(props) {
     
                                     </TableCell>
                                     <TableCell>
-                                        <IconButton classes={{ label: classes.ButtonLabel }} onClick={handleInsert} disabled={inProgress}>
+                                        <IconButton classes={{ label: classes.ButtonLabel }} onClick={handleInsert} disabled={Pending}>
                                             <DoneIcon style={{fontSize:'20px'}} />
                                         </IconButton>
                                     </TableCell>
@@ -355,7 +321,7 @@ function CategoryDialog(props) {
                             <TableRow>
                             <TableCell style={{paddingTop:'5px', marginLeft:'20px'}}>
                                 <Fade 
-                                    in={inProgress}
+                                    in={Pending}
                                     unmountOnExit
                                 >
                                     <CircularProgress/>
@@ -373,14 +339,6 @@ function CategoryDialog(props) {
                         </TableFooter>
                     </Table>
                 </TableContainer>
-
-                
-
-            <Snackbar open={status.open} autoHideDuration={3000} onClose={handleCloseAlert} >
-                <Alert onClose={handleCloseAlert} severity={status.severity} >
-                {status.mesage}
-                </Alert>
-            </Snackbar>
                   
             </Paper>
         </Dialog> 

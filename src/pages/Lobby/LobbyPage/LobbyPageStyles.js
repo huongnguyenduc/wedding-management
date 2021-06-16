@@ -11,6 +11,12 @@ const useStyles = makeStyles(theme=>(
     },
     TabPanel:{
         backgroundColor:'transparent',
+        [theme.breakpoints.down('xs')]: {
+            '& .MuiBox-root':{
+                paddingLeft:'10px',
+                paddingRight:'10px'
+            }
+        },
     },
     container:{
         display:'flex',
@@ -19,21 +25,32 @@ const useStyles = makeStyles(theme=>(
         justifyContent:'center',
         backgroundColor:'transparent',
         paddingLeft:'60px',
-        paddingRight:'60px'
+        paddingRight:'60px',
+        [theme.breakpoints.down('sm')]: {
+            paddingLeft:'0px',
+            paddingRight:'0px',
+        },
     },
     ButtonEnd:{
         position:'fixed',
         right:'15px',
         bottom:'70px',
-        padding:'0'
+        padding:'0',
+        [theme.breakpoints.down('sm')]: {
+           display:'none'
+        },
     },
     ButtonTop:{
         position:'fixed',
         right:'15px',
         top:'70px',
-        padding:'0'
+        padding:'0',
+        [theme.breakpoints.down('sm')]: {
+            display:'none'
+         },
     },
     AppBar:{
+        position:'relative',
         display:'flex',
         flexDirection:'row',
         justifyContent:'center',
@@ -75,12 +92,21 @@ const useStyles = makeStyles(theme=>(
     },
     SearchBox:{
         position:'absolute',
-        bottom:'0',
+        top:'100%',
         right:'0',
-        width:'30%',
-        transform:'translate(-2rem ,100%)',
+        width:'40%',
+        minWidth:'40%',
         backgroundColor:'#fff',
-        animation: "$grow 0.3s forwards" 
+        animation: "$grow 0.3s ease-out" ,
+        [theme.breakpoints.down('md')]: {
+            minWidth:'60%',
+            width:'60%',
+        },
+        [theme.breakpoints.down('xs')]: {
+            minWidth:'100%',
+            width:'100%',
+        },
+
     },
     TextSearch:{
         "& .MuiInputBase-input":{
@@ -90,8 +116,14 @@ const useStyles = makeStyles(theme=>(
         
     },
     "@keyframes grow": {
-        from: { width:'5%' },
-        to: {  width:'30%' }
+        from: { 
+            opacity:'0',
+            transform:'scaleX(0)'
+     },
+        to: { 
+            opacity:'1',
+            transform:'scaleX(1)'
+         }
       },
     
 }

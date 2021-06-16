@@ -6,85 +6,54 @@ const useStyles = makeStyles(theme=>(
     ServiceContainer:
     {
         position:'relative',
-        padding:'0 1.5rem 0 1.5rem',
-        marginTop:'4rem',
+        display:'flex',
+        justifyContent:'center',
+        padding:'3.5rem 3rem 3rem',
+        transition:"transform 5s",
+        [theme.breakpoints.down('xs')]: {
+            padding:'3rem 1rem 1rem',
+        },
 
     },
     ServiceCard:
     {
         position:'relative',
-        borderRadius:'2px',
-        display:'flex',
-        flexDirection:'column',
-        justifyContent:'center',
-        boxShadow:'0 70px 40px -35px rgba(200, 200, 200, 0.12)',
-        transition:'transform 0.5s',
-        '&:hover':{
-            transform:'translate(0, -3px)',
-            backgroundColor:'#f2f2f2',
-            boxShadow:'0 70px 40px -35px rgba(85, 85, 85, 0.12)',
-        },
-        animation: "$grow 0.6s 1"        
+        width:'100%',
+        backgroundColor:"#fff",
+        paddingBottom:'20px',
+        boxShadow:'0 60px 80px -35px rgba(60, 60, 60, 0.15)',
+        transition:'box-shadow 0.3s',
+        animation: "$grow 0.5s ease-out",
+
+        "&:hover":{
+            "& .Image":{
+                transform:'translate(0,-30px)'
+            },
+            "& .divControl":{
+                display:'flex'
+            },
+            boxShadow:'0 60px 80px -35px rgba(60, 60, 60, 0.25)',
+        }       
     },
     "@keyframes grow": {
-        from: { opacity:0 },
-        to: {  opacity:1 }
+        from: { 
+            opacity:0,
+            transform:'translate(0,20px)'
+         },
+        to: {  
+            opacity:1,
+            transform:'translate(0,0)'  
+        }
       }
     ,
-    Header:{
-        display:'flex',
-        justifyContent:'space-between',
-        flexDirection:'row',
-        flexWrap:'nowrap'
-    },
-    Dots:
-    {
-        height:'2rem',
-        display:'flex',
-        flexDirection:'row',
-        justifyContent:'flex-start',
-        paddingLeft:'1.5rem',
-        position:'relative'
-    },
-    Dot:
-    {
-        position:'relative',
-        width:'1rem',
-        height:'1rem', 
-        borderRadius:'50%',
-        backgroundColor:'#f8f8f8',
-        margin:'0 0.5rem 0px 0.5rem',
-        alignSelf:'center',
-        display:'flex'
-
-    },
-    Control:{
-        position:'relative',
-        paddingRight:'1rem',
-    },
-    ListAction:{
-        position:'absolute',
-        right:'0',
-        width:'150px',
-        zIndex:'1',
-        backgroundColor:"#c8c8c8bf",
-    },
-    ControlItem:
-    {
-        '& .MuiTypography-body1':{
-            fontSize:'16px',
-            fontWeight:'600'
-        },
-        '& .MuiListItemIcon-root':{
-            minWidth:'30px'
-        }
-    },
     Image:{
-        paddingTop:'100%',
+        paddingTop:'70%',
         borderRadius:'2px',
         opacity:'1',
         transition:'opacity 0.6s',
-        animation: "$GrowImage 0.6s 1" 
+        animation: "$GrowImage 0.6s 1" ,
+        zIndex:0,
+        transition:'transform 0.3s'
         
     },
     "@keyframes GrowImage": {
@@ -92,10 +61,9 @@ const useStyles = makeStyles(theme=>(
         to: { opacity:1 }
     }
     ,
-    Media:{
+    MediaContent:{
         position:'relative',
         borderRadius:'2px',
-        margin:'1rem 2rem',
         '&:hover':{
             '& .Image':{
                 opacity:'0.7',
@@ -104,7 +72,8 @@ const useStyles = makeStyles(theme=>(
             {
                 opacity:'1'
             }
-        }
+        },
+        zIndex:0
         
     },
     ButtonLabel:
@@ -120,28 +89,62 @@ const useStyles = makeStyles(theme=>(
         transition:'opacity 0.6s',
         cursor:'pointer'
     },
-    Content:{
+    divControl:{
+        position:'absolute',
+        width:'100%',
+        bottom:0,
+        zIndex:0,
+        display:'none',
+        justifyContent:'center',
+        
+    },
+    Button:{
+        borderRadius:'0',
+        padding:'5px 20px'
+    },
+    LabelButton:{
+        marginLeft:'0'
+    },
+    ButtonIcon:{
+        fontSize:'17px',
+    },
+    DeleteIcon:{
+        color:'#f44336'
+    },
+    UpdateIcon:{
+        color:'#4caf50'
+    },
+    TextContent:{
         
         position:'relative',
         display:'flex',
-        margin:'0rem 1.5rem 1rem 1.5rem',
         flexDirection:'column',
-        justifyContent:'flex-start',
+        justifyContent:'center',
         alignContent:'center'
     },
     Name:
     {
-        fontSize:'18px',
-        fontFamily:'"Raleway", sans-serif',
-        textAlign:'left',
-       
+        margin:'20px 0 8px',
+        textAlign:'center',
+        color:'#3d3935',
+        "&:hover":{
+            color:'#b58a61',
+            textDecoration:'none',
+        },
+        textTransform:'uppercase',
+        lineHeight:'30px',
+        fontWeight:'600',
+        fontSize:'20px',
+        cursor:'pointer',
+        fontFamily:'"Raleway", sans-serif',  
     },
     Price:
     {
        position:'relative',
-        fontSize:'15px',
-        fontWeight:'700',
-        color:'#dc0505'
+       textAlign:'center',
+       fontSize:'16px',
+       fontWeight:'600',
+       color:'#c17a37'
     }
 }   
 ))

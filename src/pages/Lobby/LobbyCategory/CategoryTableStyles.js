@@ -2,6 +2,20 @@ import {makeStyles} from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme=>(
 {
+    CategoryTable:{
+        width:'100%',
+        animation:"$First_animation 0.5s ease-out"
+    },
+    "@keyframes First_animation":{
+        from:{
+            opacity:'0',
+            transform:'translate(0,40px)'
+        },
+        to:{
+           opacity:'1',
+           transform:'translate(0,0)'
+        }
+    },
     Toolbar: {
         paddingLeft: "3rem",
         paddingRight: "1rem",
@@ -49,7 +63,9 @@ const useStyles = makeStyles(theme=>(
         fontSize:'22px'
     },
     rowEditing:{
-        backgroundColor:'#f8f8f8'
+        backgroundColor:'#f8f8f8',
+        borderTop:'solid 2px #e0e0e0',
+        borderBottom:'solid 2px #e0e0e0'
     },
     TableFooter:{
         "& *":{

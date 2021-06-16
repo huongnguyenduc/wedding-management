@@ -1,6 +1,24 @@
 import {makeStyles} from '@material-ui/core/styles';
 const useStyles = makeStyles(theme=>(
 {
+    Header:{
+        width:'100%', 
+        display:'flex',
+        justifyContent:'center',
+        flexDirection:'row',
+        flexWrap:'nowrap',
+        alignContent:'center',
+        height:'40px',
+        position:'relative',
+    },
+    ScrollHeader:{
+        position:'fixed',
+        top:'0',
+        right:'50%',
+        transform:'translateX(50%)',
+        zIndex:'1',
+        backgroundColor:'#ffffff'      
+    },
     MenuContainer:
     {
         width:'100%', 
@@ -46,17 +64,47 @@ const useStyles = makeStyles(theme=>(
         fontFamily:'2rem',
         color:'red',
     },
+    SearchBox:{
+        position:'absolute',
+        top:'100%',
+        right:'0',
+        width:'30%',
+        minWidth:'30%',
+        animation:"$First_animation 0.3s ease-out",
+        backgroundColor:'#f8f8f8',
+        [theme.breakpoints.down('md')]: {
+            minWidth:'60%',
+            width:'60%',
+        },
+        [theme.breakpoints.down('xs')]: {
+            minWidth:'100%',
+            width:'100%',
+        },
+        
+    },
+    "@keyframes First_animation":{
+        from:{
+            opacity:'0',
+            transform: 'scale(0.5)'
+        },
+        to:{
+           opacity:'1',
+           transform: 'scale(1)'
+        }
+    },
+
     tfMoreInfo:
     {
         fontSize: '2rem',
         color:'#4b4b4b',
         fontFamily:"Open Sans", 
-        alignContent:'center',
-        alignItem:'center',
-        marginTop:'6px',
-        marginBottom:'0',
-        marginRight:'8rem'
-    },   
+    },
+    button:{
+        padding:'5px'
+    },
+    buttonLabel:{
+        marginLeft:'0'
+    }   
     
 }
 ))

@@ -1,76 +1,83 @@
 import {makeStyles} from "@material-ui/core/styles"
 
 const useStyles = makeStyles(theme=>({
+
+    backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
+    },
+    shiftTable:{
+        border:'1px solid #000',
+        borderRadius:'20px',
+        overflow:'hidden',
+        marginTop:'1rem',
+        boxShadow:'0 100px 40px -35px rgba(120, 120, 120, 0.1)',
+    },
     TableHeader:{
+        backgroundColor:'#eeeeee',
         "& .MuiTableCell-root":{
             fontSize:'18px', 
             fontWeight:'700',
-
-        }
+            textTransform:'uppercase'
+        },
+        [theme.breakpoints.down('xs')]: {
+            "& .MuiTableCell-root":{
+                fontSize:'15px', 
+                fontWeight:'700',
+                textTransform:'uppercase'
+            },
+        },
     },
     TableBody:{
         "& .MuiTableCell-root":{
-            fontSize:'15px', 
+            fontSize:'18px',
             fontWeight:'500',
 
         }
-    },
-    CellControl:{
-       "&.MuiTableCell-root":{
-           padding:0
-       }
-
-    },
-    divControl:{
-        display:'flex',
-        justifyContent:'space-around',
     },
     BodyRow:{
         "&:hover":{
             backgroundColor:'#fcfcfc'
         }
     },
-    rowEditing:{
-        backgroundColor:'#f8f8f8',
-        "&:hover":{
-            backgroundColor:'#f8f8f8'
-        }
+    Toolbar:{
+        backgroundColor:'#eeeeee',
+        display:'flex',
+        flexDirection:'row',
+        justifyContent:'space-between'
     },
-    RowEditing:{
-        border:'2px solid rgba(250,250,250,1)',
-        backgroundColor:'rgba(250,250,250,1)'
+    ToolbarTitle:{
+        fontSize:'30px',
+        fontWeight:700
     },
-    TableFooter:{
-        fontSize:'25px',
-        "& *":{
-            fontSize:'14px'
+    InfoCell:{
+        fontSize:'18px'
+    }, 
+    SearchBox:{
+        width:'60%',
+        display:'flex',
+        flexDirection:'row',
+        [theme.breakpoints.down('xs')]: {
+            width:'80%',
         },
-        "& .MuiIconButton-label":{
-            marginLeft:'0px'
-        }
     },
-    inputText:
-    {
-        textAlign:'center',
-        "& .MuiInputBase-input":{
-            textAlign:'center',
-            fontSize:'15px',
-            color:'#000000',
-            padding:'0'
-        }
-    },
-    InputCell:{
-        borderTop:"1px solid rgba(224, 224, 224, 1)",
-    },
-    ControlCell:{
-        "&.MuiTableCell-root":{
-            padding:0
+    ToolbarFilter:{
+       
+        "& .MuiInputBase-root":{
+            fontSize:'18px',
+            padding:'0px 10px 0px 10px'
         },
-        minWidth:'88px'  
+        "& .MuiOutlinedInput-input":{
+            padding:'5px 10px 5px 10px'
+        },
+        marginRight:'1rem'
+        
     },
-    divControl:{
-        display:"flex",
-        justifyContent:'space-around',
+    Button:{
+        padding:'0 5px',
+        [theme.breakpoints.down('xs')]: {
+            display:'none'
+        },
     },
     ButtonLabel:
     {

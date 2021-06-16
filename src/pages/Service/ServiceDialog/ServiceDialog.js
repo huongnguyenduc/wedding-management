@@ -1,21 +1,22 @@
 
-import { CardMedia, Collapse, Container, Grid, ListItem, IconButton, List, ListItemIcon, TextField, Typography, ListItemText, Button } from '@material-ui/core'
+import { CardMedia, Container, Grid, ListItem, IconButton, List, ListItemIcon, TextField, Typography, ListItemText, Button, useTheme, useMediaQuery } from '@material-ui/core'
 import React, { useState } from 'react'
 import useStyles from './DialogStyles'
 import NumberFormatCustom from '../../Food/FormartNumber'
-import { Cancel, CheckCircle, Delete, Edit, ExpandLess, ExpandMore, PhotoCamera } from '@material-ui/icons'
-import { useDispatch, useSelector } from 'react-redux'
+import { Cancel, CheckCircle, DeleteOutline, Edit, MoreHoriz, PhotoCamera } from '@material-ui/icons'
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import { useDispatch } from 'react-redux'
 import {InsertService, UpdateService, DeleteService} from '../Connect'
 
 
 function ServiceDialog(props)
 {
-    const {data, closeHandler} = props
+    const {data, closeHandler, edit} = props
     const dispatch = useDispatch();
     const classes = useStyles()
-    const StoreData = useSelector(state => state.changeServices);
-    const Status = StoreData.Status;
-    const [isEdit, setIsEdit] = useState(data?false:true)
+    const theme = useTheme();
+    const matches = useMediaQuery(theme.breakpoints.down('xs'));
+    const [isEdit, setIsEdit] = useState((data&&!edit)?false:true)
     const [openList,setOpenList] = useState(false)
     const [ServiceData, setServiceData] = useState(data?{
         id:data.id,
@@ -55,12 +56,12 @@ function ServiceDialog(props)
             return false
         }
 
-        if(ServiceData.price==='')
+        if(ServiceData.price===''||ServiceData.price<0)
         {
             return false
         }
 
-        if(ServiceData.moreInfo==''||ServiceData.moreInfo==null)
+        if(ServiceData.moreInfo===''||ServiceData.moreInfo==null)
         {
             return false
         }
@@ -115,8 +116,9 @@ function ServiceDialog(props)
     }
 
     return(
-    <Container className={classes.DialogBackGround} onClick={closeHandler}>
-        <Container className={classes.DialogBody} onClick={(e)=>{e.stopPropagation()}}>
+    <Container className={classes.DialogBackGround}>
+        <ClickAwayListener onClickAway={closeHandler}>
+        <Container className={classes.DialogBody} >
             <link rel="preconnect" href="https://fonts.gstatic.com"/>
             <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700&display=swap" rel="stylesheet"/>
             <input
@@ -137,31 +139,35 @@ function ServiceDialog(props)
                 </label>
             </Grid>
             <Grid item xs={12} sm={6} md={6} lg={6} className={classes.Content}>
-                <Grid className={classes.Header}>
-                    <IconButton classes={{label: classes.ButtonLabel }} style={{padding:'0'}} onClick={()=>setOpenList(!openList)}>
-                        {openList?<ExpandLess style={{fontSize:"22px"}} />:<ExpandMore style={{fontSize:"22px"}} />}
-                    </IconButton>
-                    <Collapse in={openList}  className={classes.ListAction}>
-                        <List component ='div' >
-                            <ListItem 
-                                button 
-                                className={classes.ControlItem} 
-                                onClick={()=>{setIsEdit(true) 
-                                                setOpenList(!openList)}}>
-                                <ListItemIcon>
-                                    <Edit style={{fontSize:'22px'}}/>
-                                </ListItemIcon>
-                                <ListItemText>Chỉnh sửa </ListItemText>
-                            </ListItem>
-                            <ListItem button className={classes.ControlItem} onClick={DeleteHandler}>
+                
+                <ClickAwayListener onClickAway={()=>setOpenList(false)}>
+                    <Grid className={classes.Header}>
+                        <IconButton classes={{label: classes.ButtonLabel }} style={{padding:'0'}} onClick={()=>{setOpenList(!openList)}}>
+                            <MoreHoriz style={{fontSize:"30px"}} />
+                        </IconButton>
+                        <div className={classes.ListAction} style={{display:openList?'flex':'none'}}>
+                            <List component ='div'>
+                                <ListItem 
+                                    button 
+                                    className={classes.ControlItem} 
+                                    onClick={()=>{setIsEdit(true) 
+                                                    setOpenList(!openList)}}>
                                     <ListItemIcon>
-                                        <Delete style={{fontSize:'22px'}}/>
+                                        <Edit style={{fontSize:'22px'}}/>
                                     </ListItemIcon>
-                                    <ListItemText> Xoá </ListItemText>
+                                    <ListItemText>Chỉnh sửa </ListItemText>
                                 </ListItem>
-                        </List>
-                    </Collapse>
-                </Grid>
+                                <ListItem button className={classes.ControlItem} onClick={DeleteHandler}>
+                                        <ListItemIcon>
+                                            <DeleteOutline style={{fontSize:'22px'}}/>
+                                        </ListItemIcon>
+                                        <ListItemText> Xoá </ListItemText>
+                                    </ListItem>
+                            </List>
+                        </div>
+                    </Grid>
+                </ClickAwayListener>
+                
                 <Grid className={classes.GrdName}>
                     <TextField
                         disabled={!isEdit}
@@ -197,6 +203,8 @@ function ServiceDialog(props)
                 </Grid>
                 <Grid className={classes.GrdMoreInfo}>
                     <Typography className={classes.InputLabel}>Mô tả*:</Typography>
+
+
                     <TextField
                         disabled={!isEdit}
                         name='moreInfo'
@@ -206,8 +214,8 @@ function ServiceDialog(props)
                         onChange={HandlerChangeData}
                         fullWidth
                         multiline
-                        rows={15}
-                        rowsMax={15}
+                        rows={matches?5:15}
+                        rowsMax={matches?10:15}
                         InputProps={{
                             disableUnderline:true,
                             className:classes.moreInfo,
@@ -231,6 +239,7 @@ function ServiceDialog(props)
                 </Grid>:null}
             </Grid>      
         </Container>
+        </ClickAwayListener>
     </Container>
     )
 }

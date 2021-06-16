@@ -9,10 +9,40 @@ export const INITLOBBYCATEGORY = 'INITLOBBYCATEGORY'
 export const ERROR = "ERROR";
 export const CLOSEERROR = "CLOSEERROR";
 export const INITALL = "INITALL"
+export const PENDING ="PENDING"
+export const DONE = "DONE"
+
+export function actPending(){
+    return {
+        type: PENDING,
+        pending:true,
+        status:{
+            open:false,
+            severity:'',
+            message:''
+        },
+        payload:null
+    }
+}
+
+export function actDone(){
+    return {
+        type: DONE,
+        pending:false,
+        status:{
+            open:false,
+            severity:'',
+            message:''
+        },
+        payload:null
+    }
+}
+
 
 export function actInitLobby(data) {
     return {
         type: INITLOBBY,
+        pending:false,
         status:{
             open:false,
             severity:'',
@@ -25,6 +55,7 @@ export function actInitLobby(data) {
 export function actInsertLobby(data) {
     return {
         type: INSERTLOBBY,
+        pending:false,
         status:{
             open:true,
             severity:'success',
@@ -36,6 +67,7 @@ export function actInsertLobby(data) {
 export function actUpdateLobby(data){
     return {
         type: UPDATELOBBY,
+        pending:false,
         status:{
             open:true,
             severity:'success',
@@ -47,6 +79,7 @@ export function actUpdateLobby(data){
 export function actDeleteLobby(data) {
     return {
         type: DELETELOBBY,
+        pending:false,
         status:{
             open:true,
             severity:'success',
@@ -59,6 +92,7 @@ export function actDeleteLobby(data) {
 export function actInitLobbyCategory(data) {
     return {
         type: INITLOBBYCATEGORY,
+        pending:false,
         status:{
             open:false,
             severity:'',
@@ -71,6 +105,7 @@ export function actInitLobbyCategory(data) {
 export function actInsertLobbyCategory(data) {
     return {
         type: INSERTLOBBYCATEGORY,
+        pending:false,
         status:{
             open:true,
             severity:'success',
@@ -82,6 +117,7 @@ export function actInsertLobbyCategory(data) {
 export function actUpdateLobbyCategory(data){
     return {
         type: UPDATELOBBYCATEGORY,
+        pending:false,
         status:{
             open:true,
             severity:'success',
@@ -93,6 +129,7 @@ export function actUpdateLobbyCategory(data){
 export function actDeleteLobbyCategory(data) {
     return {
         type: DELETELOBBYCATEGORY,
+        pending:false,
         status:{
             open:true,
             severity:'success',
@@ -105,6 +142,7 @@ export function actDeleteLobbyCategory(data) {
 export function actError(message){
     return {
         type:ERROR,
+        pending:false,
         status:{
             open:true,
             severity:'error',
@@ -117,7 +155,10 @@ export function actError(message){
 export function actCloseError(){
     return {
         type:CLOSEERROR,
-        status:null,
+        pending:false,
+        status:{
+            open:false,
+        },
         payload:null
     }
 }
@@ -125,6 +166,7 @@ export function actCloseError(){
 export function actInitAll(Lobby, LobbyCategory){
     return {
         type:INITALL,
+        pending:false,
         status:{
             open:false,
             severity:'',

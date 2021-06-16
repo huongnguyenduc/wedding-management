@@ -6,11 +6,13 @@ const useStyles = makeStyles(theme=>(
         position:'relative',
         display:'flex',
         justifyContent:'center',
-        paddingLeft:'1.5rem',
-        paddingRight:'1.5rem',
         padding:'3.5rem 3rem 3rem',
-        overflow:'hidden',
+        // overflow:'hidden',
         transition:"transform 5s",
+        [theme.breakpoints.down('xs')]: {
+            padding:'3rem 1rem 1rem',
+        },
+        animation:"$First_animation 0.5s ease-out"
        
        
     },
@@ -28,8 +30,19 @@ const useStyles = makeStyles(theme=>(
            },
             boxShadow:'0 60px 80px -35px rgba(60, 60, 60, 0.1)',
         }, 
-        transition:'box-shadow 0.5s'
+        transition:'box-shadow 0.5s',
         
+        
+    },
+    "@keyframes First_animation":{
+        from:{
+            opacity:'0',
+            transform:'translate(0,20px)'
+        },
+        to:{
+           opacity:'1',
+           transform:'translate(0,0)'
+        }
     },
     activeMainContent:{
         position:'relative',
@@ -230,12 +243,12 @@ const useStyles = makeStyles(theme=>(
     },
     InputMaxTableText:{
         textAlignLast:'start',
-        paddingLeft:'15px',
+        paddingLeft:'0px',
         "& .MuiInputBase-input":{
             fontSize:'15px',
             color:'#000',
             minWidth:'23px',
-            width:'40px'
+            width:'60px'
         },
         "& .MuiTypography-root":{
             fontSize:"15px",

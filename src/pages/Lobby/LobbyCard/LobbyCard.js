@@ -9,7 +9,7 @@ import {InsertLobby, UpdateLobby, DeleteLobby} from '../Connect'
 import { actError } from "../actions/actions";
 
 function LobbyCard(props){
-    const {lobby, ...other} = props
+    const {lobby,lobbyCategory, ...other} = props
 
     const StoreData = useSelector(state => state.changeLobbyData);
     const categoryData = StoreData.LobbyCategory;
@@ -26,11 +26,11 @@ function LobbyCard(props){
         }
         :{
             id:'',
-            lobbyCategory:categoryData[0],
+            lobbyCategory:lobbyCategory?lobbyCategory:categoryData[0],
             name:'',
             imageURL:'',
             image:null,
-            maxTable:0,
+            maxTable:lobbyCategory?lobbyCategory.mintable:categoryData[0].mintable,
             minUnitPriceTable:''})
     
     const classes = useStyles();
@@ -49,7 +49,7 @@ function LobbyCard(props){
 
     function ChangeCategory(event)
     {
-        const category = categoryData.find(item=>{return item.id == event.target.value})
+        const category = categoryData.find(item=>{return item.id === event.target.value})
         setLobbyState({...lobbyState,lobbyCategory:category})
     }
 
@@ -61,12 +61,24 @@ function LobbyCard(props){
 
     function check()
     {
-        if(lobbyState.name&&lobbyState.lobbyCategory&&lobbyState.maxTable!=''&&lobbyState.minUnitPriceTable&&lobbyState.imageURL)
+        if(lobbyState.name&&lobbyState.lobbyCategory&&lobbyState.maxTable!==''&&lobbyState.minUnitPriceTable&&lobbyState.imageURL)
         {  
+            if(lobbyState.maxTable<0)
+            {
+                return {value:false, message:'Số bàn tối đa không thể là một số âm'}
+            }
             if(lobbyState.maxTable<lobbyState.lobbyCategory.mintable)
             {    
                 return {value:false ,message:'Số bàn tối đa không thể nhỏ hơn số bàn tối thiểu!'}
             }
+            if(lobbyState.minUnitPriceTable<0)
+                return {value:false ,message:'Giá tối thiểu không thể là số âm!'}
+
+            if(isNaN(parseInt(lobbyState.maxTable)))
+                return {value:false ,message:'Số bàn tối đa phải là số!'}
+
+            if(isNaN(parseInt(lobbyState.minUnitPriceTable)))
+                return {value:false ,message:'Giá tối thiểu phải là số!'}
             else
                 return {value:true ,message:''}
         }
@@ -85,11 +97,11 @@ function LobbyCard(props){
             setEditing(false)
         else
             setLobbyState({id:'',
-            lobbyCategory:categoryData[0],
+            lobbyCategory:lobbyCategory?lobbyCategory:categoryData[0],
             name:'',
             imageURL:'',
             image:null,
-            maxTable:0,
+            maxTable:lobbyCategory?lobbyCategory.mintable:categoryData[0].mintable,
             minUnitPriceTable:''})
     }
 
@@ -188,6 +200,7 @@ function LobbyCard(props){
                                 value={lobbyState.maxTable}
                                 onChange={ChangeMaxTable}
                                 className={classes.InputMaxTableText}
+                                inputProps={{min:0}}
                                 InputProps={{
                                     disableUnderline:true,
                                     startAdornment: <InputAdornment position="start" >Số bàn tối đa:</InputAdornment>,
@@ -217,7 +230,7 @@ function LobbyCard(props){
                         {`${lobbyState.lobbyCategory.name}, Tối thiểu ${lobbyState.lobbyCategory.mintable} bàn, Tối đa ${lobbyState.maxTable} bàn`}  
                         </Typography> 
                         <Typography  variant="h4" className={classes.PriceText}>
-                        {new Intl.NumberFormat('ru-RU').format(lobbyState.minUnitPriceTable*1000000) + 'đ'}
+                        {new Intl.NumberFormat('ru-RU').format(lobbyState.minUnitPriceTable) + 'đ'}
                         </Typography>                    
                 </Grid>  }
             </Grid>

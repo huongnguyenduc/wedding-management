@@ -1,112 +1,84 @@
 import {makeStyles} from '@material-ui/core/styles';
 const useStyles = makeStyles(theme=>(
 {
-    TableContainer:{
-        borderRadius:'5px',
-        border:'1px'
+    backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
+    },
+    policyTable:{
+        border:'1px solid #000',
+        borderRadius:'20px',
+        overflow:'hidden',
+        display:'flex',
+        flexDirection:'column',
+        boxShadow:'0 50px 40px -35px rgba(120, 120, 120, 0.1)',
+    },
+    PolicyPanel:{
+       
+    },
+    Toolbar:{
+        display:'flex',
+        flexDirection:'row',
+        justifyContent:'flex-start',
+        backgroundColor:'#eeeeee',
+    },
+    ToolbarTitle:{
+        fontSize:'30px',
+        fontWeight:700
     },
     TableHeader:{
+        backgroundColor:'#eeeeee',
         "& .MuiTableCell-root":{
             fontSize:'18px', 
             fontWeight:'700',
 
         }
     },
-    TableBody:{
-        "& .MuiTableCell-root":{
-            fontSize:'16px', 
-            fontWeight:'500',
-            padding:'0 16px 0 16px'
-        }
-    },
-    TableFooter:{
-        fontSize:'25px',
-        "& *":{
-            fontSize:'14px'
-        },
-        "& .MuiIconButton-label":{
-            marginLeft:'0px'
-        }
+    PolicyContent:{
+        display:'flex',
+        flexDirection:'row',
     },
     BodyRow:{
-        "& .MuiTableCell-root":{
-            padding:'16px'
+        align:'center'
+    },
+    NameContent:{
+        fontSize:'18px',
+        fontWeight:'500',
+        textAlign:'center'
+    },
+    PercentContent:{
+        "& input::-webkit-outer-spin-button":{
+            "-webkit-appearance": 'none',
+            margin: 0
         },
-        "&:hover":{
-            backgroundColor:'#fcfcfc'
-        }
-    },
-    rowEditing:{
-        backgroundColor:'#f8f8f8',
-        "&:hover":{
-            backgroundColor:'#f8f8f8'
-        }
-    },
-    inputText: {
-        textAlign:'center',
-        "& .MuiInputBase-input":{
+        "& input::-webkit-inner-spin-button": {
+          "-webkit-appearance": 'none',
+            margin: 0
+        },
+        border:'0',
+        fontSize:'18px',
+        width:"100px",
+        minWidth:'100px',
+        "& input":{
             textAlign:'center',
-            fontSize:'15px',
-            color:'#000000',
-            padding:'0'
-        }
+        },  
     },
-    InputCell:{
-        borderTop:"1px solid rgba(224, 224, 224, 1)",
-        paddingRight:'10px'
+    Button:{
+        padding:0,
+        borderRadius:0
     },
-    StatusCell:{
-        justifyContent:'center',
-        alignContent:'center',
-        textAlign:'center',
-        "& span":{
-            marginLeft:'0',
-        },
-        "&.MuiTableCell-root":{
-            padding:'0px'
-        } 
-       
+    ButtonLabel:{
+        margin:0
     },
-    switch:{
-        "& span":{
-            marginLeft:'0'
-        },
-       
+    ButtonIcon:{
+        fontSize:"18px"
+    },
+    ButtonDoneIcon:{
+        fontSize:'25px'
     },
     ControlCell:{
-        "&.MuiTableCell-root":{
-            padding:0
-        },
-        minWidth:'88px'  
-    },
-    divControl:{
-        display:"flex",
-        justifyContent:'space-around',
-    },
-    ButtonLabel:
-    {
-        margin: '0'
-    },               
-    Toolbar: {
-        paddingLeft: "3rem",
-        paddingRight: "1rem",
-      },
-    ToolbarTitle: {
-        flex: '1 100%',
-        fontSize:'20px',
-        fontWeight:'700'
-    },
-    ToolbarFilter:{
-        "& .MuiInputBase-root":{
-            fontSize:'18px',
-            padding:'0px 10px 0px 10px'
-        },
-        "& .MuiOutlinedInput-input":{
-            padding:'5px 10px 5px 10px'
-        },
-        marginRight:'1rem'
-        
-    },
+        padding:'0'
+    },      
     Snackbar:{
         '& .MuiAlert-message':{
             fontSize:'1.5rem'
@@ -116,7 +88,7 @@ const useStyles = makeStyles(theme=>(
         },
         zIndex:'2'
     }
-}
+}   
 ))
 
 export default useStyles

@@ -1,5 +1,5 @@
-import {Button, Container, Fab, Grid, InputAdornment, Select, Snackbar, TextField, Typography} from '@material-ui/core';
-import { Add, Remove} from '@material-ui/icons';
+import {Button, Container, Fab, Grid, InputAdornment, Select, Snackbar, TextField, Typography, useMediaQuery, useTheme, Backdrop, CircularProgress} from '@material-ui/core';
+import { Add, Remove, Search} from '@material-ui/icons';
 import { Alert } from '@material-ui/lab';
 import React, { useEffect, useState} from 'react'
 import ServiceCard from './ServiceCard/ServiceCard';
@@ -13,6 +13,7 @@ import NumberFormatCustom from '../Food/FormartNumber'
 function Service() {
     const StoreData = useSelector(state => state.changeServices);
     const Services = StoreData.Services;
+    const Pending = StoreData.Pending;
     const classes = useStyles();
     const dispatch = useDispatch();
     const [openInsert, setOpenInsert] = React.useState(false)
@@ -20,21 +21,19 @@ function Service() {
     const [price, setPrice] = useState({minPrice:'', maxPrice:'',apply:false, err:false})
     const [keyWord, setKeyWord] = useState('')
     const Status = StoreData.Status;
-    const [error, setError] = useState({severity:'', message:''})
+    const [error, setError] = useState({open:false,severity:'', message:''})
     const openInsertService = (e) =>
     {
         setOpenInsert(true)
     }
     const CloseAlert = ()=>{
         
-        if(error.severity)
-            setError({severity:'', message:''})
+        if(error.open)
+            setError({...error,open:false})
         else
             dispatch(actCloseError())
     }
-    useEffect(()=>{
-        dispatch(GetServices())
-    },[])
+    
 
     const Compare = (service1 , serivce2) =>
     {
@@ -65,7 +64,7 @@ function Service() {
         var minPrice = parseInt(price.minPrice);
         var maxPrice = parseInt(price.maxPrice);
 
-        if(price.apply==true)
+        if(price.apply===true)
         {
             setPrice({...price,apply:false, err:false})
             return
@@ -74,12 +73,12 @@ function Service() {
         if(isNaN(minPrice) && isNaN(maxPrice))
         {
             setPrice({...price,apply:false, err:true});
-            setError({severity:'error', message:'Khoảng giá không hợp lệ'})
+            setError({open:true, severity:'error', message:'Khoảng giá không hợp lệ'})
         }
         else if(minPrice<0 || maxPrice<0)
         {
             setPrice({...price,apply:false, err:true});
-            setError({severity:'error', message:'Khoảng giá không hợp lệ'})
+            setError({open:true,severity:'error', message:'Khoảng giá không hợp lệ'})
         }
         else if(!(isNaN(minPrice) || isNaN(maxPrice)))
         {
@@ -87,7 +86,7 @@ function Service() {
                 setPrice({...price,apply:true, err:false})
             else
             {
-                setError({severity:'error', message:'Khoảng giá không hợp lệ'})
+                setError({open:true,severity:'error', message:'Khoảng giá không hợp lệ'})
                 setPrice({...price,apply:false, err:true})
             } 
         }
@@ -100,17 +99,6 @@ function Service() {
         setPrice({...price, [e.target.name]: e.target.value})
     }
 
-    function CustomAlert(props)
-    {
-        const {severity, message, onClose}= props;
-        if(severity)
-            return (<Snackbar open={true} autoHideDuration={3000} onClose={onClose} className={classes.Snackbar}>
-                        <Alert severity={severity} onClose={onClose} >{message}</Alert>
-                    </Snackbar>)
-        else
-            return null
-    }
-
     const Filer =(service)=>{
         var key = keyWord.toLowerCase()
        var str = service.name.toLowerCase();
@@ -119,16 +107,22 @@ function Service() {
     const scrollHandler = (event)=>{
         var header = document.querySelector(".ServiceHeader")
         if(header!=null)
+        {
             header.classList.toggle(classes.HeaderScroll,window.scrollY > 80)
+        }
+                
     }
-    
     useEffect(()=>{
+        dispatch(GetServices())
         window.addEventListener("scroll", scrollHandler)
-    })
+    },[])
     return (
-        <>
-            <Container spacing={3} maxWidth='lg' className={`ServiceHeader ${classes.Header}`}>
-                <Grid item xs={3} sm={4} md={3} lg={3} className={`${classes.HeaderControl} ${classes.SortControl}`}>
+        <Container className={classes.ServicePage}>
+             <Backdrop open={Pending} className={classes.backdrop} onClick={(e)=>{e.stopPropagation()}}>
+                <CircularProgress color="inherit"/>
+            </Backdrop>
+            <Container spacing={3}  className={`ServiceHeader ${classes.Header}`}>
+                <Grid item xs={12} sm={4} md={3} lg={3} className={`${classes.HeaderControl} ${classes.SortControl}`}>
                     <Typography  className={classes.SortLabel} >Sắp xếp:</Typography>
                     <Select
                         native
@@ -143,7 +137,7 @@ function Service() {
                     </Select>
                 </Grid>
 
-                <Grid item xs={6} sm={5} md={4} lg={4} className={`${classes.HeaderControl} ${classes.PriceControl}`}>
+                <Grid item xs={12} sm={5} md={4} lg={4} className={`${classes.HeaderControl} ${classes.PriceControl}`}>
                     <Typography className={classes.LabelPrice}>Giá:</Typography>
                     <TextField 
                         placeholder="Từ"
@@ -179,12 +173,15 @@ function Service() {
                         placeholder='Tìm kiếm'
                         fullWidth
                         variant="outlined"
-                        onKeyDown={(e)=>{if(e.key=='Enter') {setKeyWord(e.target.value)}}}
-                        startAdornment={
-                            <InputAdornment position="start">
-                            <Add />
-                            </InputAdornment>
-                        }
+                        onKeyDown={(e)=>{if(e.key==='Enter') {setKeyWord(e.target.value)}}}
+                        InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <Search style={{fontSize:'25px'}}/>
+                              </InputAdornment>
+                            ),
+                          }}
+                       
                     />
                 </Grid>
             </Container>
@@ -194,7 +191,7 @@ function Service() {
                             .filter((service)=>CheckPrice(service))
                             .sort((service1, service2)=>Compare(service1,service2))
                             .map((service)=>{
-                        return (<ServiceCard key= {service.id} xs={4} sm={3} md={3} lg={3} data={service}/>)
+                        return (<ServiceCard key= {service.id} xs={12} sm={6} md={4} lg={4} data={service}/>)
                     })
                 }
             </Container>
@@ -205,9 +202,14 @@ function Service() {
             </Fab>
 
             {openInsert?<ServiceDialog closeHandler={()=>setOpenInsert(false)}/>:null}
-            <CustomAlert severity={error.severity} message={error.message} onClose={CloseAlert}/>
-            <CustomAlert severity={Status.severity} message={Status.message} onClose={CloseAlert}/>
-    </>
+            <Snackbar open={error.open} autoHideDuration={3000} onClose={CloseAlert} className={classes.Snackbar}>
+                        <Alert open={error.open} severity={error.severity} onClose={CloseAlert} >{error.message}</Alert>
+            </Snackbar>
+            {console.log(Status.open)}
+            <Snackbar open={Status.open} autoHideDuration={3000} onClose={CloseAlert} className={classes.Snackbar}>
+                        <Alert open={Status.open} severity={Status.severity} onClose={CloseAlert} >{Status.message}</Alert>
+            </Snackbar>
+    </Container>
     )
 }
 

@@ -12,7 +12,6 @@ function CategoryTable(){
 
     const classes = useStyles();
     const StoreData = useSelector(state => state.changeLobbyData);
-    const Lobby = StoreData.Lobby;
     const LobbyCategory = StoreData.LobbyCategory;
     const  [tableState, setTableState] = useState({keyword:'', order:'asc', orderBy:'name', page:0, rowsPerPage:5})
 
@@ -21,7 +20,7 @@ function CategoryTable(){
     }
 
     function handleRequestSort(event, property){
-        const isAsc = tableState.orderBy == property && tableState.order == 'asc';
+        const isAsc = tableState.orderBy === property && tableState.order === 'asc';
         setTableState({...tableState,orderBy:property, order:isAsc?'desc':'asc'})
     };
 
@@ -45,17 +44,17 @@ function CategoryTable(){
         const stabilizedThis = array.map((el, index) => [el, index]);
         stabilizedThis.sort((a, b) => {
             const order = comparator(a[0], b[0]);
-            if (order != 0) return order;
+            if (order !== 0) return order;
             return a[1] - b[1];
         });
         return stabilizedThis.map((el) => el[0]);
     }
     
     function tableFilter(array, keyword){
-      if(keyword=="")
+      if(keyword==="")
         return array;
       return array.filter(item=>{
-        return item.name.toLowerCase().search(keyword)!=-1
+        return item.name.toLowerCase().search(keyword)!==-1
       })
     }
     function handleChangeRowsPerPage(event){
@@ -70,7 +69,7 @@ function CategoryTable(){
     const emptyRows = tableState.rowsPerPage - Math.min(tableState.rowsPerPage, LobbyCategory.length - tableState.page * tableState.rowsPerPage);
     const insertRow = LobbyCategory.length - (tableState.page + 1) * tableState.rowsPerPage; 
     return(
-        <Paper style={{width:'100%'}}>
+        <Paper className={classes.CategoryTable}>
             <TableContainer>
                 <EnhancedTableToolbar FilterHandler={FilterHandler} title="LOẠI SẢNH"/>
                 <Table>
@@ -85,7 +84,7 @@ function CategoryTable(){
                         )   
                         })
                     }
-                    {(emptyRows > 0||insertRow==0) &&(<Row />)}
+                    {(emptyRows > 0||insertRow===0) &&(<Row />)}
                         {emptyRows > 1 && (
                         <TableRow style={{ height: 54* (emptyRows - 1) }}>
                             <TableCell colSpan={6} />
@@ -168,10 +167,9 @@ function EnhancedTableHead(props) {
     const classes = useStyles();
     const {FilterHandler, title } = props;
     const [keyword, setKeyword] = useState('')
-    const [onpenFilter, setOpenFilter] = useState(false)
   
     function onEnter(event){
-        if(event.key=='Enter')
+        if(event.key==='Enter')
             FilterHandler(keyword)
     }
     function onChange(event)
@@ -222,38 +220,55 @@ function Row(props){
     }
 
     function Deletehandler(){
-        dispatch(DeleteLobbyCategory(rowState))
+        const confirm = window.confirm("Thông tin về loại sảnh sẽ bị xoá hoàn toàn khỏi hệ thống! Bạn có muốn tiếp tục?")
+        if(confirm)
+            dispatch(DeleteLobbyCategory(rowState))
     }
 
     function check()
     {
         if(rowState.name&&rowState.mintable)
-            return true
+        {
+            if(isNaN(parseInt(rowState.mintable)))
+                return {value:false, message:'Số bàn tối thiểu phải là số!'} 
+
+            if(rowState.mintable<0)
+                return {value:false, message:'Số bàn tối thiểu không thể là số âm!'}
+
+            else
+                return {value:true, message:''}
+        }
         else
-            return false
+            return {value:false, message:'vui lòng nhập đầy đủ thông tin!'}
     }
 
+    function Success()
+    {
+        if(lobbyCategory)
+            setRowState({...rowState, editing:false})
+        else
+            setRowState({...rowState,id:'',name:'', mintable:'',editing:true})
+    }
     function FinishHandler()
     {
-       
-        if(check())
+        const resultCheck = check()
+        if(resultCheck.value)
         {
             if(lobbyCategory)
             {
                 const category = {id:rowState.id, name:rowState.name, mintable:rowState.mintable}
-                dispatch(UpdateLobbyCategory(category))
+                dispatch(UpdateLobbyCategory(category,Success))
             }
             else
             {
                 
                 const category = {name:rowState.name, mintable:rowState.mintable}
-                dispatch(InsertLobbyCategory(category))
+                dispatch(InsertLobbyCategory(category,Success))
             }
         }
         else
         {
-            dispatch(actError("Vui lòng nhập đủ thông tin"))
-            console.log("err")
+            dispatch(actError(resultCheck.message))
         }
         
     }
@@ -301,6 +316,7 @@ function Row(props){
                     name="mintable"
                     placeholder="Số bàn tối thiểu"
                     onChange={handleChange}
+                    inputProps={{min:0}}
                     InputProps={{
                         disableUnderline:true,
                         className:classes.inputText}}
