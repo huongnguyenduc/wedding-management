@@ -58,6 +58,11 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
   },
+  indicator: {
+    backgroundColor: '#FC5404',
+    height: "5px",
+    borderRadius: 10
+  }
 }));
 
 function Access(props) {
@@ -74,18 +79,19 @@ function Access(props) {
     return (
         <MuiThemeProvider theme={theme}>
             <div className={classes.root}>
-            <AppBar position="static">
+            <AppBar position="static" style={{ backgroundColor: '#060b26' }}>   
                 <Tabs
                 variant="fullWidth"
                 value={value}
                 onChange={handleChange}
                 aria-label="nav tabs example"
+                classes={{indicator: classes.indicator}}
                 >
-                <LinkTab label="Quản lý phân quyền" href="/drafts" {...a11yProps(0)} />
+                <LinkTab label="Quản lý phân quyền" href="/drafts"  {...a11yProps(0)} />
                 <LinkTab label="Quản lý tài khoản" href="/trash" {...a11yProps(1)} />
                 </Tabs>
             </AppBar>
-            <TabPanel value={value} index={0}>
+            <TabPanel value={value} index={0} style={{fontSize:'13px', fontWeight:'500', color: "#fff"}}>
                 <Administration />
             </TabPanel>
             <TabPanel value={value} index={1}>

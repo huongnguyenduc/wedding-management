@@ -53,6 +53,11 @@ const useStyles = makeStyles((theme) => ({
   backButton: {
     marginRight: theme.spacing(2),
   },
+  indicator: {
+    backgroundColor: '#FC5404',
+    height: "5px",
+    borderRadius: 10
+  }
 }));
 
 export default function TableServiceTabBar() {
@@ -65,8 +70,8 @@ export default function TableServiceTabBar() {
 
   return (
     <div className={classes.root}>
-      <AppBar position="static">
-        <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
+      <AppBar position="static" style={{ backgroundColor: '#060b26' }}>
+        <Tabs classes={{indicator: classes.indicator}} value={value} onChange={handleChange} aria-label="simple tabs example">
           <Link to="/wedding">
             <IconButton
               edge="start"
