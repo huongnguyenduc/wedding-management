@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { Typography, Container, Grid, MuiThemeProvider } from '@material-ui/core';
 import useStyles from './styles';
-import theme from './MuiTheme';
+import theme from '../../components/MuiTheme';
 import { connect } from 'react-redux'
 import EnhancedTable from './WeddingDataTable';
 import WeddingForm from './WeddingForm';

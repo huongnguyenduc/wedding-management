@@ -19,6 +19,8 @@ import {actFetchFoodsRequest} from '../../../action/food';
 import {actFetchTableFoodsRequest} from '../../../action/tableFood';
 import {actAddTableRequest, actUpdateTableRequest} from '../../../action/table';
 import { addMiddleware } from 'redux-dynamic-middlewares'
+import { green } from '@material-ui/core/colors';
+import { Add } from '@material-ui/icons/';
 
 const WhiteTextTypography = withStyles({
     root: {
@@ -94,7 +96,7 @@ function Table(props) {
             tableKind: "",
             numberTables: 0,
             reverseTables: 0,
-            unitPriceTable: recentLobby().min_unitpricetable, 
+            unitPriceTable: recentLobby().minUnitPriceTable, 
             note: "", 
         };
 
@@ -119,7 +121,7 @@ function Table(props) {
         let temp = {...errors};
         if ('numberTables' in fieldValues)
             temp.numberTables = 
-                (+fieldValues.numberTables === 0 ? "Số lượng bàn phải lớn hơn 0" : +fieldValues.numberTables + totalTables(props.tables.feastTables) <= recentLobby().maxtable) 
+                (+fieldValues.numberTables === 0 ? "Số lượng bàn phải lớn hơn 0" : +fieldValues.numberTables + totalTables(props.tables.feastTables) <= recentLobby().maxTable) 
                     ? "" :"Tổng số lượng bàn đã đặt vượt quá số lượng bàn tối đa!";
         setErrors({
             ...temp
@@ -169,6 +171,7 @@ function Table(props) {
 
     const handleClickOpen = () => {
         setOpenDialog(true);
+        console.log("open ne")
     };
 
     const handleClose = () => {
@@ -244,7 +247,7 @@ function Table(props) {
     return (
         <div>
             <TableDetailDialog openTableFoodDialog = {openTableFoodDialog} handleCloseTableFoodDialog={handleCloseTableFoodDialog}/>
-            <AddTableCategoryDialog open={openDialog} handleClickOpen = {handleClickOpen} handleClose = {handleClose}/>
+            <AddTableCategoryDialog open={openDialog} handleClickOpen={handleClickOpen} handleClose={handleClose}/>
             <Popover
                 className={classes.popover}
                 id={id}
@@ -273,7 +276,7 @@ function Table(props) {
                             Đơn giá bàn tối thiểu
                         </WhiteTextTypography>
                         <WhiteTextTypography variant="h6" align="center">
-                            { props.selectedWedding.lobbyId ? recentLobby().min_unitpricetable : 0 }
+                            { props.selectedWedding.lobbyId ? recentLobby().minUnitPriceTable : 0 }
                         </WhiteTextTypography>
                     </Grid>
                     <Grid item sm={4} xs={12} className={classes.tableInfoItem}>
@@ -281,7 +284,7 @@ function Table(props) {
                             Số lượng bàn tối đa
                         </WhiteTextTypography>
                         <WhiteTextTypography variant="h6" align="center">
-                            { props.selectedWedding.lobbyId ? recentLobby().maxtable : '' }
+                            { props.selectedWedding.lobbyId ? recentLobby().maxTable : '' }
                         </WhiteTextTypography>
                     </Grid>
                     <Grid item sm={3} xs={12} className={classes.tableInfoItem}>
@@ -312,17 +315,29 @@ function Table(props) {
                                 {...(errors.tableKind && {error:true,helperText:errors.tableKind})}
                                 label="Loại bàn"
                                 className={classes.tableInfoFormItem} /> : 
-                            <Controls.Select
-                                label="Loại bàn"
-                                name="tableKind" 
-                                value={values.tableKind}
-                                onChange={handleInputChange}
-                                options={props.tableCategories}
-                                error={errors.tableKind}
-                                onMouseEnter={handlePopoverOpen}
-                                onMouseLeave={handlePopoverClose}
-                                handleClickOpen={handleClickOpen}
-                                hover={true}/>}
+                            <div>
+
+                                <Controls.Select
+                                    label="Loại bàn"
+                                    name="tableKind" 
+                                    value={values.tableKind}
+                                    onChange={handleInputChange}
+                                    options={props.tableCategories}
+                                    error={errors.tableKind}
+                                    onMouseEnter={handlePopoverOpen}
+                                    onMouseLeave={handlePopoverClose}
+                                    hover={true}/>
+                                <Button
+                                    variant="contained"
+                                    className={classes.button}
+                                    startIcon={<Add style={{color: "#fff", fontSize: "20px" }} />}
+                                    style={{ borderRadius: 10, backgroundColor: green[400], fontSize: "10px", color: "#fff", width: 250 }}
+                                    onClick={ handleClickOpen }
+                                >
+                                    Thêm loại bàn
+                                </Button>
+                            </div>
+                                }
                             <FormControl className={classes.tableInfoFormItem} variant="outlined" fullWidth >
                             <InputLabel htmlFor="outlined-adornment-password">Số lượng</InputLabel>
                             <OutlinedInput

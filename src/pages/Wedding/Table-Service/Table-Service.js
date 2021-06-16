@@ -1,6 +1,6 @@
 import React from 'react';
 import TableServiceTabBar from './TabBar'
-import theme from '../MuiTheme';
+import theme from '../../../components/MuiTheme';
 import {  MuiThemeProvider } from '@material-ui/core';
 function TableService() {
   return (

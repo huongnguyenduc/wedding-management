@@ -2,6 +2,7 @@ import * as GiIcons from "react-icons/gi";
 import * as MdIcons from "react-icons/md";
 import * as BiIcons from "react-icons/bi";
 import * as IoIcons from "react-icons/io5";
+import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
 
 export const SidebarData = [
     {
@@ -24,7 +25,7 @@ export const SidebarData = [
     },
     {
         title: 'Hóa đơn',
-        path: '/',
+        path: '/bill',
         icon: <BiIcons.BiReceipt />,
         cName: 'nav-text'
     },
@@ -44,6 +45,12 @@ export const SidebarData = [
         title: 'Dịch vụ',
         path: '/',
         icon: <BiIcons.BiShapeTriangle />,
+        cName: 'nav-text'
+    },
+    {
+        title: 'Phân quyền',
+        path: '/access',
+        icon: <VerifiedUserIcon />,
         cName: 'nav-text'
     },
     {

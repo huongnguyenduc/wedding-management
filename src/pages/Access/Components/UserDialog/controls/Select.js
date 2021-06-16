@@ -3,26 +3,23 @@ import { FormControl, InputLabel, Select as MuiSelect, MenuItem, FormHelperText 
 
 export default function Select(props) {
 
-    const { name, label, value,error=null, onChange, options, onMouseEnter, onMouseLeave, hover } = props;
+    const { name, label, value,error=null, onChange, options, className } = props;
 
     return (
         <FormControl variant="outlined"
-        {...(error && {error:true})}>
+        {...(error && {error:true})} fullWidth className={className}>
             <InputLabel>{label}</InputLabel>
             <MuiSelect
+                fullWidth
                 label={label}
                 name={name}
                 value={value}
-                onMouseLeave={onMouseLeave}
                 onChange={onChange}>
                     {options.map(
                         item => (
                         <MenuItem 
                         key={item.id} 
-                        value={item.id} 
-                        hover={hover? "true" : "false"}
-                        onMouseLeave={onMouseLeave} 
-                        onMouseEnter={item ? (event) => onMouseEnter(event, item) : () => {}}>
+                        value={item.id}> 
                             {item.name}
                         </MenuItem>)
                     )}

@@ -13,18 +13,18 @@ import {actFetchTablesRequest} from './../../action/table';
 import {actFetchServicesRequest} from './../../action/service';
 import {actFetchWeddingServicesRequest} from './../../action/weddingService';
 import {actFetchTableCategoriesRequest} from './../../action/tableCategory';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 
 const initialValues = {
         groomName: "",
         brideName: "",
         phone: "",
         lobbyName: "", 
-        weddingDate: new Date(), 
+        weddingDate: new Date(),
+        dateOfOrganization: new Date(), 
         nameShift: "", 
         note: "", 
         deposit: 0.0,
-        numberOfTables: 20,
         idShift: 1,
         lobbyId: 1,
 }
@@ -33,6 +33,12 @@ const useStyles = makeStyles((theme) => ({
     popover: {
     pointerEvents: 'none',
     },
+    openButton: {
+        marginTop: "10px",
+    },
+    groupButton: {
+        marginTop: "20px"
+    }
 }));
 
 function WeddingForm(props) {
@@ -44,7 +50,8 @@ function WeddingForm(props) {
         brideName: props.selectedWedding.brideName || "",
         phone: props.selectedWedding.phone || "",
         lobbyName: props.selectedWedding.lobbyName || "", 
-        weddingDate: props.selectedWedding.weddingDate || new Date(), 
+        weddingDate: props.selectedWedding.weddingDate || new Date(),
+        dateOfOrganization: props.selectedWedding.dateOfOrganization || new Date(), 
         nameShift: props.selectedWedding.nameShift || "", 
         note: props.selectedWedding.note || "", 
         deposit: props.selectedWedding.deposit || "",
@@ -62,6 +69,8 @@ function WeddingForm(props) {
             temp.deposit = fieldValues.deposit.length > 0 ? "" :"Không được bỏ trống";
         if ('weddingDate' in fieldValues && props.currentWeddingState.state === ADD_WEDDING_STATE)
             temp.weddingDate = checkDateValidate(fieldValues.weddingDate) ? "" :"Ngày không hợp lệ";
+        if ('dateOfOrganization' in fieldValues && props.currentWeddingState.state === ADD_WEDDING_STATE)
+            temp.dateOfOrganization = checkDateValidate(fieldValues.dateOfOrganization) && checkDateOrganizationValidate(fieldValues.weddingDate, fieldValues.dateOfOrganization) ? "" :"Ngày không hợp lệ";
         setErrors({
             ...temp
         })
@@ -83,11 +92,11 @@ function WeddingForm(props) {
                 brideName, 
                 phone,
                 lobbyName, 
-                weddingDate, 
+                weddingDate,
+                dateOfOrganization, 
                 nameShift, 
                 note, 
-                deposit, 
-                numberOfTables, 
+                deposit,  
                 idShift, 
                 lobbyId } = values;
             if (id) {
@@ -97,11 +106,11 @@ function WeddingForm(props) {
                 brideName: brideName, 
                 phone: phone,
                 lobbyName: lobbyName, 
-                weddingDate: convertDateToStringDMY(weddingDate), 
+                weddingDate: convertDateToStringYMD(weddingDate),
+                dateOfOrganization: convertDateToStringYMD(dateOfOrganization), 
                 nameShift: nameShift, 
                 note: note, 
                 deposit: parseFloat(deposit), 
-                numberOfTables: numberOfTables, 
                 idShift: idShift, 
                 lobbyId: lobbyId 
             };
@@ -112,11 +121,11 @@ function WeddingForm(props) {
                 brideName: brideName, 
                 phone: phone,
                 lobbyName: lobbyName, 
-                weddingDate: convertDateToStringDMY(weddingDate), 
+                weddingDate: convertDateToStringYMD(weddingDate),
+                dateOfOrganization: convertDateToStringYMD(dateOfOrganization), 
                 nameShift: nameShift, 
                 note: note, 
                 deposit: parseFloat(deposit), 
-                numberOfTables: numberOfTables, 
                 idShift: idShift, 
                 lobbyId: lobbyId 
             };
@@ -128,7 +137,14 @@ function WeddingForm(props) {
     }
     const clickRowEditWeddingMiddleware = store => next => action => {
         if (action.type === 'EDIT_WEDDING_STATE') {
-            setValues({...props.selectedWedding, weddingDate: new Date(props.selectedWedding.weddingDate)});
+            setValues({...props.selectedWedding, 
+                weddingDate: new Date(props.selectedWedding.weddingDate), 
+                    dateOfOrganization: new Date(props.selectedWedding.dateOfOrganization)});
+        }
+        if (action.type === 'ADD_WEDDING_STATE') {
+            setValues({...initialValues, 
+                weddingDate: new Date(), 
+                    dateOfOrganization: new Date()});
         }
         return next(action)
     }
@@ -168,7 +184,7 @@ function WeddingForm(props) {
             align='center'>
                 {moreInfo.timeBegin !== undefined ? 
                     "Thời gian bắt đầu: " + moreInfo.timeBegin.toString() + ". Thời gian kết thúc: " + moreInfo.timeEnd.toString() 
-                    : moreInfo.maxtable !== undefined ? "Tổng số bàn: " + moreInfo.maxtable + ". Đơn giá bàn tối thiểu: " + moreInfo.min_unitpricetable : ""}
+                    : moreInfo.maxTable !== undefined ? "Loại sảnh: " + moreInfo.lobbyCategory.name + ". Tổng số bàn: " + moreInfo.maxTable + ". Đơn giá bàn tối thiểu: " + moreInfo.minUnitPriceTable : ""}
             </Typography>
         </Popover>
         <Form onSubmit={handleSubmit}>
@@ -200,10 +216,17 @@ function WeddingForm(props) {
                         <Controls.DatePicker 
                             id="weddingDate"
                             name="weddingDate" 
-                            label="Ngày đãi tiệc" 
+                            label="Ngày đặt tiệc" 
                             value={props.currentWeddingState.state === NORMAL ? selectedRowValues.weddingDate : values.weddingDate} 
                             onChange={handleInputChange}
                             error={errors.weddingDate}/>
+                        <Controls.DatePicker 
+                            id="dateOfOrganization"
+                            name="dateOfOrganization" 
+                            label="Ngày đãi tiệc" 
+                            value={props.currentWeddingState.state === NORMAL ? selectedRowValues.dateOfOrganization : values.dateOfOrganization} 
+                            onChange={handleInputChange}
+                            error={errors.dateOfOrganization}/>
                     </Grid>
                     <Grid item md={6} xs={12} align='center'>
                         {props.currentWeddingState.state !== NORMAL ?
@@ -253,7 +276,7 @@ function WeddingForm(props) {
                             value={props.currentWeddingState.state === NORMAL ? selectedRowValues.note : values.note}
                             error={errors.note}
                             onChange={handleInputChange}/>
-                        <Link to="/wedding/table-service">
+                        <Link to="/wedding/table-service" >
                         {props.selectedWedding.id ? <Button 
                             onClick={()=>{
                                 props.fetchAllTableCategoriesInfo(); 
@@ -261,6 +284,7 @@ function WeddingForm(props) {
                                 props.fetchAllServicesInfo();
                                 props.fetchAllWeddingServicesInfo(props.selectedWedding.id);
                             }}
+                            className={classes.openButton}
                             variant="outlined" 
                             color="primary" 
                             label="Chi tiết" 
@@ -268,7 +292,7 @@ function WeddingForm(props) {
                                 Mở đặt bàn và dịch vụ
                         </Button> : <></>}
                         </Link>
-                        {props.currentWeddingState.state !== NORMAL ? <ButtonGroup variant="text" color="primary" aria-label="text primary button group" size='large'>
+                        {props.currentWeddingState.state !== NORMAL ? <ButtonGroup variant="text" color="primary" aria-label="text primary button group" size='large' className={classes.groupButton}>
                             <Controls.Button type="submit" text="Hoàn tất"></Controls.Button>
                             <Controls.Button
                                 text="Hủy"
@@ -297,7 +321,7 @@ function convertDateToStringYMD(date) {
         console.log(date);
         let month = date.getMonth() + 1;
         let year = date.getFullYear();
-        let result = year +  "-" + (month.toString().length === 1 ? "0" + month.toString() : month.toString()) + "-" + (day.toString().length === 1 ? ("0" + day.toString()) : day.toString()) ; // That's your formatted date.
+        let result = year +  "/" + (month.toString().length === 1 ? "0" + month.toString() : month.toString()) + "/" + (day.toString().length === 1 ? ("0" + day.toString()) : day.toString()) ; // That's your formatted date.
         console.log(result);
         return result;
 }
@@ -307,7 +331,13 @@ function checkDateValidate(date) {
     let dateNow = Date.parse(convertDateToStringYMD(new Date()));
     if (dateCheck < dateNow) return false;
     return true;
+}
 
+function checkDateOrganizationValidate(dateWed, dateOrg) {
+    let dateCheck = Date.parse(convertDateToStringYMD(dateOrg));
+    let dateNow = Date.parse(convertDateToStringYMD(dateWed));
+    if (dateCheck < dateNow) return false;
+    return true;
 }
 
 const mapStateToProps = state => {

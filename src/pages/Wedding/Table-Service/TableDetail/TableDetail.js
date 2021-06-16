@@ -197,8 +197,8 @@ function TableDetailDialog(props) {
     let totalPriceFoods = 0;
         if (props.tableFoods)
             props.tableFoods.forEach((food) => {totalPriceFoods+=parseInt(food.totalPrice)});
-        if (totalPriceFoods < recentLobby().min_unitpricetable)
-          totalPriceFoods = recentLobby().min_unitpricetable;
+        if (totalPriceFoods < recentLobby().minUnitPriceTable)
+          totalPriceFoods = recentLobby().minUnitPriceTable;
         return totalPriceFoods;
   }
 

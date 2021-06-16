@@ -16,6 +16,12 @@ import lobbies from './lobbies';
 import tables from './tables';
 import tableFoods from './tableFoods';
 import tableCategories from './tableCategories';
+import notPaidBillItem from './editNotPaidBill';
+import notPaidBills from './notPaidBills';
+import paidBillItem from './editPaidBill';
+import paidBills from './paidBills';
+import userItem from './editUser';
+import users from './users';
 
 const allReducers = combineReducers({
     selectedRow: selectedRowReducer,
@@ -34,7 +40,13 @@ const allReducers = combineReducers({
     tableCategories,
     tableFoods,
     services,
-    weddingServices
+    weddingServices,
+    notPaidBills,
+    notPaidBillItem,
+    paidBills,
+    paidBillItem,
+    users,
+    userItem
 });
 
 export default allReducers;
