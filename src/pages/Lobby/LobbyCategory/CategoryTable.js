@@ -1,17 +1,24 @@
-import { IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TablePagination, TableRow, TableSortLabel, TextField, Toolbar, Tooltip, Typography } from '@material-ui/core'
+import { IconButton, Container, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TablePagination, TableRow, TableSortLabel, TextField, Toolbar, Tooltip, Typography, Backdrop, CircularProgress } from '@material-ui/core'
 import { Close, Delete, Done, Edit, Search } from '@material-ui/icons'
 import React, { useEffect, useState } from 'react'
 import useStyles from "./CategoryTableStyles"
 import {InsertLobbyCategory, UpdateLobbyCategory, DeleteLobbyCategory} from '../Connect'
 import { useDispatch, useSelector } from 'react-redux'
-import { actError } from '../actions/actions'
+import { actCloseError, actError } from '../actions/actions'
+import { Dialog } from '@material-ui/core'
+import Snackbar from '@material-ui/core/Snackbar';
+import { Alert } from '@material-ui/lab'
 
 
 
-function CategoryTable(){
+function CategoryTable(props){
 
+    const {open, onClose, ...other} = props
     const classes = useStyles();
     const StoreData = useSelector(state => state.changeLobbyData);
+    const dispatch = useDispatch();
+    const Status = StoreData.Status;
+    const Pending = StoreData.Pending;
     const LobbyCategory = StoreData.LobbyCategory;
     const  [tableState, setTableState] = useState({keyword:'', order:'asc', orderBy:'name', page:0, rowsPerPage:5})
 
@@ -66,10 +73,23 @@ function CategoryTable(){
         setTableState({...tableState,page:newpage})
     }
 
+    function CloseAlert()
+    {
+        dispatch(actCloseError())
+    }
+
+
     const emptyRows = tableState.rowsPerPage - Math.min(tableState.rowsPerPage, LobbyCategory.length - tableState.page * tableState.rowsPerPage);
     const insertRow = LobbyCategory.length - (tableState.page + 1) * tableState.rowsPerPage; 
     return(
-        <Paper className={classes.CategoryTable}>
+        <Dialog 
+            open={open} 
+            onClose={onClose}
+            scroll="body" 
+            keepMounted
+            maxWidth="lg"
+        >
+        <Container maxWidth='lg' className={classes.CategoryTable} {...other}>
             <TableContainer>
                 <EnhancedTableToolbar FilterHandler={FilterHandler} title="LOẠI SẢNH"/>
                 <Table>
@@ -105,7 +125,11 @@ function CategoryTable(){
                 </TableFooter>
                 </Table>
             </TableContainer>
-        </Paper>
+            <Snackbar open={ Status.open} autoHideDuration={3000} onClose={CloseAlert} className={classes.Snackbar}>
+                <Alert severity={Status.severity} onClose={CloseAlert}>{Status.message}</Alert>
+            </Snackbar>
+        </Container>
+        </Dialog>
         
     )
 }

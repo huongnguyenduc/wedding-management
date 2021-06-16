@@ -3,11 +3,12 @@ import {makeStyles} from '@material-ui/core/styles';
 const useStyles = makeStyles(theme=>(
 {    
     page:{
+        position:'relative',
         width:'100%',
         height:'100%',
         maxWidth:'100%',
         padding:'0',
-        backgroundColor:'#EEEEEE'
+        backgroundColor:'#EEEEEE',
     },
     TabPanel:{
         backgroundColor:'transparent',
@@ -17,6 +18,7 @@ const useStyles = makeStyles(theme=>(
                 paddingRight:'10px'
             }
         },
+        overflow:'auto'
     },
     container:{
         display:'flex',
@@ -71,6 +73,11 @@ const useStyles = makeStyles(theme=>(
         "& .SearchButton":{
             color:'#fff'
         }
+    },
+    Tabs:{
+        "& .MuiTabs-indicator":{
+            marginLeft:'0'
+        }  
     },
     Tab:{
         fontSize:'13px',

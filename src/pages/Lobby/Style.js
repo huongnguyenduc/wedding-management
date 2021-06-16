@@ -13,14 +13,26 @@ const useStyles = makeStyles(theme=>(
         alignContent:'center',
     },
     backdrop: {
-        zIndex: theme.zIndex.drawer + 1,
+        zIndex: theme.zIndex.drawer + 999,
         color: '#fff',
     },
-    CategoryPage:{
-        width:'100%',
-        backgroundColor:"transparent",
-        alignSelf:'center',
-        boxShadow:'0 60px 80px -35px rgba(239, 215, 215, 0.5)',
+    CategoryDialog:{
+        backgroundColor:'rgb(25,25,25,0.6)',
+        width:'100vw',
+        height:'100vh',
+        maxWidth:'100vw',
+        maxHeight:'100vh',
+        position:'fixed',
+        top:'0',
+        right:'0',
+        zIndex:theme.zIndex.drawer,
+        display:'flex',
+        justifyContent:'center',
+        alignContent:'center',
+        overflow:'auto'
+    },
+    CategoryTable:{
+
     },
     Snackbar:{
         '& .MuiAlert-message':{
@@ -29,7 +41,7 @@ const useStyles = makeStyles(theme=>(
         "& span":{
             marginLeft:'0'
         },
-        zIndex:'2'
+        zIndex: theme.zIndex.drawer
     },
     SwitchButton:{
         position:'fixed',

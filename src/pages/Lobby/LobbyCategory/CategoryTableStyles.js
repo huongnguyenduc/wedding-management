@@ -3,7 +3,6 @@ import {makeStyles} from '@material-ui/core/styles';
 const useStyles = makeStyles(theme=>(
 {
     CategoryTable:{
-        width:'100%',
         animation:"$First_animation 0.5s ease-out"
     },
     "@keyframes First_animation":{
@@ -74,7 +73,16 @@ const useStyles = makeStyles(theme=>(
         "& .MuiIconButton-label":{
             marginLeft:'0px'
         },
-    }
+    },
+    Snackbar:{
+        '& .MuiAlert-message':{
+            fontSize:'1.5rem'
+        },
+        "& span":{
+            marginLeft:'0'
+        },
+        zIndex: theme.zIndex.drawer
+    },
     
     
 }

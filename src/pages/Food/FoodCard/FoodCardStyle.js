@@ -2,7 +2,7 @@ const styles = (theme) =>(
     {
         Card:{
             
-            padding:'1rem 3rem 1rem 3rem',
+            padding:'3rem 3rem 3rem 3rem',
             position:'relative',
     
         },

@@ -130,7 +130,7 @@ function LobbyPage(props) {
                             <Container maxWidth="lg" className={classes.container}>
                                 {
                                     PagePriceItemSort(FilterCategory(Lobby,category),'asc').map((lobby)=>{
-                                        return(<LobbyCard key={lobby.id} xs={12} sm={6} md={4} lg={4} lobby={lobby} />)})
+                                        return(<LobbyCard key={`${category.id}_${lobby.id}`} xs={12} sm={6} md={4} lg={4} lobby={lobby} />)})
                                 }
                                 <LobbyCard id="insert_lobby"  xs={12} sm={6} md={4} lg={4} lobbyCategory={category}/>
                             </Container>

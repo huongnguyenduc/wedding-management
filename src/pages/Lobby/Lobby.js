@@ -1,4 +1,4 @@
-import {Backdrop, CircularProgress, Container, Snackbar } from '@material-ui/core';
+import {Backdrop, CircularProgress, Dialog, Snackbar } from '@material-ui/core';
 import React, { useEffect, useState } from 'react'
 import CategoryTable from "./LobbyCategory/CategoryTable"
 import LobbyPage from './LobbyPage/LobbyPage'
@@ -7,6 +7,7 @@ import{GetLobby,GetLobbyCategory} from '../Lobby/Connect'
 import useStyles from './Style'
 import { Alert} from '@material-ui/lab';
 import { actCloseError } from './actions/actions';
+
 
 function Lobby() {
     const classes = useStyles();
@@ -35,13 +36,8 @@ function Lobby() {
 
     return (
         <div className={classes.MainPage}>
-            <Backdrop open={Pending} className={classes.backdrop} onClick={(e)=>{e.stopPropagation()}}>
-                <CircularProgress color="inherit"/>
-            </Backdrop>
-            <LobbyPage style={{display:page==='lobby'?'':'none'}}/>
-            <Container style={{display:page==='lobbyCategory'?'':'none'}} className={classes.CategoryPage}> 
-                <CategoryTable/>
-            </Container>
+            <LobbyPage style={{display:page==='lobby'?'':''}}/>
+            <CategoryTable open={page==='lobbyCategory'} style={{display:page==='lobbyCategory'?'':'none'}} onClose={()=>{setPage('lobby')}}/>
             
             <Snackbar open={ Status.open} autoHideDuration={3000} onClose={CloseAlert} className={classes.Snackbar}>
                 <Alert severity={Status.severity} onClose={CloseAlert}>{Status.message}</Alert>
@@ -54,6 +50,10 @@ function Lobby() {
                     LOẠI SẢNH   
                 </div>
             </div>
+
+            <Backdrop open={Pending} className={classes.backdrop} onClick={(e)=>{e.stopPropagation()}}>
+                <CircularProgress color="inherit"/>
+            </Backdrop>
         </div>
     )
     

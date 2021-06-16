@@ -6,7 +6,7 @@ const InitState={
         severity:'',
         message:''
     },
-    Pending:true,
+    Pending:false,
     Lobby: [],
     LobbyCategory:[]
   }
@@ -14,7 +14,7 @@ const InitState={
 const LobbyReducer = (state = InitState, action) => {
     switch(action.type) {
         case PENDING:{
-            return {...state,Pending:action.pending}
+            return {...state,Pending:true}
         }
         case DONE:{
             return {...state,Pending:action.pending}
