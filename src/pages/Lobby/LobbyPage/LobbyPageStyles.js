@@ -61,6 +61,7 @@ const useStyles = makeStyles(theme=>(
         "& .SearchButton":{
             color:'#fff'
         },
+        zIndex:"2"
     },
     AppBarScroll:{
         position:'fixed',
@@ -72,7 +73,8 @@ const useStyles = makeStyles(theme=>(
         backgroundColor:'#060b26',
         "& .SearchButton":{
             color:'#fff'
-        }
+        },
+        zIndex:"2"
     },
     Tabs:{
         "& .MuiTabs-indicator":{
