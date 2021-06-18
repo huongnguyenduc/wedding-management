@@ -1,9 +1,12 @@
 .navbar {
   background-color: #060b26;
   height: 80px;
-  display: flex;
-  justify-content: space-between;
+  display: flex !important;
+  flex-basis: auto;
   align-items: center;
+  padding: 0 20px 0 0px;
+  position: relative;
+  z-index: 3;
 }
 
 .menu-bars {
@@ -22,6 +25,7 @@
   top: 0;
   left: -100%;
   transition: 850ms;
+  z-index: 3;
 }
 
 .nav-menu.active {
@@ -48,7 +52,7 @@
   align-items: center;
   padding: 0px 16px;
   border-radius: 4px;
-  transition: all 0.15s ease-in;
+  transition: all 0.1s ease-in;
 }
 
 .nav-text a:hover {
@@ -74,22 +78,7 @@ span {
 }
 
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap");
-:root {
-  --primary: #08aeea;
-  --secondary: #13d2b8;
-  --purple: #bd93f9;
-  --pink: #ff6bcb;
-  --blue: #8be9fd;
-  --gray: #333;
-  --font: "Poppins", sans-serif;
-  --gradient: linear-gradient(40deg, #ff6ec4, #7873f5);
-  --shadow: 0 0 15px 0 rgba(0, 0, 0, 0.05);
-}
-*,
-*:before,
-*:after {
-  box-sizing: border-box;
-}
+
 html {
   font-size: 62.5%;
 }
@@ -110,30 +99,23 @@ a {
   text-decoration: none;
 }
 
-input,
-button,
-textarea,
-select {
-  font-family: var(--font);
-  font-size: 1.4rem;
-  font-weight: 300;
-  outline: none;
-  border: 0;
-  margin: 0;
-  padding: 0;
-  border-radius: 0;
-  -webkit-appearance: none;
-}
-
 button {
   cursor: pointer;
 }
 
-.recent-item {
+.navbar .recent-item {
   display: flex;
   align-items: center;
   margin-bottom: 2.5rem;
-  float: right;
+  padding: 20px 20px;
+  cursor: pointer;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  padding-inline-start: 40px;
+  right: 0;
+  position: absolute;
 }
 .recent-image {
   width: 5rem;
@@ -141,6 +123,7 @@ button {
   border-radius: 5rem;
   flex-shrink: 0;
   object-fit: cover;
+  margin-left: 1rem;
 }
 .recent-info {
   margin-left: 1.5rem;
@@ -152,17 +135,35 @@ button {
   color: #fff;
   font-weight: 600;
 }
-.recent-position,
-.recent-time {
+.recent-position {
   font-size: 1.2rem;
   color: #999;
 }
-.recent-meta {
-  margin-left: auto;
+
+.bell-noti {
+  font-size: 3rem;
+  color: #ccc;
+  display: inline-block;
+  margin-left: 2rem;
+  vertical-align: -1px;
 }
-.recent-change.increase {
-  color: var(--secondary);
+.bell-noti-icon:hover {
+  animation: ring 0.25s forwards alternate infinite linear;
 }
-.recent-change.decrease {
-  color: var(--danger);
+.bell-noti-status {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 1rem;
+  background-color: var(--secondary);
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+@keyframes ring {
+  from {
+    transform: rotate(-10deg);
+  }
+  to {
+    transform: rotate(10deg);
+  }
 }

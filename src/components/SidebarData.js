@@ -2,12 +2,19 @@ import * as GiIcons from "react-icons/gi";
 import * as MdIcons from "react-icons/md";
 import * as BiIcons from "react-icons/bi";
 import * as IoIcons from "react-icons/io5";
+import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
 
 export const SidebarData = [
     {
         title: 'Bảng điều khiển',
-        path: '/',
+        path: '/Calendar',
         icon: <MdIcons.MdDashboard />,
+        cName: 'nav-text'
+    },
+    {
+        title: 'Tiệc cưới',
+        path: '/wedding',
+        icon: <MdIcons.MdCardGiftcard />,
         cName: 'nav-text'
     },
     {
@@ -18,7 +25,7 @@ export const SidebarData = [
     },
     {
         title: 'Hóa đơn',
-        path: '/',
+        path: '/bill',
         icon: <BiIcons.BiReceipt />,
         cName: 'nav-text'
     },
@@ -30,19 +37,25 @@ export const SidebarData = [
     },
     {
         title: 'Món ăn',
-        path: '/',
+        path: '/Food',
         icon: <IoIcons.IoFastFoodOutline />,
         cName: 'nav-text'
     },
     {
         title: 'Dịch vụ',
-        path: '/',
+        path: '/Service',
         icon: <BiIcons.BiShapeTriangle />,
         cName: 'nav-text'
     },
     {
+        title: 'Phân quyền',
+        path: '/access',
+        icon: <VerifiedUserIcon />,
+        cName: 'nav-text'
+    },
+    {
         title: 'Quy định',
-        path: '/',
+        path: '/Policy',
         icon: <GiIcons.GiFlatHammer />,
         cName: 'nav-text'
     },
