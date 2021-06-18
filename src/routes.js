@@ -2,16 +2,40 @@ import React from 'react';
 import Wedding from './pages/Wedding/Wedding';
 import TableService from './pages/Wedding/Table-Service/Table-Service';
 import NotFoundPage from './pages/NotFoundPage/NotFoundPage';
-import Home from './pages/Home';
 import Bill from './pages/Bill/Bill';
 import DetailBill from './pages/Bill/DetailBill';
 import Access from './pages/Access/Access';
+import Service from './pages/Service/Service';
+import Policy from './pages/Policy/Policy';
+import Food from './pages/Food/Food';
+import Lobby from './pages/Lobby/Lobby';
+import Calendar from './pages/Home/Calendar';
 
 const routes = [
     {
         path: '/',
         exact: true,
-        main: () => <Home />
+        main: () => <Calendar />
+    },
+    {
+        path: '/service',
+        exact: true,
+        main: () => <Service />
+    },
+    {
+        path: '/policy',
+        exact: true,
+        main: () => <Policy />
+    },
+    {
+        path: '/food',
+        exact: true,
+        main: () => <Food />
+    },
+    {
+        path: '/lobby',
+        exact: true,
+        main: () => <Lobby />
     },
     {
         path: '/wedding',
@@ -38,11 +62,6 @@ const routes = [
         exact: true,
         main: ({match, history}) => <TableService  match={match} history={history}/>
     },
-    // {
-    //     path: '/product/:id/edit',
-    //     exact: false,
-    //     main: ({match, history}) => <ProductActionPage match={match} history={history}/>
-    // },
     {
         path: '',
         exact: false,

@@ -23,6 +23,10 @@ import paidBills from './paidBills';
 import userItem from './editUser';
 import users from './users';
 import lobbyItem from './editLobby';
+import FoodReducer from '../pages/Food/reducer/FoodReducer'
+import changeServices  from '../pages/Service/reducer/ChangeServices'
+import ChangeLobbyData from '../pages/Lobby/reducer/ChangeLobbyData'
+import PolicyReducer from '../pages/Policy/reducer/PolicyReducer'
 
 const allReducers = combineReducers({
     selectedRow: selectedRowReducer,
@@ -48,7 +52,11 @@ const allReducers = combineReducers({
     paidBillItem,
     users,
     userItem,
-    lobbyItem
+    lobbyItem,
+    ChangeFoodData: FoodReducer,
+    changeServices:changeServices,
+    changeLobbyData:ChangeLobbyData,
+    PolicyReducer:PolicyReducer
 });
 
 export default allReducers;
