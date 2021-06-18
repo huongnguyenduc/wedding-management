@@ -7,7 +7,7 @@ import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
 export const SidebarData = [
     {
         title: 'Bảng điều khiển',
-        path: '/Calendar',
+        path: '/',
         icon: <MdIcons.MdDashboard />,
         cName: 'nav-text'
     },
