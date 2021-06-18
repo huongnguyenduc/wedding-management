@@ -12,6 +12,7 @@ import Policy from './pages/Policy/Policy';
 import Receipt from './pages/Receipt';
 import Revenue from './pages/Revenue';
 import Service from './pages/Service/Service'
+import Calendar from './pages/Home/Calendar'
 
 function App() {
   return (
@@ -54,6 +55,10 @@ function App() {
                 </Route>
                 <Route exact path='/Service' render={()=>{
                     return localStorage.getItem('user')?<Service/>:<Redirect to='./Login'/>
+                }}>
+                </Route>
+                <Route exact path='/Calendar' render={()=>{
+                    return localStorage.getItem('user')?<Calendar/>:<Redirect to='./Login'/>
                 }}>
                 </Route>
             </Switch>   

@@ -1,5 +1,5 @@
 import {CardMedia, Grid, IconButton, Link, Typography } from '@material-ui/core';
-import {DeleteOutline, RefreshOutlined, ZoomIn } from '@material-ui/icons';
+import {DeleteOutline, Edit} from '@material-ui/icons';
 import { useDispatch } from 'react-redux'
 import {DeleteService} from '../Connect'
 import React, { useState } from 'react'
@@ -48,7 +48,7 @@ function ServiceCard(props)
                             <DeleteOutline className={`${classes.ButtonIcon} ${classes.DeleteIcon}`}/>
                         </IconButton>
                         <IconButton classes={{root:classes.Button, label:classes.LabelButton}} onClick={OpenUpdateDialog}>
-                            <RefreshOutlined className={`${classes.ButtonIcon} ${classes.UpdateIcon}`}/>
+                            <Edit className={`${classes.ButtonIcon} ${classes.UpdateIcon}`}/>
                         </IconButton>
                     </div>
                 </Grid>           
@@ -65,8 +65,8 @@ function ServiceCard(props)
                 </Grid>
                 
             </Grid>
-            {openServiceDialog=='update'?<ServiceDialog data={data} edit={true} closeHandler={CloseDetailHandler}/>:null}
-            {openServiceDialog=='detail'?<ServiceDialog data={data} closeHandler={CloseDetailHandler}/>:null}
+            {openServiceDialog==='update'?<ServiceDialog data={data} edit={true} closeHandler={CloseDetailHandler}/>:null}
+            {openServiceDialog==='detail'?<ServiceDialog data={data} closeHandler={CloseDetailHandler}/>:null}
         </Grid>
     )
 }

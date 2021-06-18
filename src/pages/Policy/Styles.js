@@ -16,6 +16,19 @@ const useStyles = makeStyles(theme=>(
             padding:'1rem 1rem',
         },
     },
+    backdrop: {
+        zIndex: theme.zIndex.drawer + 999,
+        color: '#fff',
+    },
+    Snackbar:{
+        '& .MuiAlert-message':{
+            fontSize:'1.5rem'
+        },
+        "& span":{
+            marginLeft:'0'
+        },
+        zIndex: theme.zIndex.drawer
+    },
 }
 ))
 

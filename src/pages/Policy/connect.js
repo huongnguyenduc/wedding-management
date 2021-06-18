@@ -1,6 +1,10 @@
+import { actDeleteShift, actError, actInitFine, actInitShift, actInsertShift, actPending, actUpdateFine, actUpdateShift } from './actions/actions'
+
 const API_SERVER ="https://wedding-management.herokuapp.com/api/"
 const POLICY_API = 'fines'
 const SHIFT_API = 'shift'
+
+
 export function CallAPI(endpoint, method='GET', body)
 {
     const config = {
@@ -19,50 +23,125 @@ export function CallAPI(endpoint, method='GET', body)
 
 export function GetPolicy(FinishHandle)
 {
-    CallAPI(POLICY_API, "GET")
-    .then((res)=>{
-        if(!res.ok)
-            throw new Error(res.status + '\t' + res.statusText);
-        return res.json();
-    })
-    .then(data=>{
-        FinishHandle("INIT", data)
-    })
-    .catch(err=>{
-        FinishHandle("ERROR", "Lấy thông tin qui định không thành công")})
+    return dispatch=>{
+        dispatch(actPending())
+        CallAPI(POLICY_API, "GET")
+        .then((res)=>{
+            if(!res.ok)
+                throw new Error(res.status + '\t' + res.statusText);
+            return res.json();
+        })
+        .then(data=>{
+            dispatch(actInitFine(data))
+        })
+        .catch(err=>{
+            dispatch(actError("Lấy thông tin Qui định không thành công"))
+            })
+    }
 }
 
 export function UpdatePolicy(policy, FinishHandle) 
 {
-    CallAPI(POLICY_API , "PUT",policy)
-    .then(res=>{
-        if(!res.ok)
-            throw new Error(res.status + res.statusText);
-        else
-            return res.json();
-    })
-    .then(data=>{
-        FinishHandle("UPDATE", data)
-    })
-    .catch(err=>{
-        console.log(err)
-        FinishHandle("ERROR", "Cập nhật thông tin qui định không thành công")})
+    return dispatch=>{
+        dispatch(actPending())
+        CallAPI(POLICY_API , "PUT",policy)
+        .then(res=>{
+            if(!res.ok)
+                throw new Error(res.status + res.statusText);
+            else
+                return res.json();
+        })
+        .then(data=>{
+           dispatch(actUpdateFine(policy))
+        })
+        .catch(err=>{
+            console.log(err)
+            dispatch(actError("Cập nhật thông tin Qui định không thành công"))
+        })
+    }
+    
 }
 
 
 
 export function GetShift(FinishHandle)
 {
-    CallAPI(SHIFT_API, "GET")
-    .then((res)=>{
-        if(!res.ok)
-            throw new Error(res.status + '\t' + res.statusText);
-        return res.json();
-    })
-    .then(data=>{
-        FinishHandle("INIT",data)
-    })
-    .catch(err=>{
-        FinishHandle("ERROR", "Lấy thông tin ca không thành công")
-    })
+    return dispatch =>{
+        dispatch(actPending())
+        CallAPI(SHIFT_API, "GET")
+        .then((res)=>{
+            if(!res.ok)
+                throw new Error(res.status + '\t' + res.statusText);
+            return res.json();
+        })
+        .then(data=>{
+            dispatch(actInitShift(data))
+        })
+        .catch(err=>{
+            dispatch(actError("Lấy thông tin ca không thành công"))
+        })
+    }
+}
+
+export function UpdateShift(shift, FinishHandle) 
+{
+    return dispatch =>{
+        dispatch(actPending())
+        CallAPI(SHIFT_API , "PUT",shift)
+        .then(res=>{
+            if(!res.ok)
+                throw new Error(res.status + res.statusText);
+            else
+                return res.json();
+        })
+        .then(data=>{
+            FinishHandle()
+            dispatch(actUpdateShift(shift))
+        })
+        .catch(err=>{
+            console.log(err)
+            dispatch(actError("Cập nhật thông tin ca không thành công"))
+        })
+    }
+}
+
+export function InsertShift(shift, FinishHandle) 
+{
+
+    return dispatch =>{
+        dispatch(actPending())
+        CallAPI(SHIFT_API , "POST",shift)
+        .then(res=>{
+            if(!res.ok)
+                throw new Error(res.status + res.statusText);
+            else
+                return res.json();
+        })
+        .then(data=>{
+            FinishHandle()
+            dispatch(actInsertShift(data))
+        })
+        .catch(err=>{
+            console.log(err)
+            dispatch(actError("Thêm thông tin ca không thành công"))
+        })
+    }
+}
+
+export function DeleteShift(shift, FinishHandle) 
+{
+    return dispatch =>{
+        dispatch(actPending())
+        CallAPI(SHIFT_API+'/'+shift.id , "DELETE")
+        .then(res=>{
+            if(!res.ok)
+                throw new Error(res.status + res.statusText);
+            else
+                dispatch(actDeleteShift(shift))
+        })
+        .catch(err=>{
+            console.log(err)
+            dispatch(actError("Xoá thông tin ca không thành công"))
+        })
+    }
 }

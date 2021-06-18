@@ -1,16 +1,11 @@
 import {makeStyles} from "@material-ui/core/styles"
 
 const useStyles = makeStyles(theme=>({
-
-    backdrop: {
-        zIndex: theme.zIndex.drawer + 1,
-        color: '#fff',
-    },
     shiftTable:{
         border:'1px solid #000',
         borderRadius:'20px',
         overflow:'hidden',
-        marginTop:'1rem',
+        marginTop:'2rem',
         boxShadow:'0 100px 40px -35px rgba(120, 120, 120, 0.1)',
     },
     TableHeader:{
@@ -78,10 +73,6 @@ const useStyles = makeStyles(theme=>({
         [theme.breakpoints.down('xs')]: {
             display:'none'
         },
-    },
-    ButtonLabel:
-    {
-        margin: '0'
     }, 
     Snackbar:{
         '& .MuiAlert-message':{
@@ -91,7 +82,42 @@ const useStyles = makeStyles(theme=>({
             marginLeft:'0'
         },
         zIndex:'2'
-    }
+    },
+    inputText:{
+        textAlign:'center',
+        "& .MuiInputBase-input":{
+            textAlign:'center',
+            fontSize:'15px',
+            color:'#000000',
+            padding:'0'
+        }
+    },
+    ControlCell:{
+        padding:"8px"
+    },
+    divControl:{
+        display:"flex",
+        justifyContent:"space-around"
+    },
+    ButtonLabel:{
+        marginLeft:'0',
+    },
+    Icon:{
+        fontSize:'22px'
+    },
+    rowEditing:{
+        backgroundColor:'#f8f8f8',
+        borderTop:'solid 2px #e0e0e0',
+        borderBottom:'solid 2px #e0e0e0'
+    },
+    TableFooter:{
+        "& *":{
+            fontSize:'14px'
+        },
+        "& .MuiIconButton-label":{
+            marginLeft:'0px'
+        },
+    },
 }))
 
 export default useStyles

@@ -1,4 +1,4 @@
-import {Backdrop, CircularProgress, Dialog, Snackbar } from '@material-ui/core';
+import {Backdrop, CircularProgress, Snackbar } from '@material-ui/core';
 import React, { useEffect, useState } from 'react'
 import CategoryTable from "./LobbyCategory/CategoryTable"
 import LobbyPage from './LobbyPage/LobbyPage'

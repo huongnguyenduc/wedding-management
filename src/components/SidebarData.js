@@ -6,7 +6,7 @@ import * as IoIcons from "react-icons/io5";
 export const SidebarData = [
     {
         title: 'Bảng điều khiển',
-        path: '/',
+        path: '/Calendar',
         icon: <MdIcons.MdDashboard />,
         cName: 'nav-text'
     },
