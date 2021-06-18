@@ -7,6 +7,7 @@ import {Toolbar, Typography, Paper } from '@material-ui/core/';
 import TableFoodList from './TableFoodList';
 import {actFetchTableFoodsRequest} from '../../../action/tableFood';
 import { connect } from 'react-redux';
+import NumberFormat from 'react-number-format';
 
 var rows = [];
 
@@ -276,8 +277,12 @@ function TableList(props) {
                         </TableCell>
                         <TableCell align="left">{row.numberTables}</TableCell>
                         <TableCell align="left">{row.reverseTables}</TableCell>
-                        <TableCell align="left">{row.unitPriceTable}</TableCell>
-                        <TableCell align="left">{row.totalPrice}</TableCell>
+                        <TableCell align="left">
+                          <NumberFormat value={row.unitPriceTable} displayType={'text'} thousandSeparator={true} suffix={' đ'} style={{marginLeft: "-2px"}} />
+                        </TableCell>
+                        <TableCell align="left">
+                          <NumberFormat value={row.totalPrice} displayType={'text'} thousandSeparator={true} suffix={' đ'} style={{marginLeft: "-2px"}} />
+                        </TableCell>
                       </TableRow>
                     );
                   })}

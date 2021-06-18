@@ -4,6 +4,7 @@ import {Typography, Paper, Grid, Container, Button} from '@material-ui/core/';
 import {Link} from 'react-router-dom';
 import {actUpdateNotPaidBillRequest} from './../../../action/notPaidBill';
 import { connect } from 'react-redux'
+import { useSnackbar } from 'notistack';
 
 const useStyles = makeStyles((theme) => ({
     billInfo: {
@@ -48,10 +49,13 @@ const useStyles = makeStyles((theme) => ({
 function Management(props) {
     const classes = useStyles();
     const {dateOfPayment, status, feast} = props.bill;
-
-    const handleSaveBill = () => {
+    const [isSaved, setIsSaved] = React.useState((status===1));
+    const { enqueueSnackbar } = useSnackbar();
+    const handleClickVariant = (variant, message) => () => {
         props.saveBill(feast.id);
-    }
+        setIsSaved(true);
+        enqueueSnackbar(message, { variant, autoHideDuration: 3000 });
+    };
     return (
         <>
             <Paper elevation={3} className={classes.billInfo}>
@@ -90,7 +94,7 @@ function Management(props) {
                                 </Button>
                         </Grid>
                         <Grid item xs={4} align="center">
-                                <Button variant="contained" color="primary" disabled={status===1} onClick={handleSaveBill}>
+                                <Button variant="contained" color="primary" disabled={isSaved} onClick={handleClickVariant("success", "Lưu hóa đơn thành công!")}>
                                     Lưu hóa đơn
                                 </Button>
                         </Grid>

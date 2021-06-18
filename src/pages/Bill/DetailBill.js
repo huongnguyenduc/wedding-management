@@ -70,7 +70,7 @@ function DetailBill(props) {
                 </div>
                 <Grid container spacing={2} className={classes.tables}>
                     <Grid item xs={12}>
-                        <BillInfo feast={props.notPaidBillItem.feast} totalTablePrice={props.notPaidBillItem.totalTablePrice} />         
+                        <BillInfo feast={props.notPaidBillItem.feast} totalTablePrice={props.notPaidBillItem.totalTablePrice} numberOfTables={props.notPaidBillItem.numberOfTables} />         
                     </Grid>
                     <Grid item md={6} xs={12}>
                         <ServiceTable rows={props.weddingServices.services} />         

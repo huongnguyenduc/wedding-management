@@ -12,6 +12,7 @@ import { actDeleteWeddingRequest } from '../../action/index'
 import addState from './actions/weddingState/add';
 import editState from './actions/weddingState/edit';
 import { NORMAL } from './reducers/weddingState';
+import { useSnackbar } from 'notistack';
 
 var rows = [];
 
@@ -47,7 +48,7 @@ const headCells = [
   { id: 'brideName', numeric: false, disablePadding: false, label: 'Tên cô dâu' },
   { id: 'phone', numeric: false, disablePadding: false, label: 'Điện thoại' },
   { id: 'lobbyName', numeric: false, disablePadding: false, label: 'Sảnh' },
-  { id: 'weddingDate', numeric: true, disablePadding: false, label: 'Ngày tổ chức' },
+  { id: 'weddingDate', numeric: true, disablePadding: false, label: 'Ngày đãi tiệc' },
   { id: 'nameShift', numeric: true, disablePadding: false, label: 'Ca' },
   { id: 'note', numeric: true, disablePadding: false, label: 'Ghi chú' },
 ];
@@ -124,9 +125,14 @@ const EnhancedTableToolbar = (props) => {
   const { numSelected, selectedRow } = props;
   const currentWeddingState = useSelector(state => state.weddingState);
   const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
+    const handleClickVariant = (variant, message) => {
+        enqueueSnackbar(message, { variant, autoHideDuration: 3000 });
+    };
   const onDeleteWedding = () => {
     if (confirm('Bạn chắc chắn muốn xóa ?')) { //eslint-disable-line
       dispatch(actDeleteWeddingRequest(selectedRow.id));
+      handleClickVariant("success", "Xóa tiệc cưới thành công!")
     }
   }
 
@@ -288,7 +294,7 @@ function EnhancedTable(props) {
   console.log('sort')
     console.log(rows);
   const handleClick = (event, id, row) => {
-    row = {...row, weddingDate: convertDateToStringMDY(row.weddingDate)}
+    row = {...row, weddingDate: convertDateToStringMDY(row.weddingDate), dateOfOrganization: convertDateToStringMDYNew(row.dateOfOrganization)}
     dispatch(clickRow(row));
     setSelectedRow(row);
     setSelected([id]);
@@ -393,7 +399,7 @@ function EnhancedTable(props) {
                         <TableCell align="left">{row.brideName}</TableCell>
                         <TableCell align="left">{row.phone}</TableCell>
                         <TableCell align="left">{row.lobbyName}</TableCell>
-                        <TableCell align="right">{row.weddingDate}</TableCell>
+                        <TableCell align="right">{convertDateToStringDMYNew(row.dateOfOrganization)}</TableCell>
                         <TableCell align="right">{row.nameShift}</TableCell>
                         <TableCell align="right">{row.note}</TableCell>    
                       </TableRow>
@@ -438,6 +444,24 @@ function convertDateToStringMDY(date) {
         let month = date.substring(3, 5);
         let year = date.substring(6, 10);
         let result = month + "/" + day + "/" +  year;
+        return result;
+}
+
+function convertDateToStringMDYNew(date) {
+    if (date == null) return;
+        let day = date.substring(8, 10);
+        let month = date.substring(5, 7);
+        let year = date.substring(0, 4);
+        let result = month + "/" + day + "/" +  year;
+        return result;
+}
+
+function convertDateToStringDMYNew(date) {
+    if (date == null) return;
+        let day = date.substring(8, 10);
+        let month = date.substring(5, 7);
+        let year = date.substring(0, 4);
+        let result = day + "/" +month + "/" +  year;
         return result;
 }
 

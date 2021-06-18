@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function TableServiceTabBar() {
+export default function TableServiceTabBar(props) {
   const classes = useStyles();
   const [value, setValue] = React.useState(1);
 
@@ -85,10 +85,10 @@ export default function TableServiceTabBar() {
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={1}>
-        <Table />
+        <Table weddingId={props.weddingId} lobbyId={props.lobbyId} />
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <Service />
+        <Service weddingId={props.weddingId} lobbyId={props.lobbyId} />
       </TabPanel>
     </div>
   );

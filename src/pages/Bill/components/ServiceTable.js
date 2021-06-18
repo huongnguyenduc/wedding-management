@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import {Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel} from '@material-ui/core/';
 import {Toolbar, Typography, Paper } from '@material-ui/core/';
+import NumberFormat from 'react-number-format';
 
 var rows = [];
 
@@ -254,9 +255,13 @@ function ServiceTable(props) {
                       <TableCell component="th" id={labelId} scope="row" padding="none">
                         {row.service.name}
                       </TableCell>
-                      <TableCell align="left">{row.unitPrice}</TableCell>
+                      <TableCell align="left">
+                        <NumberFormat value={row.unitPrice} displayType={'text'} isNumericString thousandSeparator={true} suffix={' đ'} style={{marginLeft: "-3px"}} />
+                      </TableCell>
                       <TableCell align="left">{row.count}</TableCell>
-                      <TableCell align="left">{row.totalPrice}</TableCell>
+                      <TableCell align="left">
+                        <NumberFormat value={row.totalPrice} displayType={'text'} isNumericString thousandSeparator={true} suffix={' đ'} style={{marginLeft: "-2px"}} />
+                      </TableCell>
                     </TableRow>
                   );
                 })}

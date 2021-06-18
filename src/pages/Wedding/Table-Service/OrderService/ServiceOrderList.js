@@ -11,6 +11,8 @@ import normalState from '../../actions/serviceState/normal'
 import editOrderState from '../../actions/serviceState/editOrder'
 import {actDeleteWeddingServiceRequest} from '../../../../action/weddingService';
 import {EDIT_SERVICE} from '../../reducers/serviceState'
+import { useSnackbar } from 'notistack';
+import NumberFormat from 'react-number-format';
 
 var rows = [];
 
@@ -120,10 +122,14 @@ const EnhancedTableToolbar = (props) => {
   const { numSelected } = props;
   const dispatch = useDispatch();
   const selectedRowService = useSelector(state => state.selectedRowService)
-  const selectedRow = useSelector(state => state.selectedRow)
+  const { enqueueSnackbar } = useSnackbar();
+    const handleClickVariant = (variant, message) => {
+        enqueueSnackbar(message, { variant, autoHideDuration: 3000 });
+    };
   const onDeleteWeddingService = () => {
     if (confirm('Bạn chắc chắn muốn xóa ?')) { //eslint-disable-line
-      dispatch(actDeleteWeddingServiceRequest(selectedRow.id, selectedRowService.service.id));
+      dispatch(actDeleteWeddingServiceRequest(props.weddingId, selectedRowService.service.id));
+      handleClickVariant("success", "Xóa dịch vụ thành công!")
     }
   }
 
@@ -289,7 +295,7 @@ function ServiceOrderList(props) {
       </Grid>
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar numSelected={selected.length} weddingId={props.weddingId} />
         <TableContainer>
           <Table
             className={classes.table}
@@ -327,9 +333,13 @@ function ServiceOrderList(props) {
                       <TableCell component="th" id={labelId} scope="row" padding="none">
                         {row.name}
                       </TableCell>
-                      <TableCell align="left">{row.price}</TableCell>
+                      <TableCell align="left">
+                        <NumberFormat value={row.price} displayType={'text'} thousandSeparator={true} suffix={' đ'} style={{marginLeft: "-2px"}} />
+                      </TableCell>
                       <TableCell align="left">{row.count}</TableCell>
-                      <TableCell align="left">{row.totalPrice}</TableCell>
+                      <TableCell align="left">
+                        <NumberFormat value={row.totalPrice} displayType={'text'} thousandSeparator={true} suffix={' đ'} style={{marginLeft: "-2px"}} />
+                      </TableCell>
                       <TableCell align="left">{row.note}</TableCell>
                     </TableRow>
                   );

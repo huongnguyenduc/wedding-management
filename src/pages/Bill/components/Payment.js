@@ -1,6 +1,7 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import {Typography, Paper, Grid, Container} from '@material-ui/core/';
+import NumberFormat from 'react-number-format';
 const useStyles = makeStyles((theme) => ({
     billInfo: {
         padding: theme.spacing(2),
@@ -44,31 +45,41 @@ function Payment(props) {
                         <Grid item xs={12}>
                                 <div className={classes.billInfoItem}>
                                     <Typography variant="subtitle1">Tổng tiền dịch vụ:</Typography>
-                                    <Typography variant="subtitle1">{totalServicePrice}</Typography>
+                                    <Typography variant="subtitle1">
+                                        <NumberFormat value={totalServicePrice} displayType={'text'} thousandSeparator={true} suffix={' đ'} style={{marginLeft: "-2px"}} />
+                                    </Typography>
                                 </div>
                         </Grid>
                         <Grid item xs={12}>
                                 <div className={classes.billInfoItem}>
                                     <Typography variant="subtitle1">Tổng tiền hóa đơn:</Typography>
-                                    <Typography variant="subtitle1">{totalBill}</Typography>
+                                    <Typography variant="subtitle1">
+                                        <NumberFormat value={totalBill} displayType={'text'} thousandSeparator={true} suffix={' đ'} style={{marginLeft: "-2px"}} />
+                                    </Typography>
                                 </div>
                         </Grid>
                         <Grid item xs={12}>
                                 <div className={classes.billInfoItem}>
                                     <Typography variant="subtitle1">Tổng tiền đặt cọc:</Typography>
-                                    <Typography variant="subtitle1">{feast.deposit}</Typography>
+                                    <Typography variant="subtitle1">
+                                        <NumberFormat value={feast.deposit} displayType={'text'} thousandSeparator={true} suffix={' đ'} style={{marginLeft: "-2px"}} />
+                                    </Typography>
                                 </div>
                         </Grid>
                         <Grid item xs={12}>
                                 <div className={classes.billInfoItem}>
                                     <Typography variant="subtitle1">Tổng tiền phạt:</Typography>
-                                    <Typography variant="subtitle1">{totalFine}</Typography>
+                                    <Typography variant="subtitle1">
+                                        <NumberFormat value={totalFine} displayType={'text'} thousandSeparator={true} suffix={' đ'} style={{marginLeft: "-2px"}} />
+                                    </Typography>
                                 </div>
                         </Grid>
                         <Grid item xs={12}>
                                 <div className={classes.billInfoItem}>
                                     <Typography variant="subtitle1">Còn lại:</Typography>
-                                    <Typography variant="subtitle1">{unpaidMoney}</Typography>
+                                    <Typography variant="subtitle1">
+                                        <NumberFormat value={unpaidMoney} displayType={'text'} thousandSeparator={true} suffix={' đ'} style={{marginLeft: "-2px"}} />
+                                    </Typography>
                                 </div>
                         </Grid>
                     </Grid>

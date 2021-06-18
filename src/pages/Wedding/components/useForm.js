@@ -13,7 +13,7 @@ export function useForm(initialFValues, validateOnChange = false, validate) {
 
     const handleInputChange = e => {
         const { name, value } = e.target
-        if (name !== 'phone' && name !== 'deposit') {
+        if (name !== 'phone' && name !== 'deposit' && name !== "numberTables" && name !== "reverseTables") {
             setValues({
             ...values,
             [name]: value
@@ -25,7 +25,19 @@ export function useForm(initialFValues, validateOnChange = false, validate) {
             ...values,
             [name]: value
         })}
-        if (name === 'deposit' && (isNumeric(value) || value === ""))
+        if (name === 'deposit' && ((isNumeric(value) || value === "")))
+        {
+            setValues({
+            ...values,
+            [name]: value 
+        })}
+        if (name === 'numberTables' && (isNumeric(value) ))
+        {
+            setValues({
+            ...values,
+            [name]: value 
+        })}
+        if (name === 'reverseTables' && (isNumeric(value) ))
         {
             setValues({
             ...values,

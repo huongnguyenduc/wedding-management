@@ -1,17 +1,34 @@
 import React, { useState } from 'react'
 import { makeStyles } from "@material-ui/core";
-
+function isNumeric(str) {
+  if (typeof str != "string") return false // we only process strings!  
+  return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+         !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
+}
 export function useForm(initialFValues, validateOnChange = false, validate) {
     const [values, setValues] = useState(initialFValues);
     const [errors, setErrors] = useState({});
 
     const handleInputChange = e => {
         const { name, value } = e.target
-        console.log(e.target)
-        setValues({
+        if (name !== "numberTables" && name !== "reverseTables") {
+            setValues({
             ...values,
             [name]: value
         })
+        }
+        if (name === 'numberTables' && (isNumeric(value) ))
+        {
+            setValues({
+            ...values,
+            [name]: value   
+        })}
+        if (name === 'reverseTables' && (isNumeric(value) ))
+        {
+            setValues({
+            ...values,
+            [name]: value 
+        })}
         if (validateOnChange)
             validate({ [name]: value })
     }

@@ -10,10 +10,10 @@ import thunk from 'redux-thunk'
 const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 export const myStore = createStore(allReducers, composeEnhancer(applyMiddleware(dynamicMiddlewares, thunk)));
 
-
 ReactDOM.render(
+  
   <Provider store={myStore}>
-    <App />
+      <App />
   </Provider>,
   document.getElementById('root')
 );

@@ -9,11 +9,8 @@ import clickRow from './actions';
 import { actAddWeddingRequest, actUpdateWeddingRequest } from './../../action/index';
 import { addMiddleware } from 'redux-dynamic-middlewares'
 import { Link } from 'react-router-dom';
-import {actFetchTablesRequest} from './../../action/table';
-import {actFetchServicesRequest} from './../../action/service';
-import {actFetchWeddingServicesRequest} from './../../action/weddingService';
-import {actFetchTableCategoriesRequest} from './../../action/tableCategory';
 import { makeStyles } from '@material-ui/core/styles';
+import { useSnackbar } from 'notistack';
 
 const initialValues = {
         groomName: "",
@@ -54,7 +51,7 @@ function WeddingForm(props) {
         dateOfOrganization: props.selectedWedding.dateOfOrganization || new Date(), 
         nameShift: props.selectedWedding.nameShift || "", 
         note: props.selectedWedding.note || "", 
-        deposit: props.selectedWedding.deposit || "",
+        deposit: props.selectedWedding.deposit || 0,
     }
 
     const validate = (fieldValues = values) => {
@@ -66,7 +63,7 @@ function WeddingForm(props) {
         if ('phone' in fieldValues)
             temp.phone = fieldValues.phone.length > 9 ? "" : fieldValues.phone.length === 0 ? "Không được bỏ trống" : "Tối thiểu 10 chữ số";
         if ('deposit' in fieldValues)
-            temp.deposit = fieldValues.deposit.length > 0 ? "" :"Không được bỏ trống";
+            temp.deposit = fieldValues.deposit ? "" :"Không được bỏ trống";
         if ('weddingDate' in fieldValues && props.currentWeddingState.state === ADD_WEDDING_STATE)
             temp.weddingDate = checkDateValidate(fieldValues.weddingDate) ? "" :"Ngày không hợp lệ";
         if ('dateOfOrganization' in fieldValues && props.currentWeddingState.state === ADD_WEDDING_STATE)
@@ -106,7 +103,7 @@ function WeddingForm(props) {
                 brideName: brideName, 
                 phone: phone,
                 lobbyName: lobbyName, 
-                weddingDate: convertDateToStringYMD(weddingDate),
+                weddingDate: convertDateToStringDMY(weddingDate),
                 dateOfOrganization: convertDateToStringYMD(dateOfOrganization), 
                 nameShift: nameShift, 
                 note: note, 
@@ -121,7 +118,7 @@ function WeddingForm(props) {
                 brideName: brideName, 
                 phone: phone,
                 lobbyName: lobbyName, 
-                weddingDate: convertDateToStringYMD(weddingDate),
+                weddingDate: convertDateToStringDMY(weddingDate),
                 dateOfOrganization: convertDateToStringYMD(dateOfOrganization), 
                 nameShift: nameShift, 
                 note: note, 
@@ -133,6 +130,7 @@ function WeddingForm(props) {
             }
             resetForm()
             changeToNormalState()
+            handleClickVariant("success", (props.currentWeddingState.state === ADD_WEDDING_STATE ? "Thêm" : "Sửa") + " tiệc cưới thành công!")
         }
     }
     const clickRowEditWeddingMiddleware = store => next => action => {
@@ -160,6 +158,10 @@ function WeddingForm(props) {
 
     const handlePopoverClose = () => {
         setAnchorEl(null);
+    };
+    const { enqueueSnackbar } = useSnackbar();
+    const handleClickVariant = (variant, message) => {
+        enqueueSnackbar(message, { variant, autoHideDuration: 3000 });
     };
     return (
     <>
@@ -266,9 +268,10 @@ function WeddingForm(props) {
                             error={errors.lobbyName}/>}
                         <Controls.Input
                             name="deposit" 
-                            label="Tiền đặt cọc (VND)" 
+                            label="Tiền đặt cọc" 
                             onChange={handleInputChange}
                             error={errors.deposit}
+                            isMoney={true}
                             value={props.currentWeddingState.state === NORMAL ? selectedRowValues.deposit : values.deposit}/>
                         <Controls.Input
                             name="note" 
@@ -276,14 +279,9 @@ function WeddingForm(props) {
                             value={props.currentWeddingState.state === NORMAL ? selectedRowValues.note : values.note}
                             error={errors.note}
                             onChange={handleInputChange}/>
-                        <Link to="/wedding/table-service" >
+                        <Link to={`/wedding/${props.selectedWedding.id}/${props.selectedWedding.lobbyId}`} >
                         {props.selectedWedding.id ? <Button 
-                            onClick={()=>{
-                                props.fetchAllTableCategoriesInfo(); 
-                                props.fetchAllTablesInfo(props.selectedWedding.id);
-                                props.fetchAllServicesInfo();
-                                props.fetchAllWeddingServicesInfo(props.selectedWedding.id);
-                            }}
+                            onClick={()=>{ }}
                             className={classes.openButton}
                             variant="outlined" 
                             color="primary" 
@@ -293,7 +291,7 @@ function WeddingForm(props) {
                         </Button> : <></>}
                         </Link>
                         {props.currentWeddingState.state !== NORMAL ? <ButtonGroup variant="text" color="primary" aria-label="text primary button group" size='large' className={classes.groupButton}>
-                            <Controls.Button type="submit" text="Hoàn tất"></Controls.Button>
+                            <Controls.Button type="submit" text="Hoàn tất" ></Controls.Button>
                             <Controls.Button
                                 text="Hủy"
                                 onClick={() => {changeToNormalState(); resetForm(); }} />
@@ -351,18 +349,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch, props) => {
     return {
-        fetchAllTablesInfo : (idWedding) => {
-            dispatch(actFetchTablesRequest(idWedding));
-        },
-        fetchAllTableCategoriesInfo : () => {
-            dispatch(actFetchTableCategoriesRequest());
-        },
-        fetchAllServicesInfo : () => {
-            dispatch(actFetchServicesRequest());
-        },
-        fetchAllWeddingServicesInfo : (idWedding) => {
-            dispatch(actFetchWeddingServicesRequest(idWedding));
-        },
+        
     }
 }
 

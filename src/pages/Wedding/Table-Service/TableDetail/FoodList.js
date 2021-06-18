@@ -12,6 +12,7 @@ import editState from '../../actions/foodState/edit'
 import { EDIT_ORDER_FOOD } from '../../reducers/foodState';
 import Search from '@material-ui/icons/SearchOutlined';
 import { connect } from 'react-redux';
+import NumberFormat from 'react-number-format';
 
 var rows = [];
 
@@ -346,7 +347,9 @@ function FoodList(props) {
                       <TableCell component="th" id={labelId} scope="row" padding="none"> 
                         {row.name}
                       </TableCell>
-                      <TableCell align="left">{row.price}</TableCell>
+                      <TableCell align="left">
+                        <NumberFormat value={row.price} displayType={'text'} thousandSeparator={true} suffix={' đ'} style={{marginLeft: "-2px"}} />
+                      </TableCell>
                       <TableCell align="left">{row.foodKind}</TableCell>
                       <TableCell align="left">{row.moreInfo}</TableCell>  
                     </TableRow>

@@ -332,7 +332,7 @@ function BillPaid(props) {
                         <TableCell align="left">{row.feast.bridename}</TableCell>
                         <TableCell align="left">{row.feast.phone}</TableCell>
                         <TableCell align="left">{row.feast.id_lobby.name}</TableCell>
-                        <TableCell align="left">{row.feast.wedding_date}</TableCell>
+                        <TableCell align="left">{convertDateToStringDMYNew(row.feast.wedding_date)}</TableCell>
                         <TableCell align="left">{row.feast.shift.name}</TableCell>
                         <TableCell align="left">{row.feast.note}</TableCell>
                         <TableCell align="right">
@@ -377,6 +377,15 @@ function convertDateToStringMDY(date) {
         let month = date.substring(3, 5);
         let year = date.substring(6, 10);
         let result = month + "/" + day + "/" +  year;
+        return result;
+}
+
+function convertDateToStringDMYNew(date) {
+    if (date == null) return;
+        let day = date.substring(8, 10);
+        let month = date.substring(5, 7);
+        let year = date.substring(0, 4);
+        let result = day + "/" +month + "/" +  year;
         return result;
 }
 

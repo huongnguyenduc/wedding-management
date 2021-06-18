@@ -22,6 +22,7 @@ import paidBillItem from './editPaidBill';
 import paidBills from './paidBills';
 import userItem from './editUser';
 import users from './users';
+import lobbyItem from './editLobby';
 
 const allReducers = combineReducers({
     selectedRow: selectedRowReducer,
@@ -46,7 +47,8 @@ const allReducers = combineReducers({
     paidBills,
     paidBillItem,
     users,
-    userItem
+    userItem,
+    lobbyItem
 });
 
 export default allReducers;

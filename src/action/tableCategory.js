@@ -48,7 +48,7 @@ export const actUpdateTableCategory = (tableCategory) => {
 
 export const actDeleteTableCategoryRequest = (id) => {
     return dispatch => {
-        return callApi(`table-category`, 'DELETE', null).then(res =>{
+        return callApi(`table-category`, 'DELETE', [id]).then(res =>{
             dispatch(actDeleteTableCategory(id));
         })
     }

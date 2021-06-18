@@ -34,9 +34,9 @@ const routes = [
         main: ({match, history}) => <DetailBill match={match} history={history}/>
     },
     {
-        path: '/wedding/table-service',
+        path: '/wedding/:weddingId/:lobbyId',
         exact: true,
-        main: ({history}) => <TableService history={history}/>
+        main: ({match, history}) => <TableService  match={match} history={history}/>
     },
     // {
     //     path: '/product/:id/edit',

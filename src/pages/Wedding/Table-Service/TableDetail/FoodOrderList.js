@@ -11,6 +11,8 @@ import normalState from '../../actions/foodState/normal'
 import editOrderState from '../../actions/foodState/editOrder'
 import {actDeleteTableFoodRequest} from '../../../../action/tableFood';
 import {EDIT_FOOD} from '../../reducers/foodState'
+import { useSnackbar } from 'notistack';
+import NumberFormat from 'react-number-format';
 
 var rows = [];
 
@@ -121,9 +123,14 @@ const EnhancedTableToolbar = (props) => {
   const dispatch = useDispatch();
   const selectedRowFood = useSelector(state => state.selectedRowFood)
   const selectedRowTable = useSelector(state => state.selectedRowTable)
+  const { enqueueSnackbar } = useSnackbar();
+    const handleClickVariant = (variant, message) => {
+        enqueueSnackbar(message, { variant, autoHideDuration: 3000 });
+    };
   const onDeleteTableFood = () => {
     if (confirm('Bạn chắc chắn muốn xóa ?')) { //eslint-disable-line
       dispatch(actDeleteTableFoodRequest(selectedRowTable.id, selectedRowFood.food.id));
+      handleClickVariant("success", "Xóa đặt món thành công!")
     }
   }
 
@@ -327,9 +334,13 @@ function FoodOrderList(props) {
                       <TableCell component="th" id={labelId} scope="row" padding="none">
                         {row.name}
                       </TableCell>
-                      <TableCell align="left">{row.price}</TableCell>
+                      <TableCell align="left">
+                        <NumberFormat value={row.price} displayType={'text'} thousandSeparator={true} suffix={' đ'} style={{marginLeft: "-2px"}} />
+                      </TableCell>
                       <TableCell align="left">{row.count}</TableCell>
-                      <TableCell align="left">{row.totalPrice}</TableCell>
+                      <TableCell align="left">
+                        <NumberFormat value={row.totalPrice} displayType={'text'} thousandSeparator={true} suffix={' đ'} style={{marginLeft: "-2px"}} />
+                      </TableCell>
                       <TableCell align="left">{row.note}</TableCell>
                     </TableRow>
                   );

@@ -1,6 +1,7 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import {Typography, Paper, Grid, Container} from '@material-ui/core/';
+import NumberFormat from 'react-number-format';
 const useStyles = makeStyles((theme) => ({
     billInfo: {
         padding: theme.spacing(2),
@@ -29,11 +30,19 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: "10px",
     },
 }));
-
+function convertDateToStringDMYNew(date) {
+    if (date == null) return;
+        let day = date.substring(8, 10);
+        let month = date.substring(5, 7);
+        let year = date.substring(0, 4);
+        let result = day + "/" +month + "/" +  year;
+        return result;
+}
 function BillInfo(props) {
     const classes = useStyles();
-    const {groomname, bridename, phone, dateOfOrganization, number_of_table } = props.feast;
+    const {groomname, bridename, phone, dateOfOrganization } = props.feast;
     const totalTablePrice = props.totalTablePrice;
+    const numberOfTables = props.numberOfTables;
     return (
         <>
             <Paper elevation={3} className={classes.billInfo}>
@@ -70,7 +79,7 @@ function BillInfo(props) {
                                     <Typography variant="subtitle1">Ngày đãi tiệc</Typography>
                                 </Grid>
                                 <Grid item xs={7} className={classes.billInfoItem}>
-                                    <Typography variant="subtitle1">{dateOfOrganization}</Typography>
+                                    <Typography variant="subtitle1">{convertDateToStringDMYNew(dateOfOrganization)}</Typography>
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -90,7 +99,7 @@ function BillInfo(props) {
                                     <Typography variant="subtitle1">Số lượng bàn</Typography>
                                 </Grid>
                                 <Grid item xs={7} className={classes.billInfoItem}>
-                                    <Typography variant="subtitle1">{number_of_table}</Typography>
+                                    <Typography variant="subtitle1">{numberOfTables}</Typography>
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -100,7 +109,9 @@ function BillInfo(props) {
                                     <Typography variant="subtitle1">Tổng tiền bàn</Typography>
                                 </Grid>
                                 <Grid item xs={7} className={classes.billInfoItem}>
-                                    <Typography variant="subtitle1">{totalTablePrice}</Typography>
+                                    <Typography variant="subtitle1">
+                                        <NumberFormat value={totalTablePrice} displayType={'text'} thousandSeparator={true} suffix={' đ'} style={{marginLeft: "-2px"}} />
+                                    </Typography>
                                 </Grid>
                             </Grid>
                         </Grid>

@@ -11,6 +11,8 @@ import addState from '../actions/tableState/add';
 import editState from '../actions/tableState/edit';
 import { NORMAL } from '../reducers/tableState';
 import {actDeleteTableRequest} from '../../../action/table'
+import { useSnackbar } from 'notistack';
+import NumberFormat from 'react-number-format';
 
 var rows = [];
 
@@ -122,6 +124,10 @@ const EnhancedTableToolbar = (props) => {
   const dispatch = useDispatch();
   const currentTableState = useSelector(state => state.tableState);
   const selectedTable = useSelector(state => state.selectedRowTable);
+  const { enqueueSnackbar } = useSnackbar();
+    const handleClickVariant = (variant, message) => {
+        enqueueSnackbar(message, { variant, autoHideDuration: 3000 });
+    };
   const changeToAddState = () => {
       if (currentTableState.state === NORMAL) {
           dispatch(addState());
@@ -142,6 +148,7 @@ const EnhancedTableToolbar = (props) => {
     const onDeleteTable = () => {
     if (confirm('Bạn chắc chắn muốn xóa ?')) { //eslint-disable-line
       dispatch(actDeleteTableRequest([selectedTable.id]));
+      handleClickVariant("success", "Xóa thông tin đặt bàn thành công!")
     }
   }
   return (
@@ -348,7 +355,9 @@ const handleSearch = (event) => {
                         </TableCell>
                         <TableCell align="left">{row.numberTables}</TableCell>
                         <TableCell align="left">{row.reverseTables}</TableCell>
-                        <TableCell align="left">{row.unitPriceTable}</TableCell>
+                        <TableCell align="left">
+                          <NumberFormat value={row.unitPriceTable} displayType={'text'} thousandSeparator={true} suffix={' đ'} style={{marginLeft: "-2px"}} />
+                        </TableCell>
                         <TableCell align="left">{row.note}</TableCell>  
                       </TableRow>
                     );

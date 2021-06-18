@@ -2,11 +2,16 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { lighten, makeStyles } from '@material-ui/core/styles';
-import {Table, TableBody, Grid,FormControl, MenuItem, InputLabel, Select,TextField, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel} from '@material-ui/core/';
-import {Toolbar, Typography, Paper, FormControlLabel, Switch} from '@material-ui/core/';
-import { Search, DescriptionOutlined } from '@material-ui/icons/';
+import {Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Tooltip, Button, IconButton } from '@material-ui/core/';
+import {Toolbar, Typography, Paper } from '@material-ui/core/';
+import { Edit, Delete, Add } from '@material-ui/icons/';
 import { connect } from 'react-redux';
-import {Link} from 'react-router-dom';
+import {green, indigo, red} from '@material-ui/core/colors';
+import { actDeleteTableCategoryRequest } from './../../../action/tableCategory';
+import AlertDialog from '../../../components/AlertDialog';
+import AddTableCategoryDialog from './AddTableCategoryDialog'
+import UpdateTableCategoryDialog from './UpdateTableCategoryDialog'
+import { useSnackbar } from 'notistack';
 
 var rows = [];
 
@@ -38,14 +43,10 @@ function stableSort(array, comparator) {
 }
 
 const headCells = [
-  { id: 'groomname', numeric: false, disablePadding: true, label: 'Tên chú rể' },
-  { id: 'bridename', numeric: false, disablePadding: false, label: 'Tên cô dâu' },
-  { id: 'phone', numeric: false, disablePadding: false, label: 'Điện thoại' },
-  { id: 'lobbyName', numeric: false, disablePadding: false, label: 'Sảnh' },
-  { id: 'wedding_date', numeric: false, disablePadding: false, label: 'Ngày tổ chức' },
-  { id: 'nameShift', numeric: false, disablePadding: false, label: 'Ca' },
-  { id: 'note', numeric: false, disablePadding: false, label: 'Ghi chú' },
-  { id: 'detail', numeric: true, disablePadding: false, label: 'Chi tiết' },
+  { id: 'name', numeric: false, disablePadding: true, label: 'Tên loại bàn' },
+  { id: 'moreInfo', numeric: false, disablePadding: true, label: 'Mô tả loại bàn' },
+  { id: 'edit', numeric: false, disablePadding: false, label: 'Sửa' },
+  { id: 'delete', numeric: false, disablePadding: false, label: 'Xóa' },
 ];
 
 function EnhancedTableHead(props) {
@@ -53,35 +54,38 @@ function EnhancedTableHead(props) {
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
+  
 
   return (
-    <TableHead>
-      <TableRow>
-        <TableCell padding="checkbox">
-        </TableCell>
-        {headCells.map((headCell) => (
-          <TableCell
-            key={headCell.id}
-            align={headCell.numeric ? 'right' : 'left'}
-            padding={headCell.disablePadding ? 'none' : 'default'}
-            sortDirection={orderBy === headCell.id ? order : false}
-          >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}
-            >
-              {headCell.label}
-              {orderBy === headCell.id ? (
-                <span className={classes.visuallyHidden}>
-                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                </span>
-              ) : null}
-            </TableSortLabel>
+    <>
+      <TableHead>
+        <TableRow>
+          <TableCell padding="checkbox">
           </TableCell>
-        ))}
-      </TableRow>
-    </TableHead>
+          {headCells.map((headCell) => (
+            <TableCell
+              key={headCell.id}
+              align={headCell.numeric ? 'right' : 'left'}
+              padding={headCell.disablePadding ? 'none' : 'default'}
+              sortDirection={orderBy === headCell.id ? order : false}
+            >
+              <TableSortLabel
+                active={orderBy === headCell.id}
+                direction={orderBy === headCell.id ? order : 'asc'}
+                onClick={createSortHandler(headCell.id)}
+              >
+                {headCell.label}
+                {orderBy === headCell.id ? (
+                  <span className={classes.visuallyHidden}>
+                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                  </span>
+                ) : null}
+              </TableSortLabel>
+            </TableCell>
+          ))}
+        </TableRow>
+      </TableHead>
+    </>
   );
 }
 
@@ -117,17 +121,41 @@ const useToolbarStyles = makeStyles((theme) => ({
 
 const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
+  const [openTableCategoryDialog, setOpenTableCategoryDialog] = React.useState(false);
+  const handleOpenTableCategoryDialog = () => {
+      setOpenTableCategoryDialog(true);
+  };
+
+  const handleCloseTableCategoryDialog = () => {
+      setOpenTableCategoryDialog(false);
+  };
 
   return (
-    <Toolbar
-      className={clsx(classes.root)}
-    >
-      {(
-        <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
-          Danh sách tiệc chưa thanh toán
-        </Typography>
+    <>
+      <AddTableCategoryDialog open={openTableCategoryDialog} handleClose={handleCloseTableCategoryDialog}/>
+      <Toolbar
+        className={clsx(classes.root)}
+      >
+        {(
+          <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
+            Danh sách loại bàn
+          </Typography>
+        )}
+        {(
+          <Tooltip title="Thêm loại bàn mới">
+              <Button
+                  variant="contained"
+                  className={classes.button}
+                  startIcon={<Add style={{color: "#fff", fontSize: "20px" }} />}
+                  style={{ borderRadius: 10, backgroundColor: green[400], fontSize: "10px", color: "#fff", width: 230 }}
+                  onClick={ handleOpenTableCategoryDialog}
+              >
+                  Thêm loại bàn
+              </Button>
+          </Tooltip>
       )}
-    </Toolbar>
+      </Toolbar>
+    </>
   );
 };
 
@@ -138,6 +166,7 @@ EnhancedTableToolbar.propTypes = {
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
+    maxWidth: 950
   },
   paper: {
     width: '100%',
@@ -160,7 +189,27 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-function BillNotPaid(props) {
+function TableKindList(props) {
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+      setOpen(true);
+  };
+
+  const handleClose = () => {
+      setOpen(false);
+  };
+
+  const [openUserDialog, setOpenUserDialog] = React.useState(false);
+
+  const handleOpenUserDialog = () => {
+      setOpenUserDialog(true);
+  };
+
+  const handleCloseUserDialog = () => {
+      setOpenUserDialog(false);
+  };
+
   const [state, setState] = React.useState( {
     searchValue: '',
     data: props.rows,
@@ -179,37 +228,6 @@ function BillNotPaid(props) {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [searchKind, setSearchKind] = React.useState({name: 'Tên chú rể', kind: 'groomname'});
-  const searchKindPropertyName = name => {
-    switch(name) {
-      case 'Tên chú rể':
-        return 'groomname';
-      case 'Tên cô dâu':
-        return 'bridename';
-      case 'Số điện thoại':
-        return 'phone';
-      default:
-        return 'groomname'
-    }
-  }
-
-  const handleSearch = (event) => {
-      let filteredDatas = [];
-      filteredDatas = state.data.filter((e) => {
-          let retVal = true;
-          let element = e["feast"][searchKind.kind];
-          const regex = new RegExp(event.target.value, 'gi');
-          if (typeof element == 'string')
-              retVal = element.match(regex)
-          else return false;
-          return retVal;
-      })
-      setState({...state, filterData: filteredDatas, searchValue: event.target.value})
-  }
-
-  const handleChange = (event) => {
-      setSearchKind({name: event.target.value, kind: searchKindPropertyName(event.target.value)});
-  };
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -228,7 +246,6 @@ function BillNotPaid(props) {
   console.log('sort')
     console.log(rows);
   const handleClick = (event, id, row) => {
-    row = {...row, feast: {...row.feast, wedding_date: convertDateToStringMDY(row.feast.wedding_date)}}
     setSelectedRow(row);
     setSelected([id]);
   };
@@ -250,46 +267,16 @@ function BillNotPaid(props) {
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
+  const [rowNow, setRowNow] = React.useState(null);
+  const { enqueueSnackbar } = useSnackbar();
+    const handleClickVariant = (variant, message) => {
+        enqueueSnackbar(message, { variant, autoHideDuration: 3000 });
+    };
+
   return (
-    <Grid container spacing={2} direction='row'>
-        <Grid item xs={12} md={6}>
-            <Grid container spacing={1} alignItems="flex-end">
-                <Grid item xs={1} align='right'>
-                    <Search />
-                </Grid>
-                <Grid item xs={11}>
-                    <TextField 
-                        id="searchWedding" 
-                        fullWidth 
-                        label={"Tìm kiếm theo " + searchKind.name.toLowerCase()}
-                        onChange={handleSearch}
-                        InputProps={{
-                            classes: {
-                                input: classes.resize,
-                            },
-                        }} />
-                </Grid>
-            </Grid>
-        </Grid>
-        <Grid item xs={12} md={5}>
-            <FormControl className={classes.formControl} style={{minWidth: 300}} >
-                <InputLabel id="select-search-kind-label" >Tìm kiếm theo</InputLabel>
-                <Select
-                fullWidth
-                labelId="select-search-kind-label"
-                id="select-search-kind"
-                value={searchKind.name}
-                onChange={handleChange}
-                label="Tìm kiếm theo"
-                >
-                <MenuItem value={'Tên chú rể'}>Tên chú rể</MenuItem>
-                <MenuItem value={'Tên cô dâu'}>Tên cô dâu</MenuItem>
-                <MenuItem value={'Số điện thoại'}>Số điện thoại</MenuItem>
-                </Select>
-            </FormControl>
-        </Grid>
-    <Grid item xs={12}>
       <div className={classes.root}>
+        <AlertDialog open={open} handleClose={handleClose} title="Xóa loại bàn" description="Bạn có muốn xóa loại bàn này không?" onSubmit={() => {props.deleteTableCategory(rowNow.id); handleClickVariant("success", "Xóa loại bàn thành công!");}}/>
+        {rowNow ? <UpdateTableCategoryDialog open={openUserDialog} handleClose={handleCloseUserDialog} data={rowNow} /> : <></>}
         <Paper className={classes.paper}>
           <EnhancedTableToolbar numSelected={selected.length} selectedRow={selectedRow} />
           <TableContainer>
@@ -327,19 +314,19 @@ function BillNotPaid(props) {
                         <TableCell padding="checkbox">
                         </TableCell>
                         <TableCell component="th" id={labelId} scope="row" padding="none">
-                          {row.feast.groomname}
+                          {row.name}
                         </TableCell>
-                        <TableCell align="left">{row.feast.bridename}</TableCell>
-                        <TableCell align="left">{row.feast.phone}</TableCell>
-                        <TableCell align="left">{row.feast.id_lobby.name}</TableCell>
-                        <TableCell align="left">{convertDateToStringDMYNew(row.feast.wedding_date)}</TableCell>
-                        <TableCell align="left">{row.feast.shift.name}</TableCell>
-                        <TableCell align="left">{row.feast.note}</TableCell>
-                        <TableCell align="right">
-                            <Link to={`/bill/${row.feast.id}`} className={classes.detailButton}>
-                              <DescriptionOutlined /> 
-                            </Link>
-                        </TableCell>    
+                        <TableCell align="left">{row.moreInfo}</TableCell>
+                        <TableCell align="left">
+                            <IconButton style={{marginLeft: "-12px" }}>
+                                <Edit style={{color: indigo[800], fontSize: "20px", marginLeft: "-10px" }} onClick={ async () => { await setRowNow(row); handleOpenUserDialog();}}/> 
+                            </IconButton>
+                        </TableCell>
+                        <TableCell align="left">
+                            <IconButton style={{marginLeft: "-12px" }} onClick={() => {setRowNow(row); handleClickOpen();}}>
+                                <Delete style={{color: red[800], fontSize: "20px", marginLeft: "-10px" }} /> 
+                            </IconButton>
+                        </TableCell>      
                       </TableRow>
                     );
                   })}
@@ -361,32 +348,17 @@ function BillNotPaid(props) {
             onChangeRowsPerPage={handleChangeRowsPerPage}
           />
         </Paper>
-        <FormControlLabel
-          control={<Switch checked={dense} onChange={handleChangeDense} />}
-          label="Khoảng cách dòng"
-        />
       </div>
-    </Grid>
-    </Grid>
   );
 }
 
-function convertDateToStringMDY(date) {
-    if (date == null) return;
-        let day = date.substring(0, 2);
-        let month = date.substring(3, 5);
-        let year = date.substring(6, 10);
-        let result = month + "/" + day + "/" +  year;
-        return result;
+
+const mapDispatchToProps = (dispatch, props) => {
+    return {
+        deleteTableCategory : (id) => {
+            dispatch(actDeleteTableCategoryRequest(id));
+        },
+    }
 }
 
-function convertDateToStringDMYNew(date) {
-    if (date == null) return;
-        let day = date.substring(8, 10);
-        let month = date.substring(5, 7);
-        let year = date.substring(0, 4);
-        let result = day + "/" +month + "/" +  year;
-        return result;
-}
-
-export default connect(null, null)(BillNotPaid);
+export default connect(null, mapDispatchToProps)(TableKindList, EnhancedTableToolbar);

@@ -15,6 +15,8 @@ import {actAddTableFoodRequest} from '../../../../action/tableFood';
 import {actUpdateTableFoodRequest} from '../../../../action/tableFood';
 import {actFetchTablesRequest} from './../../../../action/table';
 import clickRowTable from '../../actions/clickRowTable'
+import { useSnackbar } from 'notistack';
+import NumberFormat from 'react-number-format';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -104,6 +106,10 @@ function TableDetailDialog(props) {
       dispatch(clickRowFood(initialValues));
       dispatch(normalState());            
   }
+  const { enqueueSnackbar } = useSnackbar();
+    const handleClickVariant = (variant, message) => {
+        enqueueSnackbar(message, { variant, autoHideDuration: 3000 });
+    };
   const handleSubmit = e => {
       e.preventDefault()
       if (validate()) {
@@ -116,6 +122,7 @@ function TableDetailDialog(props) {
             props.addTableFood(createTableFood())
           resetForm()
           changeToNormalState()
+          handleClickVariant("success", (props.currentFoodState.state !== EDIT_ORDER_FOOD ? "Thêm" : "Sửa") + " món thành công!")
       }
   }
 
@@ -185,20 +192,13 @@ function TableDetailDialog(props) {
     }
   }
 
-  const recentLobby = () => {
-        var index = -1;
-        index = props.lobbies.findIndex((lobby) => lobby.id === props.selectedWedding.lobbyId);
-        if (index !== -1) {
-            return props.lobbies[index];
-        }
-    }
 
   const calculateUnitPriceTable = () => {
     let totalPriceFoods = 0;
         if (props.tableFoods)
             props.tableFoods.forEach((food) => {totalPriceFoods+=parseInt(food.totalPrice)});
-        if (totalPriceFoods < recentLobby().minUnitPriceTable)
-          totalPriceFoods = recentLobby().minUnitPriceTable;
+        if (totalPriceFoods < props.recentLobby.minUnitPriceTable)
+          totalPriceFoods = props.recentLobby.minUnitPriceTable;
         return totalPriceFoods;
   }
 
@@ -211,7 +211,7 @@ function TableDetailDialog(props) {
       onClose={props.handleCloseTableFoodDialog} 
       TransitionComponent={Transition}
       onExiting={() => {
-        props.fetchAllTablesInfo(props.selectedWedding.id);
+        props.fetchAllTablesInfo(props.weddingId);
         props.updateSelectedTable({...props.selectedTable, unitPriceTable: calculateUnitPriceTable()})
       }}>
         <AppBar className={classes.appBar}>
@@ -250,49 +250,51 @@ function TableDetailDialog(props) {
             </Grid>
             <Grid item xs={2} className={classes.textField}>
               <Form onSubmit={handleSubmit}>
-                <TextField className={classes.textFieldForm} fullWidth value={calculateUnitPriceTable()}></TextField>
+                <Typography 
+                className={classes.textFieldForm} 
+                variant="subtitle1">
+                  <NumberFormat value={calculateUnitPriceTable()} displayType={'text'} thousandSeparator={true} suffix={' đ'} style={{marginLeft: "4px"}} />
+                </Typography>
                 <TextField 
                 className={classes.textFieldForm} 
                 fullWidth
                 value={values.name} />
-                <TextField 
-                className={classes.textFieldForm} 
-                fullWidth
-                value={values.price} />
+
+                <Typography variant="subtitle1" className={classes.textFieldForm} name='price' >
+                  <NumberFormat name='price' value={values.price} displayType={'text'} thousandSeparator={true} suffix={' đ'} style={{marginLeft: "6px"}} />
+                </Typography>
                 <FormControl className={classes.tableInfoFormItem} variant="outlined" fullWidth>
-                            <OutlinedInput
-                                id="outlined-adornment-password"
-                                labelWidth={0}
-                                name='count'
-                                value={values.count}
-                                onChange={handleInputChange}
-                                {...(errors.count && {error:true,helperText:errors.count})}
-                                endAdornment={
-                                <InputAdornment position="end">
-                                    <ButtonGroup size="small" aria-label="small outlined button group">
-                                        {displayCounter('count') && <Button onClick={handleDecrement('count')}>-</Button>}
-                                        <Button onClick={handleIncrement('count')}>+</Button>
-                                    </ButtonGroup>
-                                </InputAdornment>
-                                }
-                            />
-                            {!!errors.count && (
-                                <FormHelperText error id="'count-error">
-                                {errors.count}
-                                </FormHelperText>
-                            )}
-                            </FormControl>
+                    <OutlinedInput
+                        id="outlined-adornment-password"
+                        labelWidth={0}
+                        name='count'
+                        value={values.count}
+                        onChange={handleInputChange}
+                        {...(errors.count && {error:true,helperText:errors.count})}
+                        endAdornment={
+                        <InputAdornment position="end">
+                            <ButtonGroup size="small" aria-label="small outlined button group">
+                                {displayCounter('count') && <Button onClick={handleDecrement('count')}>-</Button>}
+                                <Button onClick={handleIncrement('count')}>+</Button>
+                            </ButtonGroup>
+                        </InputAdornment>
+                        }
+                    />
+                    {!!errors.count && (
+                        <FormHelperText error id="'count-error">
+                        {errors.count}
+                        </FormHelperText>
+                    )}
+                </FormControl>
+                <Typography variant="subtitle1" className={classes.textFieldForm} name='totalPrice' >
+                  <NumberFormat name='totalPrice' value={values.count * values.price} displayType={'text'} thousandSeparator={true} suffix={' đ'} style={{marginLeft: "6px"}} />
+                </Typography>
                 <TextField 
-                name='totalPrice'
-                className={classes.textFieldForm} 
-                fullWidth
-                value={values.count * values.price} />
-                <TextField 
-                className={classes.textFieldForm} 
-                fullWidth
-                name='note'
-                value={values.note}
-                onChange={handleInputChange} />
+                  className={classes.textFieldForm} 
+                  fullWidth
+                  name='note'
+                  value={values.note}
+                  onChange={handleInputChange} />
                 {props.currentFoodState.state !== NORMAL ? <Button type='submit' variant="outlined" color="primary" fullfill size='large' className={classes.textFieldForm}>
                 {props.currentFoodState.state === EDIT_ORDER_FOOD ? 'Sửa đặt món ăn' : 'Đặt món ăn'}
                 </Button> : <></>}
@@ -317,7 +319,8 @@ const mapStateToProps = state => {
         currentFoodState: state.foodState,
         selectedTable : state.selectedRowTable,
         selectedWedding: state.selectedRow,
-        lobbies: state.lobbies
+        lobbies: state.lobbies,
+        recentLobby: state.lobbyItem
     }
 }
 

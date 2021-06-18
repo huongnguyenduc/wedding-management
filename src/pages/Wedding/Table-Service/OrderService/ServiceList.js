@@ -12,6 +12,7 @@ import Search from '@material-ui/icons/SearchOutlined';
 import { connect } from 'react-redux';
 import { EDIT_ORDER_SERVICE } from '../../reducers/serviceState';
 import clickRowService from '../../actions/clickRowService';
+import NumberFormat from 'react-number-format';
 
 var rows = [];
 
@@ -346,7 +347,9 @@ function ServiceList(props) {
                       <TableCell component="th" id={labelId} scope="row" padding="none"> 
                         {row.name}
                       </TableCell>
-                      <TableCell align="left">{row.price}</TableCell>
+                      <TableCell align="left">
+                        <NumberFormat value={row.price} displayType={'text'} thousandSeparator={true} suffix={' đ'} style={{marginLeft: "-2px"}} />
+                      </TableCell>
                       <TableCell align="left">{row.serviceKind}</TableCell>
                       <TableCell align="left">{row.moreInfo}</TableCell>  
                     </TableRow>

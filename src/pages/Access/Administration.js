@@ -71,7 +71,7 @@ function Administration(props) {
         {props ? 
             <MuiThemeProvider theme={theme}>
                 <div className={classes.title}>     
-                    <Typography variant="h4">Quản Lý Phân Quyền</Typography>
+                    <Typography variant="h4" color="secondary">Quản Lý Phân Quyền</Typography>
                 </div>
                 <div className={classes.select}>     
                     <FormControl variant="outlined" className={classes.formControl}>

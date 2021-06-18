@@ -12,6 +12,8 @@ import { NORMAL, EDIT_ORDER_SERVICE } from '../../reducers/serviceState';
 import { addMiddleware } from 'redux-dynamic-middlewares'
 import {actAddWeddingServiceRequest} from '../../../../action/weddingService';
 import {actUpdateWeddingServiceRequest} from '../../../../action/weddingService';
+import { useSnackbar } from 'notistack';
+import NumberFormat from 'react-number-format';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -95,6 +97,10 @@ function Service(props) {
       dispatch(clickRowService(initialValues));
       dispatch(normalState());            
   }
+  const { enqueueSnackbar } = useSnackbar();
+    const handleClickVariant = (variant, message) => {
+        enqueueSnackbar(message, { variant, autoHideDuration: 3000 });
+    };
   const handleSubmit = e => {
       e.preventDefault()
       if (validate()) {
@@ -107,6 +113,7 @@ function Service(props) {
             props.addWeddingService(createWeddingService())
           resetForm()
           changeToNormalState()
+          handleClickVariant("success", (props.currentserviceState.state !== EDIT_ORDER_SERVICE ? "Thêm" : "Sửa") + " dịch vụ thành công!")
       }
   }
 
@@ -124,7 +131,7 @@ function Service(props) {
       }
       else {
         if ('totalPrice' in action.payload) { //Table-Food
-          setValues({...action.payload, serviceId: action.payload.service.id, feastId: props.selectedWedding.id});
+          setValues({...action.payload, serviceId: action.payload.service.id, feastId: props.weddingId});
         } else
           setValues({...action.payload, count: action.payload.count || 0});
       }
@@ -162,7 +169,7 @@ function Service(props) {
 
   const createWeddingService = () => {
     return {
-      feastId: props.selectedWedding.id,
+      feastId: props.weddingId,
       serviceId: props.selectedService.id,
       count: values.count,
       note: values.note,
@@ -188,9 +195,6 @@ function Service(props) {
                 <ServiceList services={mapServiceKindProperty(props.services)}/>
             </Grid>
             <Grid item xs={2} className={classes.label}>
-                <Typography className={classes.labelTextFieldForm}  variant="h6">
-                Đơn giá bàn
-            </Typography>
                 <Typography className={classes.labelTextFieldForm} variant="h6">
                 Tên dịch vụ
             </Typography>
@@ -209,15 +213,13 @@ function Service(props) {
             </Grid>
             <Grid item xs={2} className={classes.textField}>
               <Form onSubmit={handleSubmit}>
-                <TextField className={classes.textFieldForm} fullWidth value={50000}></TextField>
                 <TextField 
                 className={classes.textFieldForm} 
                 fullWidth
                 value={values.name} />
-                <TextField 
-                className={classes.textFieldForm} 
-                fullWidth
-                value={values.price} />
+                <Typography variant="subtitle1" className={classes.textFieldForm} name='price' >
+                  <NumberFormat name='price' value={values.price} displayType={'text'} thousandSeparator={true} suffix={' đ'} style={{marginLeft: "6px"}} />
+                </Typography>
                 <FormControl className={classes.tableInfoFormItem} variant="outlined" fullWidth>
                             <OutlinedInput
                                 id="outlined-adornment-password"
@@ -236,11 +238,9 @@ function Service(props) {
                                 }
                             />
                             </FormControl>
-                <TextField 
-                name='totalPrice'
-                className={classes.textFieldForm} 
-                fullWidth
-                value={values.count * values.price} />
+                <Typography variant="subtitle1" className={classes.textFieldForm} name='totalPrice' >
+                  <NumberFormat name='totalPrice' value={values.count * values.price} displayType={'text'} thousandSeparator={true} suffix={' đ'} style={{marginLeft: "6px"}} />
+                </Typography>
                 <TextField 
                 className={classes.textFieldForm} 
                 fullWidth
@@ -257,7 +257,7 @@ function Service(props) {
               </Form>
             </Grid>
         </Grid>
-        <ServiceOrderList rows = {mapWeddingServiceProperty(props.weddingServices)}/>
+        <ServiceOrderList rows = {mapWeddingServiceProperty(props.weddingServices)} weddingId={props.weddingId}/>
     </div>
   );
 }
@@ -267,7 +267,6 @@ const mapStateToProps = state => {
         services: state.services,
         weddingServices: state.weddingServices.services,
         selectedService: state.selectedRowService,
-        selectedWedding: state.selectedRow,
         currentserviceState: state.serviceState,
         selectedTable : state.selectedRowTable,
     }

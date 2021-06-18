@@ -6,19 +6,19 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import {connect} from 'react-redux'
-import {actAddTableCategoryRequest} from './../../../action/tableCategory';
+import {actUpdateTableCategoryRequest} from './../../../action/tableCategory';
 import { useSnackbar } from 'notistack';
 
-function AddTableCategoryDialog(props) {
+function UpdateTableCategoryDialog(props) {
 
-  const {open, handleClose} = props;
-  const [tableCategoryName, setTableCategoryName] = React.useState('');
+  const {open, handleClose, data} = props;
+  const [tableCategoryName, setTableCategoryName] = React.useState(data.name);
 
   const handleNameChange = (event) => {
     setTableCategoryName(event.target.value);
   };
 
-  const [tableCategoryNote, setTableCategoryNote] = React.useState('');
+  const [tableCategoryNote, setTableCategoryNote] = React.useState(data.moreInfo);
 
   const handleNoteChange = (event) => {
     setTableCategoryNote(event.target.value);
@@ -31,7 +31,7 @@ function AddTableCategoryDialog(props) {
   return (
     <div>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">Thêm loại bàn</DialogTitle>
+        <DialogTitle id="form-dialog-title">Sửa loại bàn</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
@@ -57,8 +57,8 @@ function AddTableCategoryDialog(props) {
           </Button>
           <Button 
           color="primary" 
-          onClick={() => {props.addTableCategoriesInfo({name: tableCategoryName, moreInfo: tableCategoryNote}); handleClickVariant("success", "Thêm loại bàn thành công!"); handleClose();}}>
-            Thêm loại bàn
+          onClick={() => {props.updateTableCategoriesInfo({id: data.id, name: tableCategoryName, moreInfo: tableCategoryNote}); handleClickVariant("success", "Sửa loại bàn thành công!"); handleClose();}}>
+            Chỉnh sửa
           </Button>
         </DialogActions>
       </Dialog>
@@ -68,9 +68,9 @@ function AddTableCategoryDialog(props) {
 
 const mapDispatchToProps = (dispatch, props) => {
     return {
-        addTableCategoriesInfo : ({name, moreInfo}) => {
-            dispatch(actAddTableCategoryRequest({name, moreInfo}));
+        updateTableCategoriesInfo : ({id, name, moreInfo}) => {
+            dispatch(actUpdateTableCategoryRequest({id, name, moreInfo}));
         },
     }
 }
-export default connect(null, mapDispatchToProps)(AddTableCategoryDialog);
+export default connect(null, mapDispatchToProps)(UpdateTableCategoryDialog);
