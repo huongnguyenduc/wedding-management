@@ -1,10 +1,15 @@
+import {getCookie} from '../../action/Login'
 export const API_SERVER = "https://wedding-management.herokuapp.com/api/";
 const FEAST_API = 'feast'
+
 export function CallAPI(endpoint, method='GET', body)
 {
+    const token = getCookie("token")
     const config = {
         method: method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json',
+        "Authorization" : `Bearer ${token}`
+        },
     }
 
     if (body) {

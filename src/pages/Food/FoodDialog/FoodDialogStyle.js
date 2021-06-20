@@ -2,20 +2,7 @@ import {makeStyles} from '@material-ui/core/styles';
 const useStyles = makeStyles(theme=>(
 {       
      DialogBackGround:{
-        backgroundColor:'rgb(25,25,25,0.6)',
-        width:'100vw',
-        height:'100vh',
-        maxWidth:'100vw',
-        maxHeight:'100vh',
-        position:'fixed',
-        bottom:'50%',
-        right:'50%',
-        transform:'translate(50% , 50%)',
-        zIndex:'2',
-        display:'flex',
-        justifyContent:'center',
-        alignContent:'center',
-        overflow:'auto'
+        
     },
     DialogBody:{
         position:'relative',
@@ -32,7 +19,6 @@ const useStyles = makeStyles(theme=>(
         borderRadius:'5px',
         zIndex:'3',
         animation: "$opacity 0.8s 1",
-        opacity:1
 
     },
     "@keyframes opacity": {
@@ -149,21 +135,6 @@ const useStyles = makeStyles(theme=>(
         },
         marginBottom:'4rem',
     },
-    Footer:{
-        display:'flex',
-        justifyContent:'space-around',
-        padding:'1rem',
-        position: 'absolute',
-        bottom:'0',
-        right:'50%',
-        transform:'translateX(50%)',
-        width:'100%',
-        animation: "$Translate 0.3s 1"
-    },
-    "@keyframes Translate": {
-        from: { bottom :'-50px' },
-        to: {bottom: 0 }
-    },
     ControlButton:{
         fontSize:'15px',
         [theme.breakpoints.down('xs')]: {
@@ -227,7 +198,7 @@ const useStyles = makeStyles(theme=>(
         fontSize: '22px',
         color:'#4b4b4b',
         fontFamily:'"Patrick Hand", cursive',
-        marginBottom:'50px',
+        marginBottom:'40px',
         "&.MuiInputBase-root.Mui-disabled": {
             color: '#4b4b4b',
         }

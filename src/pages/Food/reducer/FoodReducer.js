@@ -27,36 +27,36 @@ const FoodReducer = (state = InitState, action) => {
             return {...state,Pending:action.pending}
         }
         case INITFOOD:{
-            return {...state,Pending:action.pending, Status:action.status, Food:action.payload}
+            return {...state,Pending:action.pending, Food:action.payload}
         }
         case INSERTFOOD:
         {
-           return {...state,Pending:action.pending, Status:action.status  ,Food:[...state.Food,action.payload]}
+           return {...state,Pending:action.pending, Status:{...state.Status,...action.status}  ,Food:[...state.Food,action.payload]}
         }
         case DELETEFOOD:
         {
-            return {...state,Pending:action.pending, Status:action.status, Food: state.Food.filter((item)=>{return item.id!==action.payload.id})};
+            return {...state,Pending:action.pending, Status:{...state.Status,...action.status}, Food: state.Food.filter((item)=>{return item.id!==action.payload.id})};
         }
         case UPDATEFOOD:
         {
             let term = state.Food.filter((item)=>{return item.id!==action.payload.id});
-            return {...state,Pending:action.pending, Status:action.status, Food:[...term,action.payload]} 
+            return {...state,Pending:action.pending, Status:{...state.Status,...action.status}, Food:[...term,action.payload]} 
         }
         case INITFOODCATEGORY:{
-            return {...state,Pending:action.pending, Status:action.status, FoodCategory:action.payload}
+            return {...state,Pending:action.pending, FoodCategory:action.payload}
         }
         case INSERTFOODCATEGORY:
         {
-           return {...state,Pending:action.pending, Status:action.status  ,FoodCategory:[...state.FoodCategory,action.payload]}
+           return {...state,Pending:action.pending, Status:{...state.Status,...action.status} ,FoodCategory:[...state.FoodCategory,action.payload]}
         }
         case DELETEFOODCATEGORY:
         {
-            return {...state,Pending:action.pending, Status:action.status, FoodCategory: state.FoodCategory.filter((item)=>{return item.id!==action.payload.id})};
+            return {...state,Pending:action.pending, Status:{...state.Status,...action.status}, FoodCategory: state.FoodCategory.filter((item)=>{return item.id!==action.payload.id})};
         }
         case UPDATEFOODCATEGORY:
         {
             let term = state.FoodCategory.filter((item)=>{return item.id!==action.payload.id});
-            return {...state,Pending:action.pending, Status:action.status, FoodCategory:[...term,action.payload]} 
+            return {...state,Pending:action.pending, Status:{...state.Status,...action.status}, FoodCategory:[...term,action.payload]} 
         }
         case ERROR:
         {

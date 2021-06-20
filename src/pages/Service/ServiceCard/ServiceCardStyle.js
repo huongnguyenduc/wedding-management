@@ -10,6 +10,12 @@ const useStyles = makeStyles(theme=>(
         justifyContent:'center',
         padding:'3.5rem 3rem 3rem',
         transition:"transform 5s",
+        [theme.breakpoints.down('md')]: {
+            padding:'3rem 2rem 2rem',
+        },
+        [theme.breakpoints.down('sm')]: {
+            padding:'3rem 2rem 2rem',
+        },
         [theme.breakpoints.down('xs')]: {
             padding:'3rem 1rem 1rem',
         },
@@ -145,6 +151,9 @@ const useStyles = makeStyles(theme=>(
        fontSize:'16px',
        fontWeight:'600',
        color:'#c17a37'
+    },
+    SearchControl:{
+        
     }
 }   
 ))

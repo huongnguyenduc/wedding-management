@@ -4,7 +4,7 @@ const useStyles = makeStyles(theme=>(
 {
     
     backdrop: {
-        zIndex: theme.zIndex.drawer + 1,
+        zIndex: theme.zIndex.drawer + 999,
         color: '#fff',
     },
     buttonArea:

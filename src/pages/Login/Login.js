@@ -1,18 +1,18 @@
 import React,{useState}from 'react';
-import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import {Link} from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import useStyles from './styles';
-import Paper from '@material-ui/core/Paper';
-import theme from './MuiTheme';
-import {MuiThemeProvider} from '@material-ui/core';
+import {CardMedia, Backdrop} from '@material-ui/core';
 import { useHistory } from 'react-router';
-import AuthService from './AuthService'
+import { Container } from '@material-ui/core';
+import PersonIcon from '@material-ui/icons/Person';
+import { InputAdornment } from '@material-ui/core';
+import { LockOpen } from '@material-ui/icons';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import {login} from './AuthService';
+import Slide from '@material-ui/core/Slide';
 
 
  function Login() {
@@ -21,127 +21,134 @@ import AuthService from './AuthService'
 
 
   let history = useHistory();
-  const [success,setSucces] = useState(true)
-  const [values, setValues] = useState({
+  const [status,setStatus] = useState({open:false, severiry:'', message:'',name:''})
+  const [pending, setPending] = useState(false)
+  const [account, setAccount] = useState({
     username:'',
     password:''
   })
-
-  const [error, setError] = useState({
-    username:'',
-    password:''
-  })
-
-
-  const validate = (fieldvalues = values)=>{
-    let err = {...error};
-    if('username' in fieldvalues)
-      err.username=fieldvalues.username?'':'Vui lòng nhập Tên đăng nhập!';
-    if('password' in fieldvalues)
-      err.password = fieldvalues.password?'':'Vui lòng nhập mật khẩu!';
-      setError({...err});
-      if(fieldvalues===values)
-        return Object.values(err).every(x=> x==='');
-  }
 
   const HandleInputChange=(e)=>
   {
     const {name, value} = e.target;
-    setValues({...values,[name]:value});
+    setAccount({...account,[name]:value});
   }
 
-  const HandleSubmit=(e)=>
+  function afterlogin(data)
   {
-    e.preventDefault()
+    setPending(false)
+    if(data.status==='success')
+    {
+      history.replace('/')
+    }
+    else if(data.status ==='wrong')
+    {
+      setStatus({open:true,pending:false, severiry:'error', message:'Tên đăng nhập hoặc mật khẩu không đúng!'})
+    }
+    else if(data.status ==='error')
+    {
+      setStatus({open:true,pending:false, severiry:'error', message:'Lỗi đường truyền!'})
+    }
+
+    return false
+  } 
+
+  function validate()
+  {
+    if(account.username==='')
+    {
+      setStatus({open:true, severiry:'error', message:'Tên đăng nhập không được để trống',name:'username'})
+      return false
+    }
+    if(account.password==='')
+    {
+      setStatus({open:true, severiry:'error', message:'Mật khẩu không được để trống',name:'password'})
+      return false
+    }
+    return true;
+  }
+
+  function LoginHandler()
+  {
     if(validate())
     {
-      setError({
-        username:'',
-        password:''
-      })
-      Submit(); 
+      setPending(true)
+      login(account, afterlogin)
     }
-    else
-      return;
-     
+      
   }
 
-  const Submit=()=>
-  {
-    if(AuthService.login({username: values.username,password: values.password}))
-    {
-      //Dang nhap thanh cong
-      history.replace('/Wedding')
-      setSucces(true);
-    }
-    else
-    {
-      //Dang nhap khong thanh cong
-      console.log(AuthService.login({username: values.username,password: values.password}))
-      setSucces(false);
-    }
-  }
+
   return (
-    <MuiThemeProvider theme={theme}>
-    <Grid Container component="main" className={classes.loginpage}>
-      <CssBaseline />
-      <Grid item xs={false} sm={4} md={7} className={classes.img}/>
-      <Grid item xs={12} sm={8} md={5} component={Paper} square>  
-        <div className={classes.paper}>
-          <Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Đăng nhập
-          </Typography>
-          <Typography className={classes.labelError} component="h2" hidden={success?true:false}>
-            Tên đăng nhập hoặc mật khẩu không đúng!
-          </Typography>
-          <form className={classes.form}  onSubmit={HandleSubmit}>
-            <TextField
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              id="username"
-              label="Tên đăng nhập"
-              name="username"
-              autoComplete="username"
-              autoFocus
-              onChange={HandleInputChange}
-              error= {error.username?true:false}
-              helperText ={error.username}
+    <Grid component="main" className={classes.loginpage}>
+      <link rel="preconnect" href="https://fonts.gstatic.com"/>
+      <link href="https://fonts.googleapis.com/css2?family=Mitr&family=Pacifico&display=swap" rel="stylesheet"/>
+      <Backdrop open={pending} className={classes.Backdrop}>
+        <CircularProgress style={{fontSize:'30px'}}/>
+      </Backdrop>
+      <Container maxWidth='lg' className={classes.LoginContainer}  >
+          
+          <Grid item xs={12} sm={6} md={7} lg={7} className={classes.MediaContent}>
+            <CardMedia
+              image= 'https://images-na.ssl-images-amazon.com/images/I/61EZdcgqknL.jpg'
+              className={classes.Image}
             />
-
-            <TextField
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              name="password"
-              label="Mật khẩu"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              onChange={HandleInputChange}
-              error ={error.password?true:false}
-              helperText={error.password}
-            />   
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              className={classes.submit}
-            >
-              Đăng nhập
-            </Button>
-            <Link to='/SignUp' >
-                Đăng ký tài khoản mới
-            </Link>
-          </form>
-        </div>
-      </Grid>
+          </Grid>
+          <Grid item xs={12} sm={6} md={5} lg={5} className={classes.TextContent}>
+            <Typography className={classes.Title}>Quản lý tiệc cưới</Typography>
+            <Grid>
+              <Typography className={classes.SubTitle}>Đăng nhập</Typography>
+              <Typography style={{visibility:status.open?'visible':'hidden'}} className={classes.errorText}>{status.message}</Typography>
+              <Container maxWidth='xs' className={classes.LoginForm}>
+                <TextField
+                    margin="normal"
+                    fullWidth
+                    id="username"
+                    name="username"
+                    autoComplete="username"
+                    placeholder='Tên đăng nhập'
+                    autoFocus
+                    onChange={HandleInputChange}
+                    error={status.name==='username'}
+                    className={classes.txtInfo}
+                    InputProps={{
+                      startAdornment:<InputAdornment>
+                        <PersonIcon className={classes.InputIcon}/>
+                      </InputAdornment>
+                    }}
+                />
+                <TextField
+                  margin="normal"
+                  fullWidth
+                  name="password"
+                  type="password"
+                  id="password"
+                  autoComplete="current-password"
+                  placeholder='Mật khẩu'
+                  onChange={HandleInputChange}
+                  className={classes.txtInfo}
+                  error={status.name==='password'}
+                  InputProps={{
+                    startAdornment:<InputAdornment>
+                      <LockOpen className={classes.InputIcon}/>
+                    </InputAdornment>
+                  }}
+                  />  
+                  <Grid className={classes.ButtonContainer}>
+                    <Button
+                      className={classes.btnLogin}
+                      onClick={LoginHandler}
+                    >
+                    Đăng nhập
+                    </Button>
+                </Grid> 
+              </Container>
+          </Grid>
+            
+            <Typography className={classes.HiddenTitle} >Quản lý tiệc cưới</Typography>
+          </Grid>
+      </Container>
     </Grid>
-    </MuiThemeProvider>
   );
 }
 
