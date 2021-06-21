@@ -24,7 +24,7 @@ const routes = [
         path: '/',
         exact: true,
         main: () => {
-            if(getCookie("token")!="") 
+            if(getCookie("token")!=="") 
                 return (<Calendar />)
             else
                 return (<Redirect to='./Login'/>)
@@ -34,7 +34,7 @@ const routes = [
         path: '/service',
         exact: true,
         main: () =>{
-            if(getCookie("token")!="") 
+            if(getCookie("token")!=="") 
                 return (<Service />)
             else
                 return (<Redirect to='./Login'/>)
@@ -44,7 +44,7 @@ const routes = [
         path: '/policy',
         exact: true,
         main: () =>{
-            if(getCookie("token")!="") 
+            if(getCookie("token")!=="") 
                 return ( <Policy />)
             else
                 return (<Redirect to='./Login'/>)
@@ -54,7 +54,7 @@ const routes = [
         path: '/food',
         exact: true,
         main: () =>{
-            if(getCookie("token")!="") 
+            if(getCookie("token")!=="") 
                 return (<Food />)
             else
                 return (<Redirect to='./Login'/>)
@@ -64,7 +64,7 @@ const routes = [
         path: '/lobby',
         exact: true,
         main: () =>{
-            if(getCookie("token")!="") 
+            if(getCookie("token")!=="") 
                 return (<Lobby />)
             else
                 return (<Redirect to='./Login'/>)
@@ -74,7 +74,7 @@ const routes = [
         path: '/wedding',
         exact: true,
         main: () =>{
-            if(getCookie("token")!="") 
+            if(getCookie("token")!=="") 
                 return ( <Wedding />)
             else
                 return (<Redirect to='./Login'/>)
@@ -84,7 +84,7 @@ const routes = [
         path: '/bill',
         exact: true,
         main: () =>{
-            if(getCookie("token")!="") 
+            if(getCookie("token")!=="") 
                 return (<Bill />)
             else
                 return (<Redirect to='./Login'/>)
@@ -94,7 +94,7 @@ const routes = [
         path: '/access',
         exact: true,
         main: () =>{
-            if(getCookie("token")!="") 
+            if(getCookie("token")!=="") 
                 return (<Access />)
             else
                 return (<Redirect to='./Login'/>)
@@ -104,7 +104,7 @@ const routes = [
         path: '/bill/:weddingId',
         exact: false,
         main: ({match, history}) =>{
-            if(getCookie("token")!="") 
+            if(getCookie("token")!=="") 
                 return (<DetailBill match={match} history={history}/>)
             else
                 return (<Redirect to='./Login'/>)
@@ -114,7 +114,7 @@ const routes = [
         path: '/wedding/:weddingId/:lobbyId',
         exact: true,
         main: ({match, history}) =>{
-            if(getCookie("token")!="") 
+            if(getCookie("token")!=="") 
                 return (<TableService  match={match} history={history}/>)
             else
                 return (<Redirect to='./Login'/>)

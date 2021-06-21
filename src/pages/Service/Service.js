@@ -46,6 +46,23 @@ function Service() {
        var str = service.name.toLowerCase();
        return str.search(key)!==-1;
     }
+
+    var prevScrollpos = window.pageYOffset;
+
+    function scrollHandler(){
+        var currentScrollPos = window.pageYOffset;
+        var header = document.querySelector(".ServiceHeader")
+        if(header!=null)
+        {
+            if (prevScrollpos > currentScrollPos) {
+                header.style.top = "80px";
+            } else {
+                header.style.top = "0px";
+            }
+        }
+        prevScrollpos = currentScrollPos;
+    }
+    window.addEventListener('scroll', scrollHandler);
   
     useEffect(()=>{
         dispatch(GetServices())
@@ -59,7 +76,7 @@ function Service() {
                 <CircularProgress color="inherit"/>
             </Backdrop>
             <Container maxWidth='lg' className={`ServiceHeader ${classes.Header}`}>
-                <Grid item xs={8} sm={8} md={6} lg={6} className={classes.SearchControl} style={{visibility:openSearch?'visible':'hidden'}}>
+                {openSearch?<Grid item xs={12} sm={12} md={12} lg={12} className={classes.SearchControl} >
                     <TextField
                         className={classes.TextSearch}
                         placeholder='Tìm kiếm'
@@ -76,7 +93,7 @@ function Service() {
                        
                     />
                    
-                </Grid>
+                </Grid>:null}
                 <IconButton 
                     classes={{label:classes.ButtonLabel}}
                     className={classes.SearchButton}

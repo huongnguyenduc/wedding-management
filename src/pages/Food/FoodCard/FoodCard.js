@@ -37,6 +37,7 @@ function FoodCard(props) {
                     className={`tfName ${classes.tfName}`}
                     align="center" 
                     variant='h5'
+                    onClick={onEditClick}
                 >
                     {data.name} 
                 </Typography>

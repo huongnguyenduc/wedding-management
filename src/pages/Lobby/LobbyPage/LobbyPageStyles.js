@@ -67,6 +67,7 @@ const useStyles = makeStyles(theme=>(
             color:'#fff'
         },
         zIndex:'3',
+        transition: 'top 0.3s'
     },
     AppBarScroll:{
         position:'fixed',

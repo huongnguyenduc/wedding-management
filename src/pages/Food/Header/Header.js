@@ -15,11 +15,21 @@ function Header(props){
         setKeyword(e.target.value.toLowerCase())
     }
 
+    var prevScrollpos = window.pageYOffset;
     function scrollHandler(){
+      var currentScrollPos = window.pageYOffset;
       var header = document.querySelector(".FoodHeader")
       if(header!=null)
-          header.classList.toggle(classes.ScrollHeader,window.scrollY > 80)
-    }
+      {
+          if (prevScrollpos > currentScrollPos) {
+              header.style.top = "80px";
+          } else {
+              header.style.top = "-85px";
+          }
+      }
+      prevScrollpos = currentScrollPos;
+  }
+  window.addEventListener('scroll', scrollHandler);
 
     useEffect(()=>{
       // window.addEventListener('scroll', scrollHandler)
