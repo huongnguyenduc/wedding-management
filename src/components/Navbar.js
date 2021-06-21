@@ -75,7 +75,9 @@ function Navbar() {
                         </Link>
                     </li>
                     {SidebarData.map((item, index) => {
-                        if (item.access && !privileges.some((permission) => canShowMenuItem(permission, item.access))) {
+                        if (item.path === "/access" && !privileges.some((permission) => canShowMenuItem(permission, "UPDATE_PER")) && !privileges.some((permission) => canShowMenuItem(permission, "READ_USER")))
+                            return (<></>) 
+                        else if (item.access && !privileges.some((permission) => canShowMenuItem(permission, item.access))) {
                             return (<></>)
                         } else
                         return (

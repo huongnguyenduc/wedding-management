@@ -60,6 +60,10 @@ function EnhancedTableHead(props) {
     onRequestSort(event, property);
   };
   
+  const privileges = JSON.parse(getCookie("privileges"))
+  
+  const canUpdateUser = (permission) => permission.authority === "UPDATE_USER"
+
 
   return (
     <>
@@ -67,7 +71,11 @@ function EnhancedTableHead(props) {
         <TableRow>
           <TableCell padding="checkbox">
           </TableCell>
-          {headCells.map((headCell) => (
+          {headCells.map((headCell) => {
+            if (!privileges.some(canUpdateUser) && (headCell.id === "delete" || headCell.id === "edit")) {
+                return (<></>)
+            } else
+            return (
             <TableCell
               key={headCell.id}
               align={headCell.numeric ? 'right' : 'left'}
@@ -87,7 +95,7 @@ function EnhancedTableHead(props) {
                 ) : null}
               </TableSortLabel>
             </TableCell>
-          ))}
+          )})}
         </TableRow>
       </TableHead>
     </>
@@ -138,6 +146,9 @@ const EnhancedTableToolbar = (props) => {
   const handleCloseUserDialog = () => {
       setOpenUserDialog(false);
   };
+  const privileges = JSON.parse(getCookie("privileges"))
+  
+  const canUpdateUser = (permission) => permission.authority === "UPDATE_USER"
 
   const initialValues = {
     username: "",
@@ -171,7 +182,7 @@ const EnhancedTableToolbar = (props) => {
             Danh sách người dùng
           </Typography>
         )}
-        {(
+        {privileges.some(canUpdateUser) ? (
           <Tooltip title="Thêm người dùng mới">
               <Button
                   variant="contained"
@@ -183,7 +194,7 @@ const EnhancedTableToolbar = (props) => {
                   Thêm người dùng
               </Button>
           </Tooltip>
-      )}
+      ) : <></>}
       </Toolbar>
     </>
   );
@@ -385,16 +396,16 @@ function AccountList(props) {
                         </TableCell>
                         <TableCell align="left">{row.username}</TableCell>
                         <TableCell align="left">{row.roles ? roleName(row.roles[0].name) : ""}</TableCell>
-                        <TableCell align="left">
+                        {privileges.some(canUpdateUser) ? <TableCell align="left">
                             <IconButton style={{marginLeft: "-12px" }}>
-                                {privileges.some(canUpdateUser) ? <Edit style={{color: indigo[800], fontSize: "20px", marginLeft: "-10px" }} onClick={ () => { setRowNow(row); handleOpenUserDialog();}}/> : <></>} 
+                                {<Edit style={{color: indigo[800], fontSize: "20px", marginLeft: "-10px" }} onClick={ () => { setRowNow(row); handleOpenUserDialog();}}/>} 
                             </IconButton>
-                        </TableCell>
-                        <TableCell align="left">
-                            {(roleName(row.roles[0].name) === "Admin" || !privileges.some(canUpdateUser)) ? <></> : <IconButton style={{marginLeft: "-12px" }} onClick={() => {setRowNow(row); handleClickOpen();}}>
+                        </TableCell> : <></>}
+                        {privileges.some(canUpdateUser) ? <TableCell align="left">
+                            {(roleName(row.roles[0].name) === "Admin" ) ? <></> : <IconButton style={{marginLeft: "-12px" }} onClick={() => {setRowNow(row); handleClickOpen();}}>
                                 <Delete style={{color: red[800], fontSize: "20px", marginLeft: "-10px" }} /> 
                             </IconButton>}
-                        </TableCell>      
+                        </TableCell> : <></>}     
                       </TableRow>
                     );
                   })}
