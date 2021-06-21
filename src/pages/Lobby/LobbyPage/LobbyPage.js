@@ -5,6 +5,7 @@ import LobbyCard from "../LobbyCard/LobbyCard"
 import useStyles from './LobbyPageStyles'
 import { ExpandLess, ExpandMore } from '@material-ui/icons';
 import SearchIcon from '@material-ui/icons/Search';
+import { getCookie } from '../../../action/Login'
 
 function LobbyPage(props) {
     const {...other} = props 
@@ -73,6 +74,9 @@ function LobbyPage(props) {
     useEffect(()=>{
         // window.addEventListener("scroll", scrollHandler)
     },[])
+    const privileges = JSON.parse(getCookie("privileges"))
+
+    const canUpdateLobby = (permission) => permission.authority === "UPDATE_LOBBY"
     if(LobbyCategory.length>0)
     return (
         <>
@@ -120,7 +124,7 @@ function LobbyPage(props) {
                        PagePriceItemSort(Lobby,'asc').map((lobby)=>{
                             return(<LobbyCard key={lobby.id} xs={12} sm={6} md={4} lg={4} lobby={lobby} />)})
                     }
-                    <LobbyCard id="insert_lobby"  xs={12} sm={6} md={4} lg={4} />
+                    { privileges.some(canUpdateLobby) ? <LobbyCard id="insert_lobby"  xs={12} sm={6} md={4} lg={4} /> : <></>}
                 </Container>
             </TabPanel>
             {
@@ -132,7 +136,7 @@ function LobbyPage(props) {
                                     PagePriceItemSort(FilterCategory(Lobby,category),'asc').map((lobby)=>{
                                         return(<LobbyCard key={`${category.id}_${lobby.id}`} xs={12} sm={6} md={4} lg={4} lobby={lobby} />)})
                                 }
-                                <LobbyCard id="insert_lobby"  xs={12} sm={6} md={4} lg={4} lobbyCategory={category}/>
+                                { privileges.some(canUpdateLobby) ? <LobbyCard id="insert_lobby" xs={12} sm={6} md={4} lg={4} lobbyCategory={category}/> : <></>}
                             </Container>
                         </TabPanel>
                     )

@@ -37,6 +37,10 @@ function Navbar() {
     }
     prevScrollpos = currentScrollPos;
     }
+
+    const privileges = JSON.parse(getCookie("privileges"))
+
+    const canShowMenuItem = (permission, access) => permission.authority === access
     return (
         <>
         <IconContext.Provider value={{color: '#fff'}}>
@@ -71,6 +75,9 @@ function Navbar() {
                         </Link>
                     </li>
                     {SidebarData.map((item, index) => {
+                        if (item.access && !privileges.some((permission) => canShowMenuItem(permission, item.access))) {
+                            return (<></>)
+                        } else
                         return (
                             <li key={index} className={item.cName}>
                                 <Link to={item.path}>

@@ -14,6 +14,7 @@ import { actUpdateUserRequest } from './../../../action/user';
 import { actAddUserRequest } from './../../../action/user';
 import AlertDialog from '../../../components/AlertDialog';
 import { useSnackbar } from 'notistack';
+import { getCookie } from '../../../action/Login'
 
 
 var rows = [];
@@ -335,6 +336,10 @@ function AccountList(props) {
     handleClickVariant("error", "Lỗi hệ thống. Sửa thông tin người dùng thất bại!")
   }
 
+  const privileges = JSON.parse(getCookie("privileges"))
+  
+  const canUpdateUser = (permission) => permission.authority === "UPDATE_USER"
+
   return (
       <div className={classes.root}>
         <AlertDialog open={open} handleClose={handleClose} title="Xóa tài khoản" description="Bạn có muốn xóa tài khoản này không?" onSubmit={ () => props.deleteUser(rowNow.username, deleteSuccess, deleteFailure)}/>
@@ -382,11 +387,11 @@ function AccountList(props) {
                         <TableCell align="left">{row.roles ? roleName(row.roles[0].name) : ""}</TableCell>
                         <TableCell align="left">
                             <IconButton style={{marginLeft: "-12px" }}>
-                                <Edit style={{color: indigo[800], fontSize: "20px", marginLeft: "-10px" }} onClick={ () => { setRowNow(row); handleOpenUserDialog();}}/> 
+                                {privileges.some(canUpdateUser) ? <Edit style={{color: indigo[800], fontSize: "20px", marginLeft: "-10px" }} onClick={ () => { setRowNow(row); handleOpenUserDialog();}}/> : <></>} 
                             </IconButton>
                         </TableCell>
                         <TableCell align="left">
-                            {roleName(row.roles[0].name) === "Admin" ? <></> : <IconButton style={{marginLeft: "-12px" }} onClick={() => {setRowNow(row); handleClickOpen();}}>
+                            {(roleName(row.roles[0].name) === "Admin" || !privileges.some(canUpdateUser)) ? <></> : <IconButton style={{marginLeft: "-12px" }} onClick={() => {setRowNow(row); handleClickOpen();}}>
                                 <Delete style={{color: red[800], fontSize: "20px", marginLeft: "-10px" }} /> 
                             </IconButton>}
                         </TableCell>      

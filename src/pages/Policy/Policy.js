@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { GetPolicy, GetShift } from "./connect";
 import { Alert} from '@material-ui/lab';
 import { actCloseError } from "./actions/actions";
-
+import { getCookie } from '../../action/Login'
 
 function Policy() {
     const classes = useStyles()
@@ -25,10 +25,13 @@ function Policy() {
         dispatch(GetPolicy())
         dispatch(GetShift())
     },[]);
+    const privileges = JSON.parse(getCookie("privileges"))
+
+    const canShowShift = (permission) => permission.authority === "READ_SHIFT"
     return(
             <Container maxWidth='lg' className={classes.PolicyContainer}>
                 <PolicyTable/>
-                <ShiftTable/>  
+                {privileges.some(canShowShift) ? <ShiftTable/> : <></>  }
                 <Backdrop open={Pending} className={classes.backdrop} onClick={(e)=>{e.stopPropagation()}}>
                     <CircularProgress color="inherit"/>
                 </Backdrop>

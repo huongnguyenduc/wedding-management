@@ -7,6 +7,7 @@ import NumberFormatCustom from '../../Food/FormartNumber'
 import InputAdornment from '@material-ui/core/InputAdornment';
 import {InsertLobby, UpdateLobby, DeleteLobby} from '../Connect'
 import { actError } from "../actions/actions";
+import { getCookie } from '../../../action/Login'
 
 function LobbyCard(props){
     const {lobby,lobbyCategory, ...other} = props
@@ -131,6 +132,9 @@ function LobbyCard(props){
                   
     };
 
+    const privileges = JSON.parse(getCookie("privileges"))
+
+    const canUpdateLobby = (permission) => permission.authority === "UPDATE_LOBBY"
 
     return(
         <Grid item {...other} className={classes.LobbyCard}>
@@ -158,12 +162,12 @@ function LobbyCard(props){
                         </div>
                     </CardMedia>
 
-                    <Grid className={`Header ${classes.Header}`}>
+                    { privileges.some(canUpdateLobby) ? <Grid className={`Header ${classes.Header}`}>
                         {editing?<IconButton onClick={FinishHandler} classes={{root:classes.ActionButton,label:classes.labelButton}}><Done className={`${classes.IconButton} ${classes.DoneIcon}`}/></IconButton>
                                 :<IconButton onClick={DeleteHandler} classes={{root:classes.ActionButton,label:classes.labelButton}}><DeleteOutline className={`${classes.IconButton} ${classes.DeleteIcon}`}/></IconButton>}
                         {editing&&lobby?<IconButton onClick={onCancelHandler} classes={{root:classes.ActionButton,label:classes.labelButton}}><Cancel className={`${classes.IconButton} ${classes.CancelIcon}`}/></IconButton>:null}
                         {!editing?<IconButton onClick={onUpdateClick}  classes={{root:classes.ActionButton,label:classes.labelButton}}><Edit className={`${classes.IconButton} ${classes.EditIcon}`}/></IconButton>:null}
-                    </Grid>
+                    </Grid> : <></>}
                     
                 </Grid>
                 {editing?

@@ -7,6 +7,7 @@ import theme from '../../components/MuiTheme';
 import Administration from './Administration';
 import Account from './Account';
 import {actFetchUsersRequest} from './../../action/user';
+import { getCookie } from '../../action/Login'
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -76,6 +77,9 @@ function Access(props) {
     useEffect(() => {
       props.fetchAllUsers();
     }, []);
+    const privileges = JSON.parse(getCookie("privileges"))
+
+    const canShowUser = (permission) => permission.authority === "READ_USER"
 
     return (
         <MuiThemeProvider theme={theme}>
@@ -89,16 +93,15 @@ function Access(props) {
                 classes={{indicator: classes.indicator}}
                 >
                 <LinkTab label="Quản lý phân quyền" href="/drafts"  {...a11yProps(0)} />
-                <LinkTab label="Quản lý tài khoản" href="/trash" {...a11yProps(1)} />
+                {privileges.some(canShowUser) ? <LinkTab label="Quản lý tài khoản" href="/trash" {...a11yProps(1)} /> : <></>}
                 </Tabs>
             </AppBar>
             <TabPanel value={value} index={0} style={{fontSize:'13px', fontWeight:'500', color: "#fff"}}>
                 <Administration />
             </TabPanel>
-            <TabPanel value={value} index={1}>
+            {privileges.some(canShowUser) ? <TabPanel value={value} index={1}>
                 {props.users ? <Account data={ props.users } /> : <CircularProgress />}
-                
-            </TabPanel>
+            </TabPanel> : <></>}
             </div>
         </MuiThemeProvider>
     );

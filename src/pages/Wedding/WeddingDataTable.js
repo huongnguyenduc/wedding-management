@@ -14,6 +14,7 @@ import editState from './actions/weddingState/edit';
 import { NORMAL } from './reducers/weddingState';
 import { useSnackbar } from 'notistack';
 import {green, indigo, red} from '@material-ui/core/colors';
+import { getCookie } from '../../action/Login'
 
 var rows = [];
 
@@ -126,6 +127,9 @@ const EnhancedTableToolbar = (props) => {
   const { numSelected, selectedRow } = props;
   const currentWeddingState = useSelector(state => state.weddingState);
   const dispatch = useDispatch();
+  const privileges = JSON.parse(getCookie("privileges"))
+
+  const canUpdateWedding = (permission) => permission.authority === "UPDATE_FEAST"
   const { enqueueSnackbar } = useSnackbar();
     const handleClickVariant = (variant, message) => {
         enqueueSnackbar(message, { variant, autoHideDuration: 3000 });
@@ -175,7 +179,7 @@ const EnhancedTableToolbar = (props) => {
         </Typography>
       )}
 
-      { currentWeddingState.state === NORMAL ?  (numSelected > 0 ? (
+      { currentWeddingState.state === NORMAL && privileges.some(canUpdateWedding) ?  (numSelected > 0 ? (
         <>
             <Tooltip title="Chỉnh sửa">
               <Button

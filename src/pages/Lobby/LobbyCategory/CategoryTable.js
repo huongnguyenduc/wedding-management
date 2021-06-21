@@ -8,7 +8,7 @@ import { actCloseError, actError } from '../actions/actions'
 import { Dialog } from '@material-ui/core'
 import Snackbar from '@material-ui/core/Snackbar';
 import { Alert } from '@material-ui/lab'
-
+import { getCookie } from '../../../action/Login'
 
 
 function CategoryTable(props){
@@ -80,6 +80,9 @@ function CategoryTable(props){
 
     const emptyRows = tableState.rowsPerPage - Math.min(tableState.rowsPerPage, LobbyCategory.length - tableState.page * tableState.rowsPerPage);
     const insertRow = LobbyCategory.length - (tableState.page + 1) * tableState.rowsPerPage; 
+    const privileges = JSON.parse(getCookie("privileges"))
+
+    const canUpdateLobbyCategory = (permission) => permission.authority === "UPDATE_LOBBYCATEGORY"
     return(
         <Dialog 
             open={open} 
@@ -104,7 +107,7 @@ function CategoryTable(props){
                         )   
                         })
                     }
-                    {(emptyRows > 0||insertRow===0) &&(<Row />)}
+                    {privileges.some(canUpdateLobbyCategory) ? (emptyRows > 0||insertRow===0) &&(<Row />) : <></>}
                         {emptyRows > 1 && (
                         <TableRow style={{ height: 54* (emptyRows - 1) }}>
                             <TableCell colSpan={6} />
@@ -311,7 +314,9 @@ function Row(props){
             setRowState({...rowState,id:lobbyCategory.id,name:lobbyCategory.name, mintable:lobbyCategory.mintable})
     },[])
 
+    const privileges = JSON.parse(getCookie("privileges"))
 
+    const canUpdateLobbyCategory = (permission) => permission.authority === "UPDATE_LOBBYCATEGORY"
 
     return(
         <TableRow className={`${classes.BodyRow} ${rowState.editing?classes.rowEditing:''}`}>
@@ -350,8 +355,8 @@ function Row(props){
                 className={classes.ControlCell}
                 align='center'
             >
-                {
-                    rowState.editing?
+                { privileges.some(canUpdateLobbyCategory) ?
+                    (rowState.editing?
                     <div className={classes.divControl}>
                         <IconButton classes={{label:classes.ButtonLabel}} onClick={FinishHandler}>
                             <Done className={classes.Icon}/>
@@ -370,7 +375,7 @@ function Row(props){
                         <IconButton classes={{label:classes.ButtonLabel}} onClick={Deletehandler}>
                             <Delete className={classes.Icon} />
                         </IconButton>
-                    </div>
+                    </div>) : <></>
                 }
             </TableCell>
         </TableRow>

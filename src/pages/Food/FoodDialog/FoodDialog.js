@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { actCloseFoodDialog, actError } from "../actions/actions";
 import { DeleteFood, InsertFood, UpdateFood } from "../FoodService";
 import { useTheme } from "@material-ui/core";
-
+import { getCookie } from '../../../action/Login'
 
 function FoodDialog(props) {
     const {data, handleClose} = props;
@@ -143,7 +143,9 @@ function FoodDialog(props) {
             dispatch(DeleteFood(foodState,CloseDialog))
     }
 
+    const privileges = JSON.parse(getCookie("privileges"))
 
+    const canUpdateFood = (permission) => permission.authority === "UPDATE_FOOD"
 
     return(
         <Dialog 
@@ -179,7 +181,7 @@ function FoodDialog(props) {
                 </Grid>
                 <Grid item xs={12} sm={6} md={6} lg={6} className={classes.Content}>
 
-                <ClickAwayListener onClickAway={()=>setOpenList(false)}>
+                {privileges.some(canUpdateFood) ? <ClickAwayListener onClickAway={()=>setOpenList(false)}>
                     <Grid className={classes.Header}>
                         <IconButton classes={{label: classes.ButtonLabel }} style={{padding:'0'}} onClick={()=>{setOpenList(!openList)}}>
                             <MoreHoriz style={{fontSize:"30px"}} />
@@ -230,7 +232,7 @@ function FoodDialog(props) {
                             }
                         </div>
                     </Grid>
-                </ClickAwayListener>
+                </ClickAwayListener> : <></>}
 
 
                     <Grid className={classes.GrdName}>

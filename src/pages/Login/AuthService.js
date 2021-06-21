@@ -37,6 +37,7 @@ export function login(account, success) {
         setCookie("fullname",data.fullname,5)
         setCookie("token",data.token,5)
         setCookie("role",data.role,5)
+        setCookie("privileges",JSON.stringify(data.privileges),5)
         success({status:'success'})
     })
     .catch(err=>{

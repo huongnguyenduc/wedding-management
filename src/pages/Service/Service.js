@@ -9,6 +9,7 @@ import {GetServices} from './Connect'
 import {actCloseError} from '../Service/actions/actions' 
 import ServiceDialog from '../Service/ServiceDialog/ServiceDialog'
 import NumberFormatCustom from '../Food/FormartNumber'
+import { getCookie } from '../../action/Login'
 
 function Service() {
     const StoreData = useSelector(state => state.changeServices);
@@ -49,6 +50,9 @@ function Service() {
     useEffect(()=>{
         dispatch(GetServices())
     },[])
+    const privileges = JSON.parse(getCookie("privileges"))
+
+    const canUpdateService = (permission) => permission.authority === "UPDATE_SERVICE"
     return (
         <Container className={classes.ServicePage}>
              <Backdrop open={Pending} className={classes.backdrop} onClick={(e)=>{e.stopPropagation()}}>
@@ -91,10 +95,10 @@ function Service() {
                 }
             </Container>
 
-            <Fab color='primary' aria-label='add' variant='extended' onClick={openInsertService} className={`insertFab ${classes.InsertFab}`} classes={{label: classes.ButtonLabel }}>
+            {privileges.some(canUpdateService) ? <Fab color='primary' aria-label='add' variant='extended' onClick={openInsertService} className={`insertFab ${classes.InsertFab}`} classes={{label: classes.ButtonLabel }}>
                 <Add style={{fontSize:'30px'}}/>
                 Thêm dịch vụ
-            </Fab>
+            </Fab> : <></>}
 
             {openInsert?<ServiceDialog closeHandler={()=>setOpenInsert(false)}/>:null}
             <Snackbar open={error.open} autoHideDuration={3000} onClose={CloseAlert} className={classes.Snackbar}>

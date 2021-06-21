@@ -5,6 +5,7 @@ import {DeleteService} from '../Connect'
 import React, { useState } from 'react'
 import useStyles from './ServiceCardStyle'
 import ServiceDialog from '../ServiceDialog/ServiceDialog'
+import { getCookie } from '../../../action/Login'
 function ServiceCard(props)
 {
     const {data, ...other} = props
@@ -32,6 +33,9 @@ function ServiceCard(props)
     {
         setOpenServiceDialog(false)
     }
+    const privileges = JSON.parse(getCookie("privileges"))
+
+    const canUpdateService = (permission) => permission.authority === "UPDATE_SERVICE"
     return (
         
         <Grid item {...other} className={classes.ServiceContainer} >
@@ -43,14 +47,14 @@ function ServiceCard(props)
                         image={data.img}
                         className ={`Image ${classes.Image}`}
                     />
-                    <div className={`divControl ${classes.divControl}`}>
+                    {privileges.some(canUpdateService) ? <div className={`divControl ${classes.divControl}`}>
                         <IconButton classes={{root:classes.Button, label:classes.LabelButton}} onClick={DeleteHandler}>
                             <DeleteOutline className={`${classes.ButtonIcon} ${classes.DeleteIcon}`}/>
                         </IconButton>
                         <IconButton classes={{root:classes.Button, label:classes.LabelButton}} onClick={OpenUpdateDialog}>
                             <Edit className={`${classes.ButtonIcon} ${classes.UpdateIcon}`}/>
                         </IconButton>
-                    </div>
+                    </div> : <></>}
                 </Grid>           
                
                 <Grid className={classes.TextContent}>

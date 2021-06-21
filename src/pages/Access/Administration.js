@@ -10,6 +10,7 @@ import red from '@material-ui/core/colors/red';
 import green from '@material-ui/core/colors/green';
 import {actGetPermissionRequest, actFetchPermissionsRequest, actAddPermissionRequest, actDeletePermissionRequest} from '../../action/permission'
 import { useSnackbar } from 'notistack';
+import { getCookie } from '../../action/Login'
 
 const useStyles = makeStyles((theme) => ({
     title: {
@@ -99,6 +100,9 @@ function Administration(props) {
             return props.allPermission.privileges.filter(n => !props.permission.privileges.some(m => m.id === n.id));
         return [];
     }
+    const privileges = JSON.parse(getCookie("privileges"))
+
+    const canUpdatePer = (permission) => permission.authority === "UPDATE_PER"
 
     return (
         <>
@@ -125,7 +129,7 @@ function Administration(props) {
                 </div>
                     <div className={classes.body}>
                         <FeatureList rows={featureData()} selected={featureSelected} setSelected={setFeatureSelected} />
-                        <div className={classes.groupButton}>
+                        {privileges.some(canUpdatePer) ? <div className={classes.groupButton}>
                             <Button 
                             disabled={(featureSelected.length === 0 || role === "ROLE_ADMIN")} 
                             variant="contained"  
@@ -142,7 +146,7 @@ function Administration(props) {
                             onClick={handleRemoveAccess}>
                                 <DoubleArrowIcon className={classes.reverseArrow} style={{color: "#fff", fontSize: "20px", marginRight: "10px" }} />
                             </Button>
-                        </div>
+                        </div> : <div style={{width: "20px"}}></div>}
                         <AccessList rows={props.permission.privileges ? props.permission.privileges : []} selected={accessSelected} setSelected={setAccessSelected} />
                     </div>      
             </MuiThemeProvider> : 
