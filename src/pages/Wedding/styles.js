@@ -42,5 +42,8 @@ const useStyles = makeStyles((theme) => ({
     selectEmpty: {
         marginTop: theme.spacing(2),
     },
+    page: {
+        marginTop: "70px"
+    }
 }))
 export default useStyles;

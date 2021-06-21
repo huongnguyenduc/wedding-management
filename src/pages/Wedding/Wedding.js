@@ -18,7 +18,7 @@ function Wedding(props) {
     return (
         <>
         <MuiThemeProvider theme={theme}>
-            <Grid container spacing={3} justify='center' direction='column'>
+            <Grid container spacing={3} justify='center' direction='column' className={classes.page}>
                 <Grid item xs={12}>
                     <Typography variant="h4" align='center' className={classes.title}>Quản lý tiệc cưới</Typography>
                 </Grid>

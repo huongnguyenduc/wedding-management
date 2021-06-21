@@ -50,6 +50,9 @@ const useStyles = makeStyles((theme) => ({
         height: "90vh",
         alignItems: "center",
         flexDirection: "column"
+    }, 
+    page: {
+        marginTop: "100px"
     }
 }));
 //props.notPaidBillItem.feast && props.weddingServices.services && props.tables.feastTables
@@ -84,6 +87,7 @@ function DetailBill(props) {
                 </Typography>
             </div> :
             <MuiThemeProvider theme={theme}>
+                <div className={classes.page}>
                 <Link to="/bill">
                     <IconButton
                     edge="start"
@@ -115,6 +119,7 @@ function DetailBill(props) {
                         <Management bill={props.notPaidBillItem} />         
                     </Grid>
                 </Grid>
+                </div>
             </MuiThemeProvider> 
              }
         </>

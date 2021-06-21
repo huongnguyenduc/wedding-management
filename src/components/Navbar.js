@@ -27,11 +27,20 @@ function Navbar() {
         console.log(document.cookie)
         history.replace('/')
     }
-
+    var prevScrollpos = window.pageYOffset;
+    window.onscroll = function() {
+    var currentScrollPos = window.pageYOffset;
+    if (prevScrollpos > currentScrollPos) {
+        document.getElementById("navbar").style.top = "0";
+    } else {
+        document.getElementById("navbar").style.top = "-85px";
+    }
+    prevScrollpos = currentScrollPos;
+    }
     return (
         <>
         <IconContext.Provider value={{color: '#fff'}}>
-            <div className="navbar">
+            <div className="navbar" id="navbar">
                 <Link to="#" className="menu-bars">
                     <FaIcons.FaBars onClick={showSidebar}/>
                 </Link>
