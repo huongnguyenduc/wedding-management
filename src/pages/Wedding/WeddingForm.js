@@ -11,6 +11,9 @@ import { addMiddleware } from 'redux-dynamic-middlewares'
 import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import { useSnackbar } from 'notistack';
+import {Done, Clear } from '@material-ui/icons';
+import {green, orange, red} from '@material-ui/core/colors';
+import FastfoodIcon from '@material-ui/icons/Fastfood';
 
 const initialValues = {
         groomName: "",
@@ -95,8 +98,9 @@ function WeddingForm(props) {
                 note, 
                 deposit,  
                 idShift, 
-                lobbyId } = values;
+                lobbyId, oldDate, oldLobby, oldShift } = values;
             if (id) {
+                const oldDateUpdate = convertDateToStringYMD(oldDate);
                 let wedding = {
                 id: id,
                 groomName: groomName, 
@@ -111,7 +115,7 @@ function WeddingForm(props) {
                 idShift: idShift, 
                 lobbyId: lobbyId 
             };
-                dispatch(actUpdateWeddingRequest(wedding, updateWeddingSuccess, updateWeddingFailure));
+                dispatch(actUpdateWeddingRequest(wedding, updateWeddingSuccess, updateWeddingFailure, checkWeddingExist, checkWeddingFailure, resetForm, changeToNormalState, oldDateUpdate, oldShift, oldLobby));
             } else {
                 let wedding = {
                 groomName: groomName, 
@@ -126,10 +130,8 @@ function WeddingForm(props) {
                 idShift: idShift, 
                 lobbyId: lobbyId 
             };
-                dispatch(actAddWeddingRequest(wedding, addWeddingSuccess, addWeddingFailure));
+                dispatch(actAddWeddingRequest(wedding, addWeddingSuccess, addWeddingFailure, checkWeddingExist, checkWeddingFailure, resetForm, changeToNormalState));
             }
-            resetForm()
-            changeToNormalState()
         }
     }
 
@@ -149,11 +151,20 @@ function WeddingForm(props) {
         handleClickVariant("error", "Lỗi hệ thống. Chỉnh sửa tiệc cưới thất bại!")
     }
 
+    const checkWeddingExist = () => {
+        handleClickVariant("warning", "Đã có tiệc cưới tổ chức trong ca và sảnh này!")
+    }
+
+    const checkWeddingFailure = () => {
+        handleClickVariant("error", "Lỗi hệ thống. Kiểm tra tiệc cưới thất bại!")
+    }
+
     const clickRowEditWeddingMiddleware = store => next => action => {
         if (action.type === 'EDIT_WEDDING_STATE') {
             setValues({...props.selectedWedding, 
                 weddingDate: new Date(props.selectedWedding.weddingDate), 
-                    dateOfOrganization: new Date(props.selectedWedding.dateOfOrganization)});
+                    dateOfOrganization: new Date(props.selectedWedding.dateOfOrganization),
+                oldDate: new Date(props.selectedWedding.dateOfOrganization), oldShift: props.selectedWedding.idShift, oldLobby: props.selectedWedding.lobbyId});
         }
         if (action.type === 'ADD_WEDDING_STATE') {
             setValues({...initialValues, 
@@ -297,21 +308,32 @@ function WeddingForm(props) {
                             error={errors.note}
                             onChange={handleInputChange}/>
                         <Link to={`/wedding/${props.selectedWedding.id}/${props.selectedWedding.lobbyId}`} >
-                        {props.selectedWedding.id ? <Button 
-                            onClick={()=>{ }}
-                            className={classes.openButton}
-                            variant="outlined" 
-                            color="primary" 
-                            label="Chi tiết" 
-                            size='large'>
+                        {props.selectedWedding.id && props.currentWeddingState.state === NORMAL ? 
+                        <Button
+                            variant="contained"
+                            className={classes.button}
+                            startIcon={<FastfoodIcon style={{color: "#fff", fontSize: "20px", marginLeft: "-15px" }} />}
+                            style={{ borderRadius: 10, backgroundColor: orange["A700"], fontSize: "12px", color: "#fff", width: 250, marginRight: "10px", marginTop: "20px" }}>
                                 Mở đặt bàn và dịch vụ
-                        </Button> : <></>}
+                            </Button> : <></>}
                         </Link>
                         {props.currentWeddingState.state !== NORMAL ? <ButtonGroup variant="text" color="primary" aria-label="text primary button group" size='large' className={classes.groupButton}>
-                            <Controls.Button type="submit" text="Hoàn tất" ></Controls.Button>
-                            <Controls.Button
-                                text="Hủy"
-                                onClick={() => {changeToNormalState(); resetForm(); }} />
+                            <Button
+                            variant="contained"
+                            type="submit"
+                            className={classes.button}
+                            startIcon={<Done style={{color: "#fff", fontSize: "20px", marginLeft: "-15px" }} />}
+                            style={{ borderRadius: 10, backgroundColor: green[400], fontSize: "10px", color: "#fff", width: 150, marginRight: "10px" }}>
+                                Hoàn tất
+                            </Button>
+                            <Button
+                            variant="contained"
+                            onClick={() => {changeToNormalState(); resetForm(); }}
+                            className={classes.button}
+                            startIcon={<Clear style={{color: "#fff", fontSize: "20px", marginLeft: "-15px" }} />}
+                            style={{ borderRadius: 10, backgroundColor: red[400], fontSize: "10px", color: "#fff", width: 150, marginRight: "10px" }}>
+                                Hủy
+                            </Button>
                         </ButtonGroup> : <></>}    
                     </Grid>
             </Grid>

@@ -16,6 +16,8 @@ import { useSnackbar } from 'notistack';
 import NumberFormat from 'react-number-format';
 import {actFetchServicesRequest} from './../../../../action/service';
 import {actFetchWeddingServicesRequest} from './../../../../action/weddingService';
+import {green, red} from '@material-ui/core/colors';
+import {Done, Clear } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -268,13 +270,24 @@ function Service(props) {
                 name='note'
                 value={values.note}
                 onChange={handleInputChange} />
-                {props.currentserviceState.state !== NORMAL ? <Button type='submit' variant="outlined" color="primary" fullfill size='large' className={classes.textFieldForm}>
-                {props.currentserviceState.state === EDIT_ORDER_SERVICE ? 'Sửa đặt dịch vụ' : 'Đặt dịch vụ'}
+                {props.currentserviceState.state !== NORMAL ? 
+                <Button
+                variant="contained"
+                type="submit"
+                className={classes.textFieldForm}
+                startIcon={<Done style={{color: "#fff", fontSize: "20px", marginLeft: "-15px" }} />}
+                style={{ borderRadius: 10, backgroundColor: green[400], fontSize: "10px", color: "#fff", width: 200, marginRight: "10px" }}>
+                    {props.currentserviceState.state === EDIT_ORDER_SERVICE ? 'Sửa đặt dịch vụ' : 'Đặt dịch vụ'}
                 </Button> : <></>}
                 {props.currentserviceState.state === EDIT_ORDER_SERVICE ? 
-                <Button variant="outlined" color="primary" fullfill size='large' className={classes.textFieldForm} onClick={changeToNormalState}>
-                Hủy
-                </Button> : <></>}
+                <Button
+                  variant="contained"
+                  onClick={() => {changeToNormalState(); }}
+                  className={classes.textFieldForm}
+                  startIcon={<Clear style={{color: "#fff", fontSize: "20px", marginLeft: "-15px" }} />}
+                  style={{ borderRadius: 10, backgroundColor: red[400], fontSize: "10px", color: "#fff", width: 150, marginRight: "10px" }}>
+                      Hủy
+                  </Button> : <></>}
               </Form>
             </Grid>
         </Grid>

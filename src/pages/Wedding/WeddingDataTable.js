@@ -49,7 +49,7 @@ const headCells = [
   { id: 'brideName', numeric: false, disablePadding: false, label: 'Tên cô dâu' },
   { id: 'phone', numeric: false, disablePadding: false, label: 'Điện thoại' },
   { id: 'lobbyName', numeric: false, disablePadding: false, label: 'Sảnh' },
-  { id: 'weddingDate', numeric: true, disablePadding: false, label: 'Ngày đãi tiệc' },
+  { id: 'dateOfOrganization', numeric: true, disablePadding: false, label: 'Ngày đãi tiệc' },
   { id: 'nameShift', numeric: true, disablePadding: false, label: 'Ca' },
   { id: 'note', numeric: true, disablePadding: false, label: 'Ghi chú' },
 ];
@@ -175,7 +175,7 @@ const EnhancedTableToolbar = (props) => {
         </Typography>
       )}
 
-      {numSelected > 0 ? (
+      { currentWeddingState.state === NORMAL ?  (numSelected > 0 ? (
         <>
             <Tooltip title="Chỉnh sửa">
               <Button
@@ -223,7 +223,7 @@ const EnhancedTableToolbar = (props) => {
                   Thêm tiệc
             </Button>
         </Tooltip>
-      )}
+      )) : <></>}
     </Toolbar>
   );
 };
@@ -422,6 +422,7 @@ function EnhancedTable(props) {
                         tabIndex={-1}
                         key={row.id}
                         selected={isItemSelected}
+                        onDoubleClick={() => document.getElementById("formWedding").scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"})}
                       >
                         <TableCell padding="checkbox">
                         </TableCell>

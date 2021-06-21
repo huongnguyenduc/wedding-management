@@ -170,7 +170,7 @@ const EnhancedTableToolbar = (props) => {
         </Typography>
         }
 
-      {numSelected > 0 ? (
+      { currentTableState.state === NORMAL ? (numSelected > 0 ? (
         <>
             <Tooltip title="Chỉnh sửa">
             <Button
@@ -218,7 +218,7 @@ const EnhancedTableToolbar = (props) => {
                   Thêm đặt bàn
             </Button>
         </Tooltip>
-      )}
+      )) : <></>}
     </Toolbar>
   );
 };

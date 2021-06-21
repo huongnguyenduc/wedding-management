@@ -27,6 +27,9 @@ import {actGetLobbyRequest} from './../../../action/lobby';
 import {actFetchTableCategoriesRequest} from './../../../action/tableCategory';
 import { useSnackbar } from 'notistack';
 import NumberFormat from 'react-number-format';
+import {Done, Clear } from '@material-ui/icons';
+import {orange, red} from '@material-ui/core/colors';
+import FastfoodIcon from '@material-ui/icons/Fastfood';
 
 const WhiteTextTypography = withStyles({
     root: {
@@ -457,24 +460,37 @@ function Table(props) {
                                 onChange={handleInputChange} 
                                 label="Ghi chú"
                                 className={classes.tableInfoFormItem} />
-                            { props.selectedTable.id ? <Button 
-                            variant="outlined" 
-                            color="primary" 
-                            label="Chi tiết" 
-                            fullfill 
-                            size='large' 
+                            { props.selectedTable.id ? 
+                            <Button
+                            variant="contained"
+                            className={classes.button}
                             onClick={() => 
                                 {props.fetchAllFoods(); 
                                 props.fetchAllTableFoods(props.selectedTable.id);
                                 handleClickOpenTableFoodDialog();
-                                }}>
+                                }}
+                            startIcon={<FastfoodIcon style={{color: "#fff", fontSize: "20px", marginLeft: "-15px" }} />}
+                            style={{ borderRadius: 10, backgroundColor: orange["A700"], fontSize: "12px", color: "#fff", width: 250, marginRight: "10px", marginTop: "20px" }}>
                                 Mở chi tiết phiếu đặt bàn
                             </Button> : <></>}
                             {props.currentTableState.state !== NORMAL ? 
                             <ButtonGroup variant="text" color="primary" aria-label="text primary button group" size='large'>
-                                <Button type="submit">Hoàn tất</Button>
                                 <Button
-                                    onClick={() => {changeToNormalState(); resetForm(); }}>Hủy</Button>
+                            variant="contained"
+                            type="submit"
+                            className={classes.button}
+                            startIcon={<Done style={{color: "#fff", fontSize: "20px", marginLeft: "-15px" }} />}
+                            style={{ borderRadius: 10, backgroundColor: green[400], fontSize: "10px", color: "#fff", width: 150, marginRight: "10px" }}>
+                                Hoàn tất
+                            </Button>
+                                <Button
+                            variant="contained"
+                            onClick={() => {changeToNormalState(); resetForm(); }}
+                            className={classes.button}
+                            startIcon={<Clear style={{color: "#fff", fontSize: "20px", marginLeft: "-15px" }} />}
+                            style={{ borderRadius: 10, backgroundColor: red[400], fontSize: "10px", color: "#fff", width: 150, marginRight: "10px" }}>
+                                Hủy
+                            </Button>
                             </ButtonGroup> : <></>}  
                             
                         </Grid>
