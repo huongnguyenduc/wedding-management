@@ -22,7 +22,7 @@ function Header(props){
     }
 
     useEffect(()=>{
-      window.addEventListener('scroll', scrollHandler)
+      // window.addEventListener('scroll', scrollHandler)
     },[])
     if(category.length===0)
       return null

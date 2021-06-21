@@ -1,12 +1,16 @@
 import {actInsertServices, actUpdateService, actDeleteService,actInitServices, actError, actPending} from './actions/actions';
-
+import {getCookie} from '../../action/Login'
 export const API_SERVER = "https://wedding-management.herokuapp.com/api/";
 const SERVICE_API = 'service'
+
 export function CallAPI(endpoint, method='GET', body)
 {
+    const token = getCookie("token")
     const config = {
         method: method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json',
+        "Authorization" : `Bearer ${token}`
+        },
     }
 
     if (body) {
@@ -29,7 +33,9 @@ export function GetServices() {
         })
         .then(res=>{
             dispatch(actInitServices(res))})
-        .catch(()=>{})
+        .catch(()=>{
+            dispatch(actError("Lỗi: Lấy thông tin dịch vụ không thành công!"))
+        })
     }
    
 }
@@ -53,7 +59,7 @@ export function DeleteService(service) {
     }
 }
 
-export function UpdateService(service) {
+export function UpdateService(service, success) {
     
     return dispatch =>
     {
@@ -74,11 +80,12 @@ export function UpdateService(service) {
                             price:service.price,
                             moreInfo:service.moreInfo
                         }
-                        CallAPI(SERVICE_API,'PUT',data)
+                        CallAPI(SERVICE_API+'/'+data.id,'PUT',data)
                         .then(res=>{
                             if(!res.ok)
                                 throw new Error('ERROR:'+ res.status + res.statusText)
                             dispatch(actUpdateService(data))
+                            success()
                         })
                         .catch((err)=>{
                             console.log(err)
@@ -114,7 +121,7 @@ export function UpdateService(service) {
     }
 }
 
-export  function InsertService(service)
+export  function InsertService(service, success)
 {
     
     return dispatch =>{
@@ -139,6 +146,7 @@ export  function InsertService(service)
                         return res.json()})
                     .then(res=>{
                         dispatch(actInsertServices(res))
+                        success();
                     })
                     .catch(err=>{
                         console.log(err)

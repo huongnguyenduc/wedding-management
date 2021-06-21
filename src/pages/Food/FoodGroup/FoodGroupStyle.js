@@ -1,7 +1,7 @@
 const styles = (theme) =>(
     {
         FoodGroupContainer:{
-            paddingTop:'3rem',
+            paddingTop:'10rem',
             paddingBottom:'10rem',
             display:'flex', 
             justifyContent:"center", 

@@ -20,8 +20,6 @@ export function actPending(){
         pending:true,
         status:{
             open:false,
-            severity:'',
-            message:''
         },
         payload:null
     }
@@ -33,8 +31,6 @@ export function actDone(){
         pending:false,
         status:{
             open:false,
-            severity:'',
-            message:''
         },
         payload:null
     }
@@ -56,8 +52,6 @@ export function actCloseFoodDialog()
         pending:false,
         status:{
             open:false,
-            severity:'',
-            message:''
         },
         data:null
     }
@@ -69,8 +63,6 @@ export function actInitFood(data) {
         pending:false,
         status:{
             open:false,
-            severity:'',
-            message:''
         },
         payload:data
     }
@@ -119,8 +111,6 @@ export function actInitFoodCategory(data) {
         pending:false,
         status:{
             open:false,
-            severity:'',
-            message:''
         },
         payload:data
     }
@@ -193,8 +183,6 @@ export function actInitAll(Food, FoodCategory){
         pending:false,
         status:{
             open:false,
-            severity:'',
-            message:''
         },
         lobby:Food,
         FoodCategory:FoodCategory

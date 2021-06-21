@@ -9,6 +9,8 @@ const useStyles = makeStyles(theme=>(
         maxWidth:'100%',
         padding:'0',
         backgroundColor:'#EEEEEE',
+        marginTop:'130px'
+        
     },
     TabPanel:{
         backgroundColor:'transparent',
@@ -52,7 +54,10 @@ const useStyles = makeStyles(theme=>(
          },
     },
     AppBar:{
-        position:'relative',
+        // position:'relative',
+        position:'fixed',
+        top:'80px',
+        left:'0',
         display:'flex',
         flexDirection:'row',
         justifyContent:'center',
@@ -61,6 +66,7 @@ const useStyles = makeStyles(theme=>(
         "& .SearchButton":{
             color:'#fff'
         },
+        zIndex:'3',
     },
     AppBarScroll:{
         position:'fixed',
@@ -72,7 +78,8 @@ const useStyles = makeStyles(theme=>(
         backgroundColor:'#060b26',
         "& .SearchButton":{
             color:'#fff'
-        }
+        },
+        zIndex:'3'
     },
     Tabs:{
         "& .MuiTabs-indicator":{

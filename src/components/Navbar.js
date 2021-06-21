@@ -5,9 +5,29 @@ import {Link} from 'react-router-dom';
 import {SidebarData} from './SidebarData';
 import './Navbar.css';
 import { IconContext } from 'react-icons';
+import {getCookie,setCookie} from '../action/Login'
+import { useHistory } from 'react-router';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+
 function Navbar() {
     const [sidebar, setSidebar] = useState(false);
+    const [controlPanel, setControlPanel] = useState(false)
     const showSidebar = () => setSidebar(!sidebar);
+    const fullname=getCookie("fullname")
+    const image = getCookie("image")
+    const role = getCookie("role")
+    let history = useHistory();
+    function logout()
+    {
+        setCookie("username","",-1)
+        setCookie("image","",-1)
+        setCookie("fullname","",-1)
+        setCookie("token","",-1)
+        setCookie("role","",-1)
+        console.log(document.cookie)
+        history.replace('/')
+    }
+
     return (
         <>
         <IconContext.Provider value={{color: '#fff'}}>
@@ -16,16 +36,22 @@ function Navbar() {
                     <FaIcons.FaBars onClick={showSidebar}/>
                 </Link>
                 
-                <div className="recent-item">
+                <div className="recent-item" onClick={()=>setControlPanel(!controlPanel)}>
                     <div class="bell-noti">
                         <FaIcons.FaRegBell class="bell-noti-icon"></FaIcons.FaRegBell>
                         <div class="bell-noti-status"></div>
                     </div>
                     <div className="recent-info">
-                        <h3 className="recent-author">Nguyễn Đức Hướng</h3>
-                        <span className="recent-position">Admin</span>
+                        <h3 className="recent-author">{fullname}</h3>
+                        <span className="recent-position">{role?role.slice(5).toLowerCase():''}</span>
                     </div>
-                    <img src="https://images.complex.com/complex/images/fl_lossy,q_auto/c_crop,h_1400,w_1374,x_0,y_100/v1/el91rtzrnvpaeemkjegt/girl-in-red-3" alt="" className="recent-image" />
+                    <img src={image?image:"https://images.complex.com/complex/images/fl_lossy,q_auto/c_crop,h_1400,w_1374,x_0,y_100/v1/el91rtzrnvpaeemkjegt/girl-in-red-3"} alt="" className="recent-image" />
+                    {controlPanel?<ClickAwayListener onClickAway={()=>setControlPanel(false)}>
+                        <div className="recent-control">
+                            <input type="button" value="Đăng xuất" className="control-logout" onClick={logout}/>
+                        </div>
+                    </ClickAwayListener>:null}
+                    
                 </div>
             </div>
             <nav className={sidebar ? 'nav-menu active' : 'nav-menu'}>

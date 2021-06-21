@@ -1,4 +1,4 @@
-import { IconButton, Container, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TablePagination, TableRow, TableSortLabel, TextField, Toolbar, Tooltip, Typography, Backdrop, CircularProgress } from '@material-ui/core'
+import { IconButton, Container, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TablePagination, TableRow, TableSortLabel, TextField, Toolbar, Tooltip, Typography} from '@material-ui/core'
 import { Close, Delete, Done, Edit, Search } from '@material-ui/icons'
 import React, { useEffect, useState } from 'react'
 import useStyles from "./CategoryTableStyles"
@@ -18,7 +18,6 @@ function CategoryTable(props){
     const StoreData = useSelector(state => state.changeLobbyData);
     const dispatch = useDispatch();
     const Status = StoreData.Status;
-    const Pending = StoreData.Pending;
     const LobbyCategory = StoreData.LobbyCategory;
     const  [tableState, setTableState] = useState({keyword:'', order:'asc', orderBy:'name', page:0, rowsPerPage:5})
 
@@ -88,6 +87,7 @@ function CategoryTable(props){
             scroll="body" 
             keepMounted
             maxWidth="lg"
+            fullWidth
         >
         <Container maxWidth='lg' className={classes.CategoryTable} {...other}>
             <TableContainer>

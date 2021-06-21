@@ -1,4 +1,4 @@
-import {Grid, Select, MenuItem, CardMedia, TextField, Button, Container, useMediaQuery, IconButton, ListItem, List, ListItemIcon, ListItemText} from "@material-ui/core";
+import {Grid, Select, MenuItem, CardMedia, TextField, Button, Container, useMediaQuery, IconButton, ListItem, List, ListItemIcon, ListItemText, Dialog} from "@material-ui/core";
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import {Cancel, CheckCircle, Close, DeleteOutline, Done, Edit, MoreHoriz, PhotoCamera } from "@material-ui/icons";
 import React, { useState } from 'react'
@@ -146,9 +146,16 @@ function FoodDialog(props) {
 
 
     return(
-        <Container className={classes.DialogBackGround} >
-            <ClickAwayListener onClickAway={CloseDialog} >
-            <Container className={classes.DialogBody}>
+        <Dialog 
+            open={true} 
+            onClose={CloseDialog} 
+            scroll="body" 
+            keepMounted 
+            maxWidth="lg"
+            fullWidth 
+            className={classes.DialogBackGround} 
+        >
+            <Container maxWidth='lg' className={classes.DialogBody}>
                 <link rel="preconnect" href="https://fonts.gstatic.com"/>
                 <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Patrick+Hand&family=Pattaya&display=swap" rel="stylesheet"/>
                 <input
@@ -320,8 +327,7 @@ function FoodDialog(props) {
                     </Grid>:null}
                 </Grid>
             </Container>
-            </ClickAwayListener>
-        </Container>
+        </Dialog>
     )
           
 }

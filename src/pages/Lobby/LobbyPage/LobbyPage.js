@@ -71,12 +71,12 @@ function LobbyPage(props) {
     }
 
     useEffect(()=>{
-        window.addEventListener("scroll", scrollHandler)
+        // window.addEventListener("scroll", scrollHandler)
     },[])
     if(LobbyCategory.length>0)
     return (
         <>
-         <Container fixed className={classes.page} {...other}>
+         <Container component='main' fixed className={classes.page} {...other}>
             <AppBar className={`AppBar ${classes.AppBar}`}>
                 <Tabs 
                     value={tab} 
