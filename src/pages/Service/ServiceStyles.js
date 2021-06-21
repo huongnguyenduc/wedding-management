@@ -27,22 +27,28 @@ const useStyles = makeStyles(theme=>(
         right:'50%',
         transform:'translateX(50%)',
         zIndex:3,
-        padding:'2px 0rem',
-        [theme.breakpoints.down('lg')]: {
-            padding:'2px 2rem',
-        },
-        [theme.breakpoints.down('xs')]: {
-            padding:'2px 1rem',
-        },
+        padding:'0rem 2rem 0rem 3rem',
+        transition: 'top 0.2s',
+        minHeight:'40px'
         
     },
-    HeaderControl:{
-        margin:'1rem 0 1rem 0rem',
-        [theme.breakpoints.down('xs')]: {
-            margin:'0.5rem 0 0.5rem 0rem',
-        }, 
-    
+
+    "@keyframes grow": {
+        from: { 
+            opacity:'0',
+            transform:'scaleX(0)'
+     },
+        to: { 
+            opacity:'1',
+            transform:'scaleX(1)'
+         }
     },
+
+    HeaderControl:{
+ 
+        
+    },
+    
     PriceControl:{
         display:'flex',
         justifyContent:'center',
@@ -50,25 +56,27 @@ const useStyles = makeStyles(theme=>(
         flexDirection:'row',
     },
     SearchControl:{
+        position:'relative',
         display:'flex',
         justifyContent:'center',
         alignContent:'center',
         flexDirection:'row', 
         flexWrap:'wrap',
         margin:'0',
-        padding:'2px'
+        padding:'2px 3rem',
+        animation: "$grow 0.3s ease-out" ,
     },
     TextSearch:{
         '& .MuiInputBase-input':{
             fontSize:'1.5rem',
             padding:'7px 0px',
-            backgroundColor:'#fff'
+            backgroundColor:'#fff',
+            textAlign:'center'
         },
         "& .MuiOutlinedInput-adornedStart":{
             paddingLeft:'5px',
             backgroundColor:'#fff'
-        },
-       
+        },       
     },
     ServicesContainer:
     {
@@ -76,7 +84,7 @@ const useStyles = makeStyles(theme=>(
         flexDirection:'row',
         justifyContent:'center',
         flexWrap:'wrap',
-        padding:'0rem 2rem 0rem 2rem',
+        padding:'1rem 2rem 0rem 2rem',
         zIndex:'1',
     },
     InsertFab: {
@@ -142,12 +150,14 @@ const useStyles = makeStyles(theme=>(
         zIndex: theme.zIndex.drawer + 999,
     },
     SearchButton:{
-        padding:'5px'
-        // transform:'translateX(100%)'
+       position:'absolute',
+       right:0,
+       bottom:0,
+       padding:0,
+       marginRight:'5px'
+
     },
-    SearchControl:{
-        
-    }
+    
 }   
 ))
 export default useStyles

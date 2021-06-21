@@ -1,5 +1,5 @@
 import { AppBar, Box, Container, Grid, IconButton, InputAdornment, Tab, Tabs, TextField } from '@material-ui/core';
-import React, { useEffect, useState } from 'react'
+import React, {useState } from 'react'
 import { useSelector } from 'react-redux'
 import LobbyCard from "../LobbyCard/LobbyCard"
 import useStyles from './LobbyPageStyles'
@@ -50,12 +50,6 @@ function LobbyPage(props) {
            setKeyword({...keyword,value:event.target.value})
     }
 
-    const scrollHandler = (event)=>{
-        var header = document.querySelector(".AppBar")
-        if(header!=null)
-            header.classList.toggle(classes.AppBarScroll,window.scrollY > 80)
-    }
-
     function OpenSearchBox (){
         setKeyword({...keyword,open:!keyword.open})
     }
@@ -70,14 +64,27 @@ function LobbyPage(props) {
                 return item2.minUnitPriceTable - item1.minUnitPriceTable})
     }
 
-    useEffect(()=>{
-        // window.addEventListener("scroll", scrollHandler)
-    },[])
+    var prevScrollpos = window.pageYOffset;
+
+    function scrollHandler(){
+        var currentScrollPos = window.pageYOffset;
+        var header = document.querySelector(".AppBar")
+        if(header!=null)
+        {
+            if (prevScrollpos > currentScrollPos) {
+                header.style.top = "80px";
+            } else {
+                header.style.top = "-85px";
+            }
+        }
+        prevScrollpos = currentScrollPos;
+    }
+    window.addEventListener('scroll', scrollHandler);
     if(LobbyCategory.length>0)
     return (
         <>
          <Container component='main' fixed className={classes.page} {...other}>
-            <AppBar className={`AppBar ${classes.AppBar}`}>
+            <AppBar id="lobby_appbar" className={`AppBar ${classes.AppBar}`}>
                 <Tabs 
                     value={tab} 
                     onChange={changePage} 

@@ -63,16 +63,16 @@ function Food() {
     return (
         
         <MuiThemeProvider theme={theme}>
-        <div>
+        <div >
             <Backdrop open={Pending} className={classes.backdrop} onClick={(e)=>{e.stopPropagation()}}>
                 <CircularProgress color="inherit"/>
             </Backdrop>
             <Header  category={FoodCategory} setKeyword={setKeyword} id="Food_header" ></Header>
             {
-                FoodCategory.map((group)=>
+                FoodCategory.map((group, index)=>
                 {
                     return(
-                        <Element key = {group.id} name={`category_tab_${group.id}`} style={{ marginBottom:'400px'}} >
+                        <Element key = {group.id} name={`category_tab_${group.id}`} style={{paddingTop:index===0?'200px':'100px', paddingBottom:'100px'}}>
                             <FoodGroup key={group.id} foodData={finalData} category={group}></FoodGroup>
                         </Element>
                     )
