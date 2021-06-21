@@ -51,11 +51,17 @@ function Management(props) {
     const {dateOfPayment, status, feast} = props.bill;
     const [isSaved, setIsSaved] = React.useState((status===1));
     const { enqueueSnackbar } = useSnackbar();
-    const handleClickVariant = (variant, message) => () => {
-        props.saveBill(feast.id);
-        setIsSaved(true);
-        enqueueSnackbar(message, { variant, autoHideDuration: 3000 });
+    const handleClickVariant = () => {
+        props.saveBill(feast.id, savedBillSuccess, savedBillFailure);
+
     };
+    const savedBillSuccess = () => {
+        enqueueSnackbar("Lưu hóa đơn thành công!", { variant: "success", autoHideDuration: 3000 });
+        setIsSaved(true);
+    }
+    const savedBillFailure = () => {
+        enqueueSnackbar("Lỗi hệ thống. Lưu hóa đơn thất bại!", { variant: "error", autoHideDuration: 3000 });
+    }
     return (
         <>
             <Paper elevation={3} className={classes.billInfo}>
@@ -94,7 +100,7 @@ function Management(props) {
                                 </Button>
                         </Grid>
                         <Grid item xs={4} align="center">
-                                <Button variant="contained" color="primary" disabled={isSaved} onClick={handleClickVariant("success", "Lưu hóa đơn thành công!")}>
+                                <Button variant="contained" color="primary" disabled={isSaved} onClick={handleClickVariant}>
                                     Lưu hóa đơn
                                 </Button>
                         </Grid>
@@ -124,8 +130,8 @@ function convertDateToStringDMY(date) {
 
 const mapDispatchToProps = (dispatch, props) => {
     return {
-        saveBill : (id) => {
-            dispatch(actUpdateNotPaidBillRequest(id));
+        saveBill : (id, savedBillSuccess, savedBillFailure) => {
+            dispatch(actUpdateNotPaidBillRequest(id, savedBillSuccess, savedBillFailure));
         },
     }
 }

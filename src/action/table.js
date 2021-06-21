@@ -33,10 +33,15 @@ export const actFetchTables = (tables) => {
 //     }
 // }
 
-export const actUpdateTableRequest = (table) => {
+export const actUpdateTableRequest = (table, updateTableSuccess, updateTableFailure) => {
     return dispatch => {
         return callApi(`feast-table`, 'PUT', table).then(res => {
-            dispatch(actUpdateTable(res.data));
+            if (res) {
+                dispatch(actUpdateTable(res.data));
+                updateTableSuccess();
+            } else {
+                updateTableFailure();
+            }
         });
     }
 }
@@ -49,10 +54,15 @@ export const actUpdateTable = (table) => {
 }
 
 
-export const actDeleteTableRequest = (id) => {
+export const actDeleteTableRequest = (id, deleteTableSuccess, deleteTableFailure) => {
     return dispatch => {
         return callApi(`feast-table`, 'DELETE', id).then(res =>{
-            dispatch(actDeleteTable(id));
+            if (res) {
+                dispatch(actDeleteTable(id));
+                deleteTableSuccess();
+            } else {
+                deleteTableFailure();
+            }
         })
     }
 }
@@ -64,13 +74,17 @@ export const actDeleteTable = (id) => {
     }
 }
 
-export const actAddTableRequest = (table) => {
+export const actAddTableRequest = (table, addTableSuccess, addTableFailure) => {
     console.log('request')
     console.log(table)
     return dispatch => {
         return callApi('feast-table', 'POST', table).then(res => {
-            if (res)
+            if (res) {
                 dispatch(actAddTable(res.data));
+                addTableSuccess();
+            } else {
+                addTableFailure();
+            }
         });
     }
 }

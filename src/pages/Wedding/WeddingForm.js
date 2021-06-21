@@ -111,7 +111,7 @@ function WeddingForm(props) {
                 idShift: idShift, 
                 lobbyId: lobbyId 
             };
-                dispatch(actUpdateWeddingRequest(wedding));
+                dispatch(actUpdateWeddingRequest(wedding, updateWeddingSuccess, updateWeddingFailure));
             } else {
                 let wedding = {
                 groomName: groomName, 
@@ -126,13 +126,29 @@ function WeddingForm(props) {
                 idShift: idShift, 
                 lobbyId: lobbyId 
             };
-                dispatch(actAddWeddingRequest(wedding));
+                dispatch(actAddWeddingRequest(wedding, addWeddingSuccess, addWeddingFailure));
             }
             resetForm()
             changeToNormalState()
-            handleClickVariant("success", (props.currentWeddingState.state === ADD_WEDDING_STATE ? "Thêm" : "Sửa") + " tiệc cưới thành công!")
         }
     }
+
+    const addWeddingSuccess = () => {
+        handleClickVariant("success", "Thêm tiệc cưới thành công!")
+    }
+
+    const addWeddingFailure = () => {
+        handleClickVariant("error", "Lỗi hệ thống. Thêm tiệc cưới thất bại!")
+    }
+
+    const updateWeddingSuccess = () => {
+        handleClickVariant("success", "Chỉnh sửa tiệc cưới thành công!")
+    }
+
+    const updateWeddingFailure = () => {
+        handleClickVariant("error", "Lỗi hệ thống. Chỉnh sửa tiệc cưới thất bại!")
+    }
+
     const clickRowEditWeddingMiddleware = store => next => action => {
         if (action.type === 'EDIT_WEDDING_STATE') {
             setValues({...props.selectedWedding, 
@@ -195,6 +211,7 @@ function WeddingForm(props) {
                         <Controls.Input
                             defaultValue=''
                             id="groomName"
+                            autoFocus
                             name="groomName" 
                             label="Tên chú rể" 
                             value={props.currentWeddingState.state === NORMAL ? selectedRowValues.groomName : values.groomName}

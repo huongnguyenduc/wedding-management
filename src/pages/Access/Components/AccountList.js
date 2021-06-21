@@ -13,6 +13,7 @@ import { actDeleteUserRequest } from './../../../action/user';
 import { actUpdateUserRequest } from './../../../action/user';
 import { actAddUserRequest } from './../../../action/user';
 import AlertDialog from '../../../components/AlertDialog';
+import { useSnackbar } from 'notistack';
 
 
 var rows = [];
@@ -45,10 +46,8 @@ function stableSort(array, comparator) {
 }
 
 const headCells = [
-  { id: 'fullname', numeric: false, disablePadding: true, label: 'Tên người dùng' },
+  { id: 'fullName', numeric: false, disablePadding: true, label: 'Tên người dùng' },
   { id: 'username', numeric: false, disablePadding: true, label: 'Tên đăng nhập' },
-  { id: 'password', numeric: false, disablePadding: false, label: 'Mật khẩu' },
-  { id: 'birthday', numeric: false, disablePadding: false, label: 'Ngày sinh' },
   { id: 'role', numeric: false, disablePadding: false, label: 'Tên nhóm người dùng' },
   { id: 'edit', numeric: false, disablePadding: false, label: 'Sửa' },
   { id: 'delete', numeric: false, disablePadding: false, label: 'Xóa' },
@@ -129,8 +128,8 @@ const EnhancedTableToolbar = (props) => {
   const [openUserDialog, setOpenUserDialog] = React.useState(false);
   const dispatch = useDispatch();
   const addUser = (user) => {
-            dispatch(actAddUserRequest(user));
-        };
+      dispatch(actAddUserRequest(user, addSuccess, addFailure));
+  };
   const handleOpenUserDialog = () => {
       setOpenUserDialog(true);
   };
@@ -142,9 +141,23 @@ const EnhancedTableToolbar = (props) => {
   const initialValues = {
     username: "",
     fullname: "",
-    birthday: new Date(),
-    role: 1,
+    role: "",
     password: "",
+    image: "https://res.cloudinary.com/huong/image/upload/v1624194227/user_image/Pngtree_vector_add_user_icon_4101348_m4r7ro.png",
+    imageURL: "",
+    id: 0
+  }
+  const { enqueueSnackbar } = useSnackbar();
+  const handleClickVariant = (variant, message) => {
+      enqueueSnackbar(message, { variant, autoHideDuration: 3000 });
+  };
+
+  const addSuccess = () => {
+    handleClickVariant("success", "Thêm người dùng thành công!")
+  }
+
+  const addFailure = () => {
+    handleClickVariant("error", "Lỗi hệ thống. Thêm người dùng thất bại!")
   }
   return (
     <>
@@ -164,7 +177,7 @@ const EnhancedTableToolbar = (props) => {
                   className={classes.button}
                   startIcon={<Add style={{color: "#fff", fontSize: "20px" }} />}
                   style={{ borderRadius: 10, backgroundColor: green[400], fontSize: "10px", color: "#fff", width: 250 }}
-                  onClick={ async () => { handleOpenUserDialog();}}
+                  onClick={handleOpenUserDialog}
               >
                   Thêm người dùng
               </Button>
@@ -238,7 +251,7 @@ function AccountList(props) {
   rows = state.filterData;
   const classes = useStyles();
   const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState( 'groomname');
+  const [orderBy, setOrderBy] = React.useState( 'fullName');
   const [selected, setSelected] = React.useState([]);
   const [selectedRow, setSelectedRow] = React.useState([]);
   const [page, setPage] = React.useState(0);
@@ -286,19 +299,46 @@ function AccountList(props) {
   const [rowNow, setRowNow] = React.useState(null);
 
   const onSubmit = (user) => {
-    return props.updateUser(user);
+    return props.updateUser(user, updateSuccess, updateFailure);
   }
 
+  const roleName = (role) => {
+    switch (role.toString()) {
+      case "ROLE_ADMIN":
+        return "Admin"
+      case "ROLE_MANAGER":
+        return "Quản lý"
+      case "ROLE_USER":
+        return "Nhân viên"
+      default:
+        return "Admin"
+    }
+  }
+  const { enqueueSnackbar } = useSnackbar();
+  const handleClickVariant = (variant, message) => {
+      enqueueSnackbar(message, { variant, autoHideDuration: 3000 });
+  };
 
-  const timeConverter = (UNIX_timestamp) => {
-      var a = new Date(UNIX_timestamp * 1000);
-      return a;
+  const deleteSuccess = () => {
+    handleClickVariant("success", "Xóa người dùng thành công!")
+  }
+
+  const deleteFailure = () => {
+    handleClickVariant("error", "Lỗi hệ thống. Xóa người dùng thất bại!")
+  }
+
+  const updateSuccess = () => {
+    handleClickVariant("success", "Sửa thông tin người dùng thành công!")
+  }
+
+  const updateFailure = () => {
+    handleClickVariant("error", "Lỗi hệ thống. Sửa thông tin người dùng thất bại!")
   }
 
   return (
       <div className={classes.root}>
-        <AlertDialog open={open} handleClose={handleClose} title="Xóa tài khoản" description="Bạn có muốn xóa tài khoản này không?" onSubmit={() => props.deleteUser(rowNow.id)}/>
-        {rowNow ? <UserUpdateDialog open={openUserDialog} handleClose={handleCloseUserDialog} initialValues={rowNow} onSubmit={onSubmit}/> : <></>}
+        <AlertDialog open={open} handleClose={handleClose} title="Xóa tài khoản" description="Bạn có muốn xóa tài khoản này không?" onSubmit={ () => props.deleteUser(rowNow.username, deleteSuccess, deleteFailure)}/>
+        {rowNow ? <UserUpdateDialog open={openUserDialog} handleClose={handleCloseUserDialog} initialValues={{...rowNow, password: ""}} onSubmit={onSubmit}/> : <></>}
         <Paper className={classes.paper}>
           <EnhancedTableToolbar numSelected={selected.length} selectedRow={selectedRow} />
           <TableContainer>
@@ -336,21 +376,19 @@ function AccountList(props) {
                         <TableCell padding="checkbox">
                         </TableCell>
                         <TableCell component="th" id={labelId} scope="row" padding="none">
-                          {row.fullname}
+                          {row.fullName}
                         </TableCell>
                         <TableCell align="left">{row.username}</TableCell>
-                        <TableCell align="left">{row.password}</TableCell>
-                        <TableCell align="left">{row.birthday}</TableCell>
-                        <TableCell align="left">{row.role}</TableCell>
+                        <TableCell align="left">{row.roles ? roleName(row.roles[0].name) : ""}</TableCell>
                         <TableCell align="left">
                             <IconButton style={{marginLeft: "-12px" }}>
-                                <Edit style={{color: indigo[800], fontSize: "20px", marginLeft: "-10px" }} onClick={ async () => { await setRowNow({...row, birthday: timeConverter(row.birthday)}); handleOpenUserDialog();}}/> 
+                                <Edit style={{color: indigo[800], fontSize: "20px", marginLeft: "-10px" }} onClick={ () => { setRowNow(row); handleOpenUserDialog();}}/> 
                             </IconButton>
                         </TableCell>
                         <TableCell align="left">
-                            <IconButton style={{marginLeft: "-12px" }} onClick={() => {setRowNow(row); handleClickOpen();}}>
+                            {roleName(row.roles[0].name) === "Admin" ? <></> : <IconButton style={{marginLeft: "-12px" }} onClick={() => {setRowNow(row); handleClickOpen();}}>
                                 <Delete style={{color: red[800], fontSize: "20px", marginLeft: "-10px" }} /> 
-                            </IconButton>
+                            </IconButton>}
                         </TableCell>      
                       </TableRow>
                     );
@@ -386,11 +424,11 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch, props) => {
     return {
-        deleteUser : (id) => {
-            dispatch(actDeleteUserRequest(id));
+        deleteUser : (id, deleteSuccess, deleteFailure) => {
+            dispatch(actDeleteUserRequest(id, deleteSuccess, deleteFailure));
         },
-        updateUser: (user) => {
-            dispatch(actUpdateUserRequest(user));
+        updateUser: (user, updateSuccess, updateFailure) => {
+            dispatch(actUpdateUserRequest(user, updateSuccess, updateFailure));
         },
     }
 }

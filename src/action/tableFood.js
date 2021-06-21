@@ -33,10 +33,15 @@ export const actFetchTableFoods = (tableFoods) => {
 //     }
 // }
 
-export const actUpdateTableFoodRequest = (tableFood) => {
+export const actUpdateTableFoodRequest = (tableFood, updateTableFoodSuccess, updateTableFoodFailure) => {
     return dispatch => {
         return callApi(`feast-table/food`, 'PUT', tableFood).then(res => {
-            dispatch(actUpdateTableFood(res.data));
+            if (res) {
+                dispatch(actUpdateTableFood(res.data));
+                updateTableFoodSuccess();
+            } else {
+                updateTableFoodFailure();
+            }
         });
     }
 }
@@ -49,10 +54,15 @@ export const actUpdateTableFood = (tableFood) => {
 }
 
 
-export const actDeleteTableFoodRequest = (feastTableId, foodId) => {
+export const actDeleteTableFoodRequest = (feastTableId, foodId, deleteTableFoodSuccess, deleteTableFoodFailure) => {
     return dispatch => {
         return callApi(`feast-table/${feastTableId}/food/${foodId}`, 'DELETE', null).then(res =>{
-            dispatch(actDeleteTableFood(foodId));
+            if (res) {
+                dispatch(actDeleteTableFood(foodId));
+                deleteTableFoodSuccess();
+            } else {
+                deleteTableFoodFailure();
+            }
         })
     }
 }
@@ -64,13 +74,17 @@ export const actDeleteTableFood = (foodId) => {
     }
 }
 
-export const actAddTableFoodRequest = (tableFood) => {
+export const actAddTableFoodRequest = (tableFood, addTableFoodSuccess, addTableFoodFailure) => {
     console.log('request')
     console.log(tableFood)
     return dispatch => {
         return callApi('feast-table/food', 'POST', tableFood).then(res => {
-            if (res)
+            if (res) {
                 dispatch(actAddTableFood(res.data));
+                addTableFoodSuccess();
+            } else {
+                addTableFoodFailure();
+            }
         });
     }
 }

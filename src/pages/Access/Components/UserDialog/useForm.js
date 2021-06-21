@@ -1,9 +1,8 @@
 import React, { useState } from 'react'
 import { makeStyles } from "@material-ui/core";
-function isNumeric(str) {
-  if (typeof str != "string") return false // we only process strings!  
-  return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
-         !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
+function isvalid(str) {
+  var usernameRegex = /^[a-zA-Z0-9]+$/;
+  return str.match(usernameRegex);
 }
 export function useForm(initialFValues, validateOnChange = false, validate) {
 
@@ -13,23 +12,17 @@ export function useForm(initialFValues, validateOnChange = false, validate) {
 
     const handleInputChange = e => {
         const { name, value } = e.target
-        if (name !== 'phone' && name !== 'deposit') {
+        if (name !== 'username') {
             setValues({
             ...values,
             [name]: value
         })
         }
-        if (name === 'phone' && isNumeric(value))
+        if (name === 'username' && (isvalid(value) || value===""))
         {
             setValues({
             ...values,
             [name]: value
-        })}
-        if (name === 'deposit' && (isNumeric(value) || value === ""))
-        {
-            setValues({
-            ...values,
-            [name]: value 
         })}
         if (validateOnChange)
             validate({ [name]: value })

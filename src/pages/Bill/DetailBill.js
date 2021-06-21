@@ -14,6 +14,7 @@ import { connect } from 'react-redux'
 import {Link} from 'react-router-dom';
 import { lightBlue } from '@material-ui/core/colors'; 
 import {ArrowBack, } from '@material-ui/icons'
+import { default as ErrorIcon } from '../../assets/svg/error.svg'
 
 const useStyles = makeStyles((theme) => ({
     title: {
@@ -42,9 +43,16 @@ const useStyles = makeStyles((theme) => ({
     },
     arrow: {
         marginRight: "5px"
+    },
+    error: {
+        display: "flex",
+        justifyContent: "center",
+        height: "90vh",
+        alignItems: "center",
+        flexDirection: "column"
     }
 }));
-
+//props.notPaidBillItem.feast && props.weddingServices.services && props.tables.feastTables
 function DetailBill(props) {
     const classes = useStyles();
     useEffect(() => {
@@ -54,7 +62,27 @@ function DetailBill(props) {
     }, [])
     return (
         <>
-        {props.notPaidBillItem.feast && props.weddingServices.services && props.tables.feastTables ? 
+        {!props.notPaidBillItem.feast ? 
+        <div className={classes.loadingPage}>
+                <CircularProgress className={classes.loading} />
+        </div> : !props.notPaidBillItem.numberOfTables ? 
+            <div className={classes.error}>
+                <Link to="/bill">
+                    <IconButton
+                    edge="start"
+                    className={classes.backButton}
+                    >
+                            <ArrowBack style={{ color: lightBlue[900] }} className={classes.arrow}/>
+                            <Typography variant="h5" style={{ color: lightBlue[900] }}>Quay lại</Typography>
+                    </IconButton>     
+                </Link>
+                <img src={ErrorIcon} width="90px" />
+                <Typography variant="h3">Chưa có thông tin đặt bàn</Typography>
+                <Typography variant="h5" style={{marginTop: "10px"}}>
+                    <Link to={`/wedding/${props.match.params.weddingId}/${props.notPaidBillItem.feast.id_lobby.id}`} style={{color: "blue"}}>
+                        Đặt bàn</Link> cho tiệc cưới này!
+                </Typography>
+            </div> :
             <MuiThemeProvider theme={theme}>
                 <Link to="/bill">
                     <IconButton
@@ -73,10 +101,10 @@ function DetailBill(props) {
                         <BillInfo feast={props.notPaidBillItem.feast} totalTablePrice={props.notPaidBillItem.totalTablePrice} numberOfTables={props.notPaidBillItem.numberOfTables} />         
                     </Grid>
                     <Grid item md={6} xs={12}>
-                        <ServiceTable rows={props.weddingServices.services} />         
+                        <ServiceTable rows={ props.weddingServices.services ? props.weddingServices.services : []} />           
                     </Grid>
                     <Grid item md={6} xs={12}>
-                        <TableList rows={props.tables.feastTables} />         
+                        <TableList rows={props.tables.feastTables ? props.tables.feastTables : []} />         
                     </Grid>
                 </Grid>
                 <Grid container spacing={2}>
@@ -87,10 +115,8 @@ function DetailBill(props) {
                         <Management bill={props.notPaidBillItem} />         
                     </Grid>
                 </Grid>
-            </MuiThemeProvider> : 
-            <div className={classes.loadingPage}>
-                <CircularProgress className={classes.loading} />
-            </div> }
+            </MuiThemeProvider> 
+             }
         </>
     )
 }

@@ -116,14 +116,29 @@ function TableDetailDialog(props) {
           if (props.currentFoodState.state === EDIT_ORDER_FOOD) {
             console.log('update ne')
             console.log(updateTableFood())
-            props.updateTableFood(updateTableFood())
+            props.updateTableFood(updateTableFood(), updateTableFoodSuccess, updateTableFoodFailure)
           }
           else
-            props.addTableFood(createTableFood())
+            props.addTableFood(createTableFood(), addTableFoodSuccess, addTableFoodFailure)
           resetForm()
           changeToNormalState()
-          handleClickVariant("success", (props.currentFoodState.state !== EDIT_ORDER_FOOD ? "Thêm" : "Sửa") + " món thành công!")
       }
+  }
+
+  const addTableFoodSuccess = () => {
+      handleClickVariant("success", "Thêm món thành công!")
+  }
+
+  const addTableFoodFailure = () => {
+      handleClickVariant("error", "Lỗi hệ thống. Thêm món thất bại!")
+  }
+
+  const updateTableFoodSuccess = () => {
+      handleClickVariant("success", "Sửa thông tin món thành công!")
+  }
+
+  const updateTableFoodFailure = () => {
+      handleClickVariant("error", "Lỗi hệ thống. Sửa thông tin món thất bại!")
   }
 
   const displayCounter = (prop) => values[prop] > 0;
@@ -326,11 +341,11 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch, props) => {
     return {
-        addTableFood : (tableFood) => {
-            dispatch(actAddTableFoodRequest(tableFood));
+        addTableFood : (tableFood, addTableFoodSuccess, addTableFoodFailure) => {
+            dispatch(actAddTableFoodRequest(tableFood, addTableFoodSuccess, addTableFoodFailure));
         },
-        updateTableFood : (tableFood) => {
-            dispatch(actUpdateTableFoodRequest(tableFood));
+        updateTableFood : (tableFood, updateTableFoodSuccess, updateTableFoodFailure) => {
+            dispatch(actUpdateTableFoodRequest(tableFood, updateTableFoodSuccess, updateTableFoodFailure));
         },
         fetchAllTablesInfo : (idWedding) => {
             dispatch(actFetchTablesRequest(idWedding));

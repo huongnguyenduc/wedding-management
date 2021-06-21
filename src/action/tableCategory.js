@@ -30,10 +30,15 @@ export const actFetchTableCategories = (tableCategories) => {
 //     }
 // }
 
-export const actUpdateTableCategoryRequest = (tableCategory) => {
+export const actUpdateTableCategoryRequest = (tableCategory, updateTableCategorySuccess, updateTableCategoryFailure) => {
     return dispatch => {
         return callApi(`table-category`, 'PUT', tableCategory).then(res => {
-            dispatch(actUpdateTableCategory(res.data));
+            if (res) {
+                dispatch(actUpdateTableCategory(res.data));
+                updateTableCategorySuccess();
+            } else {
+                updateTableCategoryFailure();
+            }
         });
     }
 }
@@ -46,10 +51,15 @@ export const actUpdateTableCategory = (tableCategory) => {
 }
 
 
-export const actDeleteTableCategoryRequest = (id) => {
+export const actDeleteTableCategoryRequest = (id, deleteTableCategorySuccess, deleteTableCategoryFailure) => {
     return dispatch => {
         return callApi(`table-category`, 'DELETE', [id]).then(res =>{
-            dispatch(actDeleteTableCategory(id));
+            if (res) {
+                dispatch(actDeleteTableCategory(id));
+                deleteTableCategorySuccess();
+            } else {
+                deleteTableCategoryFailure();
+            }
         })
     }
 }
@@ -61,13 +71,17 @@ export const actDeleteTableCategory = (id) => {
     }
 }
 
-export const actAddTableCategoryRequest = (tableCategory) => {
+export const actAddTableCategoryRequest = (tableCategory, addTableCategorySuccess, addTableCategoryFailure) => {
     console.log('addTableCategory')
     console.log(tableCategory)
     return dispatch => {
         return callApi('table-category', 'POST', tableCategory).then(res => {
-            if (res)
+            if (res) {
                 dispatch(actAddTableCategory(res.data));
+                addTableCategorySuccess();
+            } else {
+                addTableCategoryFailure();
+            }
         });
     }
 }

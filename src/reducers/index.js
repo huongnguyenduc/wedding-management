@@ -27,6 +27,8 @@ import FoodReducer from '../pages/Food/reducer/FoodReducer'
 import changeServices  from '../pages/Service/reducer/ChangeServices'
 import ChangeLobbyData from '../pages/Lobby/reducer/ChangeLobbyData'
 import PolicyReducer from '../pages/Policy/reducer/PolicyReducer'
+import permissionItem from './editPermission';
+import permissions from './permissions';
 
 const allReducers = combineReducers({
     selectedRow: selectedRowReducer,
@@ -56,7 +58,9 @@ const allReducers = combineReducers({
     ChangeFoodData: FoodReducer,
     changeServices:changeServices,
     changeLobbyData:ChangeLobbyData,
-    PolicyReducer:PolicyReducer
+    PolicyReducer:PolicyReducer,
+    permissionItem,
+    permissions
 });
 
 export default allReducers;

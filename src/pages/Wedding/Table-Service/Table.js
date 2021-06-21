@@ -24,8 +24,6 @@ import { Add } from '@material-ui/icons/';
 import TableKindList from './TableKindList';
 import {actFetchTablesRequest} from './../../../action/table';
 import {actGetLobbyRequest} from './../../../action/lobby';
-import {actFetchServicesRequest} from './../../../action/service';
-import {actFetchWeddingServicesRequest} from './../../../action/weddingService';
 import {actFetchTableCategoriesRequest} from './../../../action/tableCategory';
 import { useSnackbar } from 'notistack';
 import NumberFormat from 'react-number-format';
@@ -98,10 +96,8 @@ function Table(props) {
     useEffect(()=>{
         props.fetchAllTableCategoriesInfo(); 
         props.fetchAllTablesInfo(props.weddingId);
-        props.fetchAllServicesInfo();
-        props.fetchAllWeddingServicesInfo(props.weddingId);
         props.getLobby(props.lobbyId);
-    }, [])
+    }, [])// eslint-disable-line
     var initialValues = {
             id: 0,
             tableKind: "",
@@ -163,17 +159,31 @@ function Table(props) {
             if (props.currentTableState.state === ADD_TABLE) {
                 console.log('chuan bi add table')
                 console.log(createTable())
-                props.addTable(createTable());
+                props.addTable(createTable(), addTableSuccess, addTableFailure);
             }
             if (props.currentTableState.state === EDIT_TABLE) {
                 console.log('chuan bi edit table')
                 console.log(createTable())
-                props.editTable(updateTable());
+                props.editTable(updateTable(), updateTableSuccess, updateTableFailure);
             }
             resetForm()
             changeToNormalState()
-            handleClickVariant("success", (props.currentTableState.state === ADD_TABLE ? "Thêm" : "Sửa") + " thông tin đặt bàn thành công!")
         }
+    }
+    const addTableSuccess = () => {
+        handleClickVariant("success", "Thêm thông tin đặt bàn thành công!")
+    }
+
+    const addTableFailure = () => {
+        handleClickVariant("error", "Lỗi hệ thống. Thêm thông tin đặt bàn thất bại!")
+    }
+
+    const updateTableSuccess = () => {
+        handleClickVariant("success", "Chỉnh sửa thông tin đặt bàn thành công!")
+    }
+
+    const updateTableFailure = () => {
+        handleClickVariant("error", "Lỗi hệ thống. Chỉnh sửa thông tin đặt bàn thất bại!")
     }
     const displayCounter = (prop) => values[prop] > 0;
 
@@ -508,23 +518,17 @@ const mapDispatchToProps = (dispatch, props) => {
         fetchAllTableFoods : (tableFoodId) => {
             dispatch(actFetchTableFoodsRequest(tableFoodId));
         },
-        addTable : (table) => {
-            dispatch(actAddTableRequest(table));
+        addTable : (table, addTableSuccess, addTableFailure) => {
+            dispatch(actAddTableRequest(table, addTableSuccess, addTableFailure));
         },
-        editTable : (table) => {
-            dispatch(actUpdateTableRequest(table));
+        editTable : (table, updateTableSuccess, updateTableFailure) => {
+            dispatch(actUpdateTableRequest(table, updateTableSuccess, updateTableFailure));
         },
         fetchAllTablesInfo : (idWedding) => {
             dispatch(actFetchTablesRequest(idWedding));
         },
         fetchAllTableCategoriesInfo : () => {
             dispatch(actFetchTableCategoriesRequest());
-        },
-        fetchAllServicesInfo : () => {
-            dispatch(actFetchServicesRequest());
-        },
-        fetchAllWeddingServicesInfo : (idWedding) => {
-            dispatch(actFetchWeddingServicesRequest(idWedding));
         },
         getLobby: (idLobby) => {
             dispatch(actGetLobbyRequest(idLobby));

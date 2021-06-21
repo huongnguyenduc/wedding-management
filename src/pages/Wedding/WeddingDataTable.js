@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import clsx from 'clsx';
+import clsx from 'clsx';// eslint-disable-line
 import { lighten, makeStyles } from '@material-ui/core/styles';
-import {Table, TableBody, Grid,FormControl, MenuItem, InputLabel, Select,TextField, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel} from '@material-ui/core/';
-import {Toolbar, Typography, Paper, IconButton, Tooltip, FormControlLabel, Switch} from '@material-ui/core/';
+import {Table, TableBody, Grid,FormControl, MenuItem, InputLabel, Select,TextField, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Button} from '@material-ui/core/';
+import {Toolbar, Typography, Paper, Tooltip, FormControlLabel, Switch} from '@material-ui/core/';
 import { Edit, Delete, Search, Add } from '@material-ui/icons/';
 import clickRow from './actions/index'
 import { useDispatch, useSelector } from 'react-redux'
@@ -13,6 +13,7 @@ import addState from './actions/weddingState/add';
 import editState from './actions/weddingState/edit';
 import { NORMAL } from './reducers/weddingState';
 import { useSnackbar } from 'notistack';
+import {green, indigo, red} from '@material-ui/core/colors';
 
 var rows = [];
 
@@ -131,10 +132,17 @@ const EnhancedTableToolbar = (props) => {
     };
   const onDeleteWedding = () => {
     if (confirm('Bạn chắc chắn muốn xóa ?')) { //eslint-disable-line
-      dispatch(actDeleteWeddingRequest(selectedRow.id));
-      handleClickVariant("success", "Xóa tiệc cưới thành công!")
+      dispatch(actDeleteWeddingRequest(selectedRow.id, deleteWeddingSuccess, deleteWeddingFailure));
     }
   }
+
+  const deleteWeddingSuccess = () => {
+        handleClickVariant("success", "Xoá tiệc cưới thành công!")
+    }
+
+    const deleteWeddingFailure = () => {
+        handleClickVariant("error", "Lỗi hệ thống. Xoá tiệc cưới thất bại!")
+    }
 
   const changeToAddState = () => {
       if (currentWeddingState.state === NORMAL) {
@@ -170,26 +178,50 @@ const EnhancedTableToolbar = (props) => {
       {numSelected > 0 ? (
         <>
             <Tooltip title="Chỉnh sửa">
-            <IconButton aria-label="edit" onClick={changeToEditState}>
-                <Edit />
-            </IconButton>
+              <Button
+              aria-label="edit"
+              variant="contained"
+              className={classes.button}
+              startIcon={<Edit style={{color: "#fff", fontSize: "20px", marginLeft: "-15px" }} />}
+              style={{ borderRadius: 10, backgroundColor: indigo[400], fontSize: "10px", color: "#fff", width: 140, marginRight: "10px" }}
+              onClick={changeToEditState}>
+                Sửa tiệc
+              </Button>
             </Tooltip>
             <Tooltip title="Xóa">
-            <IconButton aria-label="delete" onClick={()=>{onDeleteWedding()}}>
-                <Delete />
-            </IconButton>
+              <Button
+                aria-label="delete"
+                variant="contained"
+                className={classes.button}
+                startIcon={<Delete style={{color: "#fff", fontSize: "20px", marginLeft: "-15px" }} />}
+                style={{ borderRadius: 10, backgroundColor: red[400], fontSize: "10px", color: "#fff", width: 150, marginRight: "10px" }}
+                onClick={onDeleteWedding}>
+                  Xóa tiệc
+            </Button>
             </Tooltip>
             <Tooltip title="Thêm">
-          <IconButton aria-label="filter list" onClick={changeToAddState}>
-            <Add />
-          </IconButton>
+            <Button
+                aria-label="filter list"
+                variant="contained"
+                className={classes.button}
+                startIcon={<Add style={{color: "#fff", fontSize: "20px", marginLeft: "-15px" }} />}
+                style={{ borderRadius: 10, backgroundColor: green[400], fontSize: "10px", color: "#fff", width: 150 }}
+                onClick={changeToAddState}>
+                  Thêm tiệc
+            </Button>
         </Tooltip>
         </>
       ) : (
           <Tooltip title="Thêm">
-          <IconButton aria-label="filter list" onClick={changeToAddState}>
-            <Add />
-          </IconButton>
+          <Button
+                aria-label="filter list"
+                variant="contained"
+                className={classes.button}
+                startIcon={<Add style={{color: "#fff", fontSize: "20px", marginLeft: "-15px" }} />}
+                style={{ borderRadius: 10, backgroundColor: green[400], fontSize: "10px", color: "#fff", width: 140, marginRight: "10px" }}
+                onClick={changeToAddState}>
+                  Thêm tiệc
+            </Button>
         </Tooltip>
       )}
     </Toolbar>

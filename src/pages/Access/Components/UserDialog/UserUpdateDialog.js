@@ -1,28 +1,50 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Card, CardMedia, CardActionArea } from '@material-ui/core/';
 import { Form, useForm } from './useForm';
 import { makeStyles } from '@material-ui/core/styles';
 import Controls from './controls/Controls'
 
 const useStyles = makeStyles((theme) => ({
   item: {
-    marginBottom: "20px"
-  },
+        marginBottom: "20px"
+    },
+    card: {
+        width: 250,
+        marginBottom: "20px",
+        alignSelf: "center"
+    },
+    userImage: {
+        height: 250,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "flex-end"
+    },
+    upload: {
+        marginBottom: 5,
+        cursor: "pointer",
+    },
+    form: {
+        display: "flex",
+        justifyContent: "center",
+        flexDirection: "column",
+        width: "30em"
+    }
 }));
 
 export default function UserUpdateDialog(props) {
 
     const { open, handleClose, initialValues, onSubmit } = props;
     const classes = useStyles();
-
     const validate = (fieldValues = values) => {
         let temp = {...errors};
-        // if ('fullname' in fieldValues)
-        //     temp.fullname = fieldValues.fullname ? "" :"Không được bỏ trống";
+        if ('fullName' in fieldValues)
+            temp.fullName = fieldValues.fullName ? "" :"Không được bỏ trống";
+        if ('username' in fieldValues)
+            temp.username = fieldValues.username ? "" :"Không được bỏ trống";
+        if ('password' in fieldValues)
+            temp.password = fieldValues.password ? "" :"Không được bỏ trống";
+        if ('role' in fieldValues)
+            temp.role = fieldValues.role ? "" :"Không được bỏ trống";
         setErrors({
             ...temp
         })
@@ -30,37 +52,45 @@ export default function UserUpdateDialog(props) {
         if (fieldValues === values)
             return Object.values(temp).every(x => x === "")
     }
-    const {values, setValues, errors, setErrors, handleInputChange, resetForm} = useForm(initialValues, true, validate);
+    const {values, setValues, errors, setErrors, handleInputChange, resetForm} = useForm({...initialValues, newImage: null, role: initialValues.roles[0].name}, true, validate);
 
-    const timeConverter = (UNIX_timestamp) => {
-        var a = new Date(UNIX_timestamp * 1000);
-        // var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-        // var year = a.getFullYear();
-        // var month = months[a.getMonth()];
-        // var date = a.getDate();
-        // var hour = a.getHours();
-        // var min = a.getMinutes();
-        // var sec = a.getSeconds();
-        // var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
-        // return time;
-        return a;
-    }
+    function selectedFile(event){ 
+        if(event.target.files[0])
+        {
+            setValues({...values, newImage:event.target.files[0], imageURL:URL.createObjectURL(event.target.files[0])})
+        }
+    };
+
+
+    const fileInput = React.useRef();
 
     return (
         <div>
                 <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" onEnter={resetForm} >
-                    <Form onSubmit={(e) => {e.preventDefault(); onSubmit({...values, birthday: (values.birthday.getTime() / 1000)}); console.log(values)}}>
+                    <Form onSubmit={(e) => { e.preventDefault(); if (validate(values)) { onSubmit(values); console.log(values)}}}>
                         <DialogTitle id="form-dialog-title">Sửa thông tin người dùng</DialogTitle>
-                        <DialogContent>
+                        <DialogContent className={classes.form}>
+                            <input id='myInput'
+                                style={{ display: 'none' }}
+                                type="file"
+                                ref={fileInput}
+                                accept="image/*"
+                                onChange={selectedFile}
+                            />
+                            <Card className={classes.card} >
+                                <CardActionArea >
+                                    <CardMedia image={values.imageURL || values.image} className={classes.userImage} onClick={()=>fileInput.current.click()} />
+                                </CardActionArea>
+                            </Card>
                             <Controls.Input
                                 className={classes.item}
                                 defaultValue=''
-                                id="fullname"
-                                name="fullname" 
+                                id="fullName"
+                                name="fullName" 
                                 label="Tên người dùng" 
-                                value={values.fullname}
+                                value={values.fullName}
                                 onChange={handleInputChange}
-                                error={errors.fullname}/>
+                                error={errors.fullName}/>
                             <Controls.Input
                                 className={classes.item}
                                 defaultValue=''
@@ -68,7 +98,7 @@ export default function UserUpdateDialog(props) {
                                 name="username" 
                                 label="Tên đăng nhập" 
                                 value={values.username}
-                                onChange={handleInputChange}
+                                disabled
                                 error={errors.username}/>
                             <Controls.Input
                                 className={classes.item}
@@ -79,27 +109,19 @@ export default function UserUpdateDialog(props) {
                                 value={values.password}
                                 onChange={handleInputChange}
                                 error={errors.password}/>
-                            <Controls.DatePicker
-                                className={classes.item} 
-                                id="birthday"
-                                name="birthday" 
-                                label="Ngày sinh" 
-                                value={values.birthday} 
-                                onChange={handleInputChange}
-                                error={errors.birthday}/>
                             <Controls.Select
                                 label="Tên nhóm người dùng"
                                 name="role" 
                                 value={values.role}
                                 onChange={handleInputChange}
-                                options={[{id: "1", name: "Admin"}, {id: "2", name: "Nhân viên"}, {id: "3", name: "Quản lý"}]}
+                                options={[{role: "ROLE_ADMIN", name: "Admin"}, {role: "ROLE_MANAGER", name: "Quản lý"}, {role: "ROLE_USER", name: "Nhân viên"}]}
                                 error={errors.role}/>
                         </DialogContent>
                         <DialogActions>
                             <Button onClick={handleClose} color="primary">
                                 Hủy bỏ
                             </Button>
-                            <Button onClick={handleClose} color="primary" type="submit">
+                            <Button onClick={() => {if (validate(values)) handleClose();}} color="primary" type="submit">
                                 Cập nhật
                             </Button>
                         </DialogActions>

@@ -21,10 +21,15 @@ export const actFetchWeddings = (weddings) => {
     }
 }
 
-export const actDeleteWeddingRequest = (id) => {
+export const actDeleteWeddingRequest = (id, deleteWeddingSuccess, deleteWeddingFailure) => {
     return dispatch => {
         return callApi(`feast/${id}`, 'DELETE', null).then(res =>{
-            dispatch(actDeleteWedding(id));
+            if (res) {
+                dispatch(actDeleteWedding(id));
+                deleteWeddingSuccess();
+            } else {
+                deleteWeddingFailure();
+            }
         })
     }
 }
@@ -36,13 +41,17 @@ export const actDeleteWedding = (id) => {
     }
 }
 
-export const actAddWeddingRequest = (wedding) => {
+export const actAddWeddingRequest = (wedding, addWeddingSuccess, addWeddingFailure) => {
     console.log('request')
     console.log(wedding)
     return dispatch => {
         return callApi('feast', 'POST', wedding).then(res => {
-            if (res)
+            if (res){
                 dispatch(actAddWedding(res.data));
+                addWeddingSuccess();
+            } else {
+                addWeddingFailure();
+            }
         });
     }
 }
@@ -69,10 +78,15 @@ export const actGetWedding = (wedding) => {
     }
 }
 
-export const actUpdateWeddingRequest = (wedding) => {
+export const actUpdateWeddingRequest = (wedding, updateWeddingSuccess, updateWeddingFailure) => {
     return dispatch => {
         return callApi(`feast`, 'PUT', wedding).then(res => {
-            dispatch(actUpdateWedding(res.data));
+            if (res) {
+                dispatch(actUpdateWedding(res.data));
+                updateWeddingSuccess();
+            } else {
+                updateWeddingFailure();
+            }
         });
     }
 }

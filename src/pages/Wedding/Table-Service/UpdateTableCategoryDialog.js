@@ -27,7 +27,14 @@ function UpdateTableCategoryDialog(props) {
     const handleClickVariant = (variant, message) => {
         enqueueSnackbar(message, { variant, autoHideDuration: 3000 });
     };
+    const updateTableCategorySuccess = () => {
+      handleClickVariant("success", "Cập nhật loại bàn thành công!")
+      handleClose();
+  }
 
+  const updateTableCategoryFailure = () => {
+      handleClickVariant("error", "Lỗi hệ thống. Cập nhật loại bàn thất bại!")
+  }
   return (
     <div>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
@@ -57,7 +64,7 @@ function UpdateTableCategoryDialog(props) {
           </Button>
           <Button 
           color="primary" 
-          onClick={() => {props.updateTableCategoriesInfo({id: data.id, name: tableCategoryName, moreInfo: tableCategoryNote}); handleClickVariant("success", "Sửa loại bàn thành công!"); handleClose();}}>
+          onClick={() => {props.updateTableCategoriesInfo({id: data.id, name: tableCategoryName, moreInfo: tableCategoryNote}, updateTableCategorySuccess, updateTableCategoryFailure);}}>
             Chỉnh sửa
           </Button>
         </DialogActions>
@@ -68,8 +75,8 @@ function UpdateTableCategoryDialog(props) {
 
 const mapDispatchToProps = (dispatch, props) => {
     return {
-        updateTableCategoriesInfo : ({id, name, moreInfo}) => {
-            dispatch(actUpdateTableCategoryRequest({id, name, moreInfo}));
+        updateTableCategoriesInfo : ({id, name, moreInfo}, updateTableCategorySuccess, updateTableCategoryFailure) => {
+            dispatch(actUpdateTableCategoryRequest({id, name, moreInfo}, updateTableCategorySuccess, updateTableCategoryFailure));
         },
     }
 }
