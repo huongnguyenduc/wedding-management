@@ -39,7 +39,7 @@ function Navbar() {
     prevScrollpos = currentScrollPos;
     }
 
-    const privileges = JSON.parse(getCookie("privileges"))
+    const privileges = getCookie("privileges") ? JSON.parse(getCookie("privileges")) : JSON.parse('[{"id":394,"authority":"UPDATE_USER","description":"Chỉnh sửa người dùng"},{"id":393,"authority":"READ_USER","description":"Xem danh sách người dùng"},{"id":395,"authority":"UPDATE_PER","description":"Chỉnh sửa phân quyền"},{"id":398,"authority":"READ_SHIFT","description":"Xem danh sách ca"},{"id":399,"authority":"UPDATE_SHIFT","description":"Thêm sửa xóa ca"},{"id":392,"authority":"UPDATE_FEAST","description":"Thêm xóa sửa tiệc cưới"},{"id":391,"authority":"READ_FEAST","description":"Xem danh sách tiệc cưới"},{"id":396,"authority":"READ_FOOD","description":"Xem danh sách món ăn"},{"id":397,"authority":"UPDATE_FOOD","description":"Thêm sửa xóa món ăn"},{"id":400,"authority":"READ_LOBBY","description":"Xem danh sách sảnh"},{"id":401,"authority":"UPDATE_LOBBY","description":"Thêm sửa xóa sảnh"},{"id":402,"authority":"READ_LOBBYCATEGORY","description":"Xem danh sách loại sảnh"},{"id":403,"authority":"UPDATE_LOBBYCATEGORY","description":"Thêm sửa xóa loại sảnh"},{"id":404,"authority":"READ_SERVICE","description":"Xem danh sách dịch vụ"},{"id":405,"authority":"UPDATE_SERVICE","description":"Thêm sửa xóa dịch vụ"}]')
 
     const canShowMenuItem = (permission, access) => permission.authority === access
     return (
