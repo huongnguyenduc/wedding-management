@@ -24,6 +24,7 @@ function Navbar() {
         setCookie("fullname","",-1)
         setCookie("token","",-1)
         setCookie("role","",-1)
+        setCookie("privileges","",-1)
         console.log(document.cookie)
         history.replace('/')
     }
