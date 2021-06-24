@@ -4,7 +4,10 @@ import callApi from '../utils/apiCaller';
 export const actFetchLobbyCategoriesRequest = () => {
     return dispatch => {
         return callApi('lobbycategory', 'GET', null).then(function (res) {
-            dispatch(actFetchLobbyCategories(res.data));
+            if (res)
+                dispatch(actFetchLobbyCategories(res.data));
+            else
+                dispatch(actFetchLobbyCategories([]));
         });
     };
 }

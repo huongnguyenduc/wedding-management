@@ -100,7 +100,14 @@ const useStyles = makeStyles((theme) => ({
     },
     buttonTable: {
         margin: "5px 5px"
-    }
+    },
+    inputRoot: {
+        fontSize: 16
+    },
+    labelRoot: {
+        fontSize: 16,
+    },
+    labelFocused: {}
 }));
 
 function Table(props) {
@@ -315,7 +322,7 @@ function Table(props) {
                 <Typography variant='h6' align='center'>{moreInfo}</Typography>
             </Popover>
             <Form onSubmit={handleSubmit}>
-                <Typography variant="h4" className={classes.title}>
+                <Typography id="tableTitle" variant="h4" className={classes.title}>
                     Phiếu đặt bàn
                 </Typography>
                 <Grid container className={classes.tableInfo} maxWidth='md'>
@@ -354,18 +361,18 @@ function Table(props) {
                     }}
                     >
                         <WhiteTextTypography variant="subtitle1" align="center" color="#fff">
-                            Tổng số bàn hiện tại
+                            Tổng số bàn được đặt
                         </WhiteTextTypography>
                         <WhiteTextTypography variant="h6" align="center">
                             { props.tables.feast ? 
                                 totalTables(props.tables.feastTables)
-                                : '' }
+                                : '0' }
                         </WhiteTextTypography>
                     </Grid>
                 </Grid>
                 <Container maxWidth='lg' className={classes.formWedding} >
                     <Container className={classes.formWeddingTitle}>    
-                        <Typography variant="subtitle" align='center'>Thông tin đặt bàn</Typography>
+                        <Typography  variant="subtitle" align='center'>Thông tin đặt bàn</Typography>
                     </Container>
                     <Grid container spacing={6} direction='row'>
                         <Grid item xs={12} sm={6} align='center'>
@@ -376,6 +383,15 @@ function Table(props) {
                                 value={selectedTableValues.tableKind}
                                 id="tableKind"
                                 name="tableKind"
+                                InputProps={{
+                                    classes: { root: classes.inputRoot }
+                                }}
+                                InputLabelProps={{
+                                classes: {
+                                    root: classes.labelRoot,
+                                    focused: classes.labelFocused
+                                }
+                                }}
                                 onChange={handleInputChange} 
                                 {...(errors.tableKind && {error:true,helperText:errors.tableKind})}
                                 label="Loại bàn"
@@ -413,11 +429,15 @@ function Table(props) {
                             </div>
                                 }
                             <FormControl className={classes.tableInfoFormItem} variant="outlined" fullWidth name="numberTables" >
-                            <InputLabel htmlFor="outlined-adornment-password">Số lượng</InputLabel>
+                            <InputLabel htmlFor="outlined-adornment-password" className={classes.inputRoot} >Số lượng</InputLabel>
                             <OutlinedInput
                                 id="outlined-adornment-password"
                                 labelWidth={60}
                                 name="numberTables"
+                                InputProps={{
+                                    classes: { root: classes.inputRoot }
+                                }}
+                                
                                 value={props.currentTableState.state === NORMAL ? selectedTableValues.numberTables :  values.numberTables}
                                 onChange={handleInputChange}
                                 {...(errors.numberTables && {error:true,helperText:errors.numberTables})}
@@ -438,11 +458,20 @@ function Table(props) {
                             )}
                             </FormControl>
                             <FormControl className={classes.tableInfoFormItem} variant="outlined" fullWidth>
-                            <InputLabel htmlFor="outlined-adornment-password">Số lượng dự trữ</InputLabel>
+                            <InputLabel htmlFor="outlined-adornment-password" className={classes.inputRoot} >Số lượng dự trữ</InputLabel>
                             <OutlinedInput
                                 id="outlined-adornment-password"
                                 name="reverseTables"
-                                labelWidth={100}
+                                labelWidth={120}
+                                inputProps={{
+                                    classes: { root: classes.inputRoot }
+                                }}
+                                InputLabelProps={{
+                                classes: {
+                                    root: classes.labelRoot,
+                                    focused: classes.labelFocused
+                                }
+                                }}
                                 value={props.currentTableState.state === NORMAL ? selectedTableValues.reverseTables :  values.reverseTables}
                                 onChange={handleInputChange}
                                 {...(errors.reverseTables && {error:true,helperText:errors.reverseTables})}
@@ -483,12 +512,22 @@ function Table(props) {
                                 {...(errors.note && {error:true,helperText:errors.note})}
                                 id="note"
                                 name="note"
+                                InputProps={{
+                                    classes: { root: classes.inputRoot }
+                                }}
+                                InputLabelProps={{
+                                classes: {
+                                    root: classes.labelRoot,
+                                    focused: classes.labelFocused
+                                }
+                                }}
                                 onChange={handleInputChange} 
                                 label="Ghi chú"
                                 className={classes.tableInfoFormItem} />
-                            { props.selectedTable.id ? 
+                            { props.selectedTable.id && props.currentTableState.state === NORMAL ? 
                             <Button
                             variant="contained"
+                            id="openFood"
                             className={classes.button}
                             onClick={() => 
                                 {props.fetchAllFoods(); 

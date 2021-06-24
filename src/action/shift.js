@@ -4,7 +4,10 @@ import callApi from '../utils/apiCaller';
 export const actFetchShiftsRequest = () => {
     return dispatch => {
         return callApi('shift', 'GET', null).then(function (res) {
-            dispatch(actFetchShifts(res.data));
+            if (res)
+                dispatch(actFetchShifts(res.data));
+            else 
+                dispatch(actFetchShifts([]));
         });
     };
 }

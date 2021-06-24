@@ -169,7 +169,7 @@ const EnhancedTableToolbar = (props) => {
               startIcon={<Edit style={{color: "#fff", fontSize: "20px", marginLeft: "-15px" }} />}
               style={{ borderRadius: 10, backgroundColor: indigo[400], fontSize: "10px", color: "#fff", width: 140, marginRight: "10px" }}
               onClick={() => dispatch(editOrderState())}>
-                Sửa tiệc
+                Sửa món
               </Button>
             </Tooltip>
             <Tooltip title="Xóa">

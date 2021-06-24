@@ -4,7 +4,10 @@ import callApi from '../utils/apiCaller';
 export const actFetchServicesRequest = () => {
     return dispatch => {
         return callApi('service', 'GET', null).then(function (res) {
-            dispatch(actFetchServices(res.data));
+            if (res)
+                dispatch(actFetchServices(res.data));
+            else
+                dispatch(actFetchServices([]));
         });
     };
 }

@@ -4,7 +4,10 @@ import callApi from '../utils/apiCaller';
 export const actFetchTableCategoriesRequest = () => {
     return dispatch => {
         return callApi(`table-category`, 'GET', null).then(function (res) {
-            dispatch(actFetchTableCategories(res.data));
+            if (res)
+                dispatch(actFetchTableCategories(res.data));
+            else 
+                dispatch(actFetchTableCategories([]));
         });
     };
 }

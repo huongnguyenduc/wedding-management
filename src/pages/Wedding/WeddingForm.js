@@ -25,8 +25,8 @@ const initialValues = {
         nameShift: "", 
         note: "", 
         deposit: 0.0,
-        idShift: 1,
-        lobbyId: 1,
+        idShift: "",
+        lobbyId: "",
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -56,9 +56,11 @@ function WeddingForm(props) {
         brideName: props.selectedWedding.brideName || "",
         phone: props.selectedWedding.phone || "",
         lobbyName: props.selectedWedding.lobbyName || "", 
+        lobbyId: props.selectedWedding.lobbyId || "",
         weddingDate: props.selectedWedding.weddingDate || new Date(),
         dateOfOrganization: props.selectedWedding.dateOfOrganization || new Date(), 
         nameShift: props.selectedWedding.nameShift || "", 
+        idShift: props.selectedWedding.idShift || "", 
         note: props.selectedWedding.note || "", 
         deposit: props.selectedWedding.deposit || 0,
     }
@@ -69,6 +71,10 @@ function WeddingForm(props) {
             temp.groomName = fieldValues.groomName ? "" :"Không được bỏ trống";
         if ('brideName' in fieldValues)
             temp.brideName = fieldValues.brideName ? "" : "Không được bỏ trống";
+        if ('lobbyId' in fieldValues)
+            temp.lobbyId = fieldValues.lobbyId ? "" : "Không được bỏ trống";
+        if ('idShift' in fieldValues)
+            temp.idShift = fieldValues.idShift ? "" : "Không được bỏ trống";
         if ('phone' in fieldValues)
             temp.phone = fieldValues.phone.length > 9 ? "" : fieldValues.phone.length === 0 ? "Không được bỏ trống" : "Tối thiểu 10 chữ số";
         if ('deposit' in fieldValues)

@@ -333,7 +333,7 @@ const handleSearch = (event) => {
           </Grid>
           <Grid item xs={4}>
               <TextField 
-                  id="search" 
+                  id="searchTable" 
                   fullWidth 
                   label={"Tìm kiếm theo loại bàn"}
                   onChange={handleSearch}

@@ -4,7 +4,10 @@ import callApi from '../utils/apiCaller';
 export const actFetchLobbiesRequest = () => {
     return dispatch => {
         return callApi('lobby', 'GET', null).then(function (res) {
-            dispatch(actFetchLobbies(res.data));
+            if (res)
+                dispatch(actFetchLobbies(res.data));
+            else
+                dispatch(actFetchLobbies([]));
         });
     };
 }
@@ -18,7 +21,10 @@ export const actFetchLobbies = (lobbies) => {
 export const actGetLobbyRequest = (id) => {
     return dispatch => {
         return callApi(`lobby/${id}`, 'GET', null).then(res => {
-            dispatch(actGetLobby(res.data));
+            if (res)
+                dispatch(actGetLobby(res.data));
+            else 
+                dispatch(actGetLobby({}));
         });
     }
 }
