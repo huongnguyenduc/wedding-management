@@ -80,7 +80,7 @@ export function UpdateService(service, success) {
                             price:service.price,
                             moreInfo:service.moreInfo
                         }
-                        CallAPI(SERVICE_API+'/'+data.id,'PUT',data)
+                        CallAPI(SERVICE_API,'PUT',data)
                         .then(res=>{
                             if(!res.ok)
                                 throw new Error('ERROR:'+ res.status + res.statusText)
