@@ -44,6 +44,13 @@ const useStyles = makeStyles((theme) => ({
     },
     page: {
         marginTop: "70px"
-    }
+    },
+    inputRoot: {
+        fontSize: 16
+    },
+    labelRoot: {
+        fontSize: 16,
+    },
+    labelFocused: {}
 }))
 export default useStyles;

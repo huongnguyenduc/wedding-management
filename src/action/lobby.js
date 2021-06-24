@@ -23,6 +23,7 @@ export const actGetLobbyRequest = (id) => {
     }
 }
 
+
 export const actGetLobby = (lobby) => {
     return {
         type : Types.EDIT_LOBBY,

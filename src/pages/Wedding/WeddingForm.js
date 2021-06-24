@@ -38,7 +38,13 @@ const useStyles = makeStyles((theme) => ({
     },
     groupButton: {
         marginTop: "20px"
-    }
+    },
+    labelRoot: {
+        fontSize: 18,
+    },
+    inputRoot: {
+        fontSize: 18
+    },
 }));
 
 function WeddingForm(props) {
@@ -310,6 +316,7 @@ function WeddingForm(props) {
                         <Link to={`/wedding/${props.selectedWedding.id}/${props.selectedWedding.lobbyId}`} >
                         {props.selectedWedding.id && props.currentWeddingState.state === NORMAL ? 
                         <Button
+                            id="btnTableService"
                             variant="contained"
                             className={classes.button}
                             startIcon={<FastfoodIcon style={{color: "#fff", fontSize: "20px", marginLeft: "-15px" }} />}

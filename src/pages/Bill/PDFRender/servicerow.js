@@ -4,6 +4,7 @@ import { Text, View, StyleSheet, Font} from '@react-pdf/renderer';
 import RobotoFont from './fonts/Roboto-Regular.ttf';
 import RobotoMedium from './fonts/Roboto-Medium.ttf';
 import RobotoBold from './fonts/Roboto-Regular.ttf';
+import NumberFormat from 'react-number-format';
 
 
 
@@ -69,10 +70,10 @@ class ServiceRow extends Component {
                 <Text> { this.props.quantity } </Text>
             </View>
             <View style={styles.unitprice}>
-                <Text> { this.props.unitprice } </Text>
+                <Text> <NumberFormat value={this.props.unitprice} displayType={'text'} thousandSeparator={true} suffix={' đ'} style={{marginLeft: "-2px"}} /> </Text>
             </View>
             <View style={styles.total}>
-                <Text> { this.props.total } </Text>
+                <Text> <NumberFormat value={this.props.total} displayType={'text'} thousandSeparator={true} suffix={' đ'} style={{marginLeft: "-2px"}} /> </Text>
             </View>
         </View>
     );

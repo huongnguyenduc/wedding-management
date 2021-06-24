@@ -86,6 +86,24 @@ function DetailBill(props) {
                         Đặt bàn</Link> cho tiệc cưới này!
                 </Typography>
             </div> :
+            props.notPaidBillItem.numberOfTables < props.notPaidBillItem.feast.id_lobby.lobbyCategory.mintable ? 
+            <div className={classes.error}>
+                <Link to="/bill">
+                    <IconButton
+                    edge="start"
+                    className={classes.backButton}
+                    >
+                            <ArrowBack style={{ color: lightBlue[900] }} className={classes.arrow}/>
+                            <Typography variant="h5" style={{ color: lightBlue[900] }}>Quay lại</Typography>
+                    </IconButton>     
+                </Link>
+                <img src={ErrorIcon} width="90px" />
+                <Typography variant="h3">Số lượng bàn ({props.notPaidBillItem.numberOfTables}) nhỏ hơn số lượng bàn tối thiểu của sảnh ({props.notPaidBillItem.feast.id_lobby.lobbyCategory.mintable})</Typography>
+                <Typography variant="h5" style={{marginTop: "10px"}}>
+                    <Link to={`/wedding/${props.match.params.weddingId}/${props.notPaidBillItem.feast.id_lobby.id}`} style={{color: "blue"}}>
+                        Đặt thêm bàn</Link> cho tiệc cưới này!
+                </Typography>
+            </div> :
             <MuiThemeProvider theme={theme}>
                 <div className={classes.page}>
                 <Link to="/bill">
@@ -116,7 +134,7 @@ function DetailBill(props) {
                         <Payment bill={props.notPaidBillItem} />         
                     </Grid>
                     <Grid item md={6} xs={12}  justifyContent="center" alignContent="center">
-                        <Management bill={props.notPaidBillItem} />         
+                        <Management bill={{...props.notPaidBillItem, service: (props.weddingServices.services ? props.weddingServices.services : [])}}/>         
                     </Grid>
                 </Grid>
                 </div>

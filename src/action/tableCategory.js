@@ -15,20 +15,20 @@ export const actFetchTableCategories = (tableCategories) => {
         tableCategories
     }
 }
-// export const actGetTableCategoryRequest = (id) => {
-//     return dispatch => {
-//         return callApi(`table-category/${id}`, 'GET', null).then(res => {
-//             dispatch(actGetTableCategory(res.data));
-//         });
-//     }
-// }
+export const actGetTableCategoryRequest = (id) => {
+    return dispatch => {
+        return callApi(`table-category/${id}`, 'GET', null).then(res => {
+            dispatch(actGetTableCategory(res.data));
+        });
+    }
+}
 
-// export const actGetTableCategory = (tableCategory) => {
-//     return {
-//         type : Types.EDIT_TABLECATEGORY,
-//         tableCategory
-//     }
-// }
+export const actGetTableCategory = (tableCategory) => {
+    return {
+        type : Types.EDIT_TABLECATEGORY,
+        tableCategory
+    }
+}
 
 export const actUpdateTableCategoryRequest = (tableCategory, updateTableCategorySuccess, updateTableCategoryFailure) => {
     return dispatch => {

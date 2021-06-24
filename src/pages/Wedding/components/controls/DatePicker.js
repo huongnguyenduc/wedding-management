@@ -24,10 +24,14 @@ export default function DatePicker(props) {
                 value={value}
                 fullWidth
                 InputProps={{
-                                classes: {
-                                    input: classes.resize,
-                                },
-                            }}
+                    classes: { root: classes.inputRoot, input: classes.resize, }
+                }}
+                InputLabelProps={{
+                classes: {
+                    root: classes.labelRoot,
+                    focused: classes.labelFocused
+                }
+                }}
                 onChange={date =>onChange(convertToDefEventPara(name,date))}
                 {...(error && {error:true,helperText:error})}
 

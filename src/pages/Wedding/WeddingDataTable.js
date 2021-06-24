@@ -183,7 +183,7 @@ const EnhancedTableToolbar = (props) => {
         <>
             <Tooltip title="Chỉnh sửa">
               <Button
-              aria-label="edit"
+              aria-label="editWedding"
               variant="contained"
               className={classes.button}
               startIcon={<Edit style={{color: "#fff", fontSize: "20px", marginLeft: "-15px" }} />}
@@ -194,7 +194,7 @@ const EnhancedTableToolbar = (props) => {
             </Tooltip>
             <Tooltip title="Xóa">
               <Button
-                aria-label="delete"
+                aria-label="deleteWedding"
                 variant="contained"
                 className={classes.button}
                 startIcon={<Delete style={{color: "#fff", fontSize: "20px", marginLeft: "-15px" }} />}
@@ -205,7 +205,7 @@ const EnhancedTableToolbar = (props) => {
             </Tooltip>
             <Tooltip title="Thêm">
             <Button
-                aria-label="filter list"
+                aria-label="addWedding"
                 variant="contained"
                 className={classes.button}
                 startIcon={<Add style={{color: "#fff", fontSize: "20px", marginLeft: "-15px" }} />}
@@ -218,7 +218,7 @@ const EnhancedTableToolbar = (props) => {
       ) : (
           <Tooltip title="Thêm">
           <Button
-                aria-label="filter list"
+                aria-label="addWedding"
                 variant="contained"
                 className={classes.button}
                 startIcon={<Add style={{color: "#fff", fontSize: "20px", marginLeft: "-15px" }} />}

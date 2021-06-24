@@ -93,47 +93,22 @@ class invoice extends Component {
   constructor(props){
       super(props);
       this.state = {
-          id: "1",
-          dateOfPayment: "21-12-2021",
+          id: props.bill.id,
+          dateOfPayment: convertDateToStringDMY(props.bill.dateOfPayment),
 
-          groomName : "Minh",
-          brideName : "Quang",
-          phone : "0122XXX123",
-          weddingDate: "21-12-2021",
+          groomName : props.bill.feast.groomname,
+          brideName : props.bill.feast.bridename,
+          phone : props.bill.feast.phone,
+          weddingDate: convertDateToStringDMY(props.bill.feast.dateOfOrganization),
 
-          totalTablePrice: formatVal(357000000),
-          totalServicePrice: formatVal(30000000),
-          totalBill: formatVal(387000000),
-          deposit: formatVal(200000),
-          fine: formatVal(2),
-          unpaidMoney:formatVal(386800000),
+          totalTablePrice: formatVal(props.bill.totalTablePrice),
+          totalServicePrice: formatVal(props.bill.totalServicePrice),
+          totalBill: formatVal(props.bill.totalBill),
+          deposit: formatVal(props.bill.feast.deposit),
+          fine: formatVal(props.bill.totalFine),
+          unpaidMoney:formatVal(props.bill.unpaidMoney),
       // 
-          services : [
-            {
-              id : "1",
-              index : "1",
-              name : "Ca nhạc",
-              quantity : 5,
-              unitprice: 6,
-              total : 10,
-            },
-            {
-              id: "2",
-              index : "2",
-              name : "Ca nhạc",
-              quantity : 5,
-              unitprice: 6,
-              total : 10,
-            },
-            {
-              id:"3",
-              index : "3",
-              name : "Ca nhạc",
-              quantity : 5,
-              unitprice: 6,
-              total : 10,
-            }
-          ]
+          services : props.bill.service
       }
   }
    render(){
@@ -141,12 +116,12 @@ class invoice extends Component {
       var elemServiceRow = this.state.services.map((services,index) =>{ // render service, H 
           return (
               <ServiceRow 
-                  key = {services.id}
-                  index = {services.index}
-                  name = { services.name}
-                  quantity = { services.quantity}
-                  unitprice = { services.unitprice}
-                  total = { services.total}
+                  key = {services.service.id}
+                  index = {(index + 1)}
+                  name = { services.service.name}
+                  quantity = { services.count}
+                  unitprice = { services.unitPrice}
+                  total = { services.totalPrice}
                   />
           )
       });
@@ -155,7 +130,7 @@ class invoice extends Component {
          <View style= {styles.page}>
             <View className="header" style= { styles.header}>
                 <View style= { styles.header_left}>
-                    <Text style={ styles.tieccuoi }>Tiệc cưới</Text>
+                    <Text style={ styles.tieccuoi }>Hóa đơn tiệc cưới</Text>
                     
                 </View>
                 
@@ -181,7 +156,7 @@ class invoice extends Component {
                     <Text style={ styles.regular }>Ghi chú: { this.state.note}</Text>
                 </View>
                 <View style={ styles.money}>
-                    <Text style={ styles.regular }>Tông tiền bàn: { this.state.totalTablePrice}</Text>
+                    <Text style={ styles.regular }>Tổng tiền bàn: { this.state.totalTablePrice}</Text>
                     <Text style={ styles.regular }>Tổng tiền dịch vụ { this.state.totalServicePrice}</Text>
                     <Text style={ styles.regular }>Tổng tiền hóa đơn: { this.state.totalBill}</Text>
                     <Text style={ styles.regular }>Tiền đặt cọc: { this.state.deposit}</Text>
@@ -197,4 +172,11 @@ class invoice extends Component {
 
 export default invoice;
 
-//
+function convertDateToStringDMY(date) {
+    if (date == null) return;
+        let day = date.substring(8, 10);
+        let month = date.substring(5, 7);
+        let year = date.substring(0, 4);
+        let result = day + "/" + month + "/" +  year;
+        return result;
+}

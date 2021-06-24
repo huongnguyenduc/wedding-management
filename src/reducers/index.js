@@ -29,6 +29,7 @@ import ChangeLobbyData from '../pages/Lobby/reducer/ChangeLobbyData'
 import PolicyReducer from '../pages/Policy/reducer/PolicyReducer'
 import permissionItem from './editPermission';
 import permissions from './permissions';
+import lobbyCategoryItem from './editLobbyCategory';
 
 const allReducers = combineReducers({
     selectedRow: selectedRowReducer,
@@ -60,7 +61,8 @@ const allReducers = combineReducers({
     changeLobbyData:ChangeLobbyData,
     PolicyReducer:PolicyReducer,
     permissionItem,
-    permissions
+    permissions,
+    lobbyCategoryItem
 });
 
 export default allReducers;

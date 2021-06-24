@@ -221,7 +221,7 @@ function EnhancedTableHead(props) {
           fullWidth
           className={classes.ToolbarFilter}
           variant="outlined"
-          placeholder="Tìm kiếm quy định"
+          placeholder="Tìm kiếm loại sảnh"
           onKeyDown={onEnter}
           value={keyword}
           onChange={onChange}

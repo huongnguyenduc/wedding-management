@@ -73,13 +73,13 @@ function LobbyCard(props){
                 return {value:false ,message:'Số bàn tối đa không thể nhỏ hơn số bàn tối thiểu!'}
             }
             if(lobbyState.minUnitPriceTable<0)
-                return {value:false ,message:'Giá tối thiểu không thể là số âm!'}
+                return {value:false ,message:'Đơn giá bàn tối thiểu không thể là số âm!'}
 
             if(isNaN(parseInt(lobbyState.maxTable)))
                 return {value:false ,message:'Số bàn tối đa phải là số!'}
 
             if(isNaN(parseInt(lobbyState.minUnitPriceTable)))
-                return {value:false ,message:'Giá tối thiểu phải là số!'}
+                return {value:false ,message:'Đơn giá bàn tối thiểu phải là số!'}
             else
                 return {value:true ,message:''}
         }
@@ -216,7 +216,7 @@ function LobbyCard(props){
                         
                         <TextField 
                             name="minUnitPriceTable"
-                            placeholder="Giá tối thiểu"
+                            placeholder="Đơn giá bàn tối thiểu"
                             value={lobbyState.minUnitPriceTable}
                             onChange={ChangeValueHandler}
                             InputProps={{

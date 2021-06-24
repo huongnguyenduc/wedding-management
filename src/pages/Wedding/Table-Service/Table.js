@@ -63,12 +63,20 @@ const useStyles = makeStyles((theme) => ({
     },
     tableInfoItem: {
         backgroundColor: '#4c6ef4',
-        margin: "0px 8px",
+        marginRight: "10px",
         borderRadius: "13px",
         padding: "5px 0px",
         boxShadow: '0 5px 10px -2px rgba(76, 110, 244, 0.9)',
         border: 0,
-        
+        alignSelf: "center"
+    },
+    tableInfoItemTotal: {
+        marginRight: "10px",
+        borderRadius: "13px",
+        padding: "5px 0px",
+        boxShadow: '0 5px 10px -2px rgba(76, 110, 244, 0.9)',
+        border: 0,
+        alignSelf: "center"
     },
     tableInfoFormItem: {
         marginTop: '10px',
@@ -280,6 +288,7 @@ function Table(props) {
     }
     addMiddleware(clickRowTableMiddleware);
     const [openTableCategoryDialog, setOpenTableCategoryDialog] = React.useState(false);
+    console.log(props.recentLobby)
     return (
         props.recentLobby ? <div>
             <Dialog open={openTableCategoryDialog} onClose={() => {setOpenTableCategoryDialog(false)}} aria-labelledby="form-dialog-title" maxWidth="md">
@@ -310,7 +319,10 @@ function Table(props) {
                     Phiếu đặt bàn
                 </Typography>
                 <Grid container className={classes.tableInfo} maxWidth='md'>
-                    <Grid item sm={4} xs={12} className={classes.tableInfoItem}>
+                    <Grid item sm={2} xs={12}>
+                        
+                    </Grid>
+                    <Grid item sm={2} xs={12} className={classes.tableInfoItem}>
                         <WhiteTextTypography variant="subtitle1" align="center">
                             Đơn giá bàn tối thiểu
                         </WhiteTextTypography>
@@ -318,17 +330,31 @@ function Table(props) {
                             <NumberFormat value={ props.lobbyId ? props.recentLobby.minUnitPriceTable : 0 } displayType={'text'} thousandSeparator={true} suffix={' đ'} style={{marginLeft: "-2px"}} />
                         </WhiteTextTypography>
                     </Grid>
-                    <Grid item sm={4} xs={12} className={classes.tableInfoItem}>
+                    <Grid item sm={2} xs={12} className={classes.tableInfoItem}>
                         <WhiteTextTypography variant="subtitle1" align="center">
                             Số lượng bàn tối đa
                         </WhiteTextTypography>
                         <WhiteTextTypography variant="h6" align="center">
-                            { props.lobbyId ? props.recentLobby.maxtable : '' }
+                            { props.lobbyId ? props.recentLobby.maxtable : '0' }
                         </WhiteTextTypography>
                     </Grid>
-                    <Grid item sm={3} xs={12} className={classes.tableInfoItem}>
+                    <Grid item sm={2} xs={12} className={classes.tableInfoItem}>
+                        <WhiteTextTypography variant="subtitle1" align="center">
+                            Số lượng bàn tối thiểu
+                        </WhiteTextTypography>
+                        <WhiteTextTypography variant="h6" align="center">
+                            { props.lobbyId ? props.recentLobby.minTableCategory : '0' }
+                        </WhiteTextTypography>
+                    </Grid>
+                    <Grid item sm={2} xs={12} className={classes.tableInfoItemTotal}
+                    style={{
+                        backgroundColor: props.tables.feast && props.lobbyId ? 
+                                (totalTables(props.tables.feastTables) >=props.recentLobby.minTableCategory ?
+                                "#66bb6a" : '#ffd600') : "#f44336"
+                    }}
+                    >
                         <WhiteTextTypography variant="subtitle1" align="center" color="#fff">
-                            Tổng số bàn
+                            Tổng số bàn hiện tại
                         </WhiteTextTypography>
                         <WhiteTextTypography variant="h6" align="center">
                             { props.tables.feast ? 
@@ -548,7 +574,7 @@ const mapDispatchToProps = (dispatch, props) => {
         },
         getLobby: (idLobby) => {
             dispatch(actGetLobbyRequest(idLobby));
-        }
+        },
     }
 }
 

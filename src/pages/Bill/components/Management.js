@@ -5,6 +5,8 @@ import {Link} from 'react-router-dom';
 import {actUpdateNotPaidBillRequest} from './../../../action/notPaidBill';
 import { connect } from 'react-redux'
 import { useSnackbar } from 'notistack';
+import { getCookie } from '../../../action/Login'
+import BillPrint from './BillPrint'
 
 const useStyles = makeStyles((theme) => ({
     billInfo: {
@@ -62,6 +64,17 @@ function Management(props) {
     const savedBillFailure = () => {
         enqueueSnackbar("Lỗi hệ thống. Lưu hóa đơn thất bại!", { variant: "error", autoHideDuration: 3000 });
     }
+    const fullname=getCookie("fullname")
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+    const [open, setOpen] = React.useState(false);
+    console.log(props.bill)
     return (
         <>
             <Paper elevation={3} className={classes.billInfo}>
@@ -77,7 +90,7 @@ function Management(props) {
                                 </Grid>
                                 <Grid item xs={7}>
                                     <div className={classes.billInfoValueItem}>
-                                        <Typography variant="subtitle1">Nguyễn Văn A</Typography>
+                                        <Typography variant="subtitle1">{fullname}</Typography>
                                     </div>
                                 </Grid>
                             </Grid>
@@ -95,9 +108,10 @@ function Management(props) {
                             </Grid>
                         </Grid>
                         <Grid item xs={4} align="center">
-                                <Button variant="contained" color="primary" className={classes.billInfoItem}>
-                                    In hóa đơn
-                                </Button>
+                            <BillPrint open={open} handleClose={handleClose} bill={props.bill}/>
+                            <Button variant="contained" color="primary" className={classes.billInfoItem} onClick={handleClickOpen}>
+                                In hóa đơn
+                            </Button>
                         </Grid>
                         <Grid item xs={4} align="center">
                                 <Button variant="contained" color="primary" disabled={isSaved} onClick={handleClickVariant}>

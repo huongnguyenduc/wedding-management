@@ -55,13 +55,13 @@ class infomation extends Component {
       return (
         <View style={styles.container}>
             <View style= { styles.grid}>
-              <Text style= { styles.regular }>khu phố 6, phường Ling Trung</Text>
+              <Text style= { styles.regular }>Khu phố 6, phường Linh Trung</Text>
                 <Text style= { styles.regular }>Quận Thủ Đức</Text>
                 <Text>01234546789</Text>
                <Text>uit@gm.uit.edu.vn</Text>
           </View>
           <View style= { styles.grid}>
-               <Text style= { styles.regular }>Chú rễ: {this.state.groomName}</Text>
+               <Text style= { styles.regular }>Chú rể: {this.state.groomName}</Text>
                <Text style= { styles.regular }>Cô dâu: {this.state.brideName}</Text>
                <Text style= { styles.regular }>Số điện thoại:{this.state.phone}</Text>
                <Text style= { styles.regular }>Ngày đãi tiệc:{this.state.weddingDate} </Text>
