@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import {Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel} from '@material-ui/core/';
-import {Toolbar, Typography, Paper, Checkbox, IconButton, Tooltip, FormControlLabel, Switch, Grid, TextField} from '@material-ui/core/';
+import {Toolbar, Typography, Paper, IconButton, Tooltip, FormControlLabel, Switch, Grid, TextField, Button} from '@material-ui/core/';
 import { Edit, Delete, Search } from '@material-ui/icons/';
 import clickRowService from '../../actions/clickRowService'
 import { useDispatch, useSelector } from 'react-redux'
@@ -13,6 +13,7 @@ import {actDeleteWeddingServiceRequest} from '../../../../action/weddingService'
 import {EDIT_SERVICE} from '../../reducers/serviceState'
 import { useSnackbar } from 'notistack';
 import NumberFormat from 'react-number-format';
+import {indigo, red} from '@material-ui/core/colors';
 
 var rows = [];
 
@@ -51,7 +52,7 @@ const headCells = [
 ];
 
 function EnhancedTableHead(props) {
-  const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
+  const { classes, order, orderBy, onRequestSort } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
@@ -128,9 +129,16 @@ const EnhancedTableToolbar = (props) => {
     };
   const onDeleteWeddingService = () => {
     if (confirm('Bạn chắc chắn muốn xóa ?')) { //eslint-disable-line
-      dispatch(actDeleteWeddingServiceRequest(props.weddingId, selectedRowService.service.id));
-      handleClickVariant("success", "Xóa dịch vụ thành công!")
+      dispatch(actDeleteWeddingServiceRequest(props.weddingId, selectedRowService.service.id, deleteServiceSuccess, deleteServiceFailure));
     }
+  }
+
+  const deleteServiceSuccess = () => {
+      handleClickVariant("success", "Xóa dịch vụ thành công!")
+  }
+
+  const deleteServiceFailure = () => {
+      handleClickVariant("error", "Lỗi hệ thống. Xóa dịch vụ thất bại!")
   }
 
   return (
@@ -154,14 +162,26 @@ const EnhancedTableToolbar = (props) => {
       ) : numSelected > 0 ? (
         <>
             <Tooltip title="Chỉnh sửa">
-            <IconButton aria-label="edit" onClick={() => dispatch(editOrderState())}>
-                <Edit />
-            </IconButton>
+            <Button
+              aria-label="edit"
+              variant="contained"
+              className={classes.button}
+              startIcon={<Edit style={{color: "#fff", fontSize: "20px", marginLeft: "-15px" }} />}
+              style={{ borderRadius: 10, backgroundColor: indigo[400], fontSize: "10px", color: "#fff", width: 170, marginRight: "10px" }}
+              onClick={() => dispatch(editOrderState())}>
+                Sửa dịch vụ
+              </Button>
             </Tooltip>
-            <Tooltip title="Xóa" onClick={onDeleteWeddingService}>
-            <IconButton aria-label="delete">
-                <Delete />
-            </IconButton>
+            <Tooltip title="Xóa">
+            <Button
+              aria-label="delete"
+              variant="contained"
+              className={classes.button}
+              startIcon={<Delete style={{color: "#fff", fontSize: "20px", marginLeft: "-15px" }} />}
+              style={{ borderRadius: 10, backgroundColor: red[400], fontSize: "10px", color: "#fff", width: 170, marginRight: "10px" }}
+              onClick={onDeleteWeddingService}>
+                Xóa dịch vụ
+              </Button>
             </Tooltip>
         </>
       ) : <></>

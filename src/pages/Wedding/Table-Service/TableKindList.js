@@ -226,7 +226,7 @@ function TableKindList(props) {
   const [selected, setSelected] = React.useState([]);
   const [selectedRow, setSelectedRow] = React.useState([]);
   const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false);
+  const dense = false;
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const handleRequestSort = (event, property) => {
@@ -259,23 +259,26 @@ function TableKindList(props) {
     setPage(0);
   };
 
-  const handleChangeDense = (event) => {
-    setDense(event.target.checked);
-  };
-
   const isSelected = (id) => selected.indexOf(id) !== -1;
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
   const [rowNow, setRowNow] = React.useState(null);
   const { enqueueSnackbar } = useSnackbar();
-    const handleClickVariant = (variant, message) => {
-        enqueueSnackbar(message, { variant, autoHideDuration: 3000 });
-    };
+  const handleClickVariant = (variant, message) => {
+      enqueueSnackbar(message, { variant, autoHideDuration: 3000 });
+  };
+  const deleteTableCategorySuccess = () => {
+      handleClickVariant("success", "Xoá loại bàn thành công!")
+  }
+
+  const deleteTableCategoryFailure = () => {
+      handleClickVariant("error", "Lỗi hệ thống. Xoá loại bàn thất bại!")
+  }
 
   return (
       <div className={classes.root}>
-        <AlertDialog open={open} handleClose={handleClose} title="Xóa loại bàn" description="Bạn có muốn xóa loại bàn này không?" onSubmit={() => {props.deleteTableCategory(rowNow.id); handleClickVariant("success", "Xóa loại bàn thành công!");}}/>
+        <AlertDialog open={open} handleClose={handleClose} title="Xóa loại bàn" description="Bạn có muốn xóa loại bàn này không?" onSubmit={() => {props.deleteTableCategory(rowNow.id, deleteTableCategorySuccess, deleteTableCategoryFailure);}}/>
         {rowNow ? <UpdateTableCategoryDialog open={openUserDialog} handleClose={handleCloseUserDialog} data={rowNow} /> : <></>}
         <Paper className={classes.paper}>
           <EnhancedTableToolbar numSelected={selected.length} selectedRow={selectedRow} />
@@ -355,8 +358,8 @@ function TableKindList(props) {
 
 const mapDispatchToProps = (dispatch, props) => {
     return {
-        deleteTableCategory : (id) => {
-            dispatch(actDeleteTableCategoryRequest(id));
+        deleteTableCategory : (id, deleteTableCategorySuccess, deleteTableCategoryFailure) => {
+            dispatch(actDeleteTableCategoryRequest(id, deleteTableCategorySuccess, deleteTableCategoryFailure));
         },
     }
 }

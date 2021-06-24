@@ -69,10 +69,15 @@ export const actGetNotPaidBill = (notPaidBill) => {
     }
 }
 
-export const actUpdateNotPaidBillRequest = (id) => {
+export const actUpdateNotPaidBillRequest = (id, savedBillSuccess, savedBillFailure) => {
     return dispatch => {
         return callApi(`bill/${id}`, 'PUT', null).then(res => {
-            dispatch(actUpdateNotPaidBill(res.data));
+            if (res) {
+                dispatch(actUpdateNotPaidBill(res.data));
+                savedBillSuccess();
+            } else {
+                savedBillFailure();
+            }
         });
     }
 }

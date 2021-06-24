@@ -1,10 +1,11 @@
 import { AppBar, Box, Container, Grid, IconButton, InputAdornment, Tab, Tabs, TextField } from '@material-ui/core';
-import React, { useEffect, useState } from 'react'
+import React, {useState } from 'react'
 import { useSelector } from 'react-redux'
 import LobbyCard from "../LobbyCard/LobbyCard"
 import useStyles from './LobbyPageStyles'
 import { ExpandLess, ExpandMore } from '@material-ui/icons';
 import SearchIcon from '@material-ui/icons/Search';
+import { getCookie } from '../../../action/Login'
 
 function LobbyPage(props) {
     const {...other} = props 
@@ -50,12 +51,6 @@ function LobbyPage(props) {
            setKeyword({...keyword,value:event.target.value})
     }
 
-    const scrollHandler = (event)=>{
-        var header = document.querySelector(".AppBar")
-        if(header!=null)
-            header.classList.toggle(classes.AppBarScroll,window.scrollY > 80)
-    }
-
     function OpenSearchBox (){
         setKeyword({...keyword,open:!keyword.open})
     }
@@ -70,14 +65,30 @@ function LobbyPage(props) {
                 return item2.minUnitPriceTable - item1.minUnitPriceTable})
     }
 
-    useEffect(()=>{
-        window.addEventListener("scroll", scrollHandler)
-    },[])
+    const privileges = JSON.parse(getCookie("privileges"))
+
+    const canUpdateLobby = (permission) => permission.authority === "UPDATE_LOBBY"
+    var prevScrollpos = window.pageYOffset;
+
+    function scrollHandler(){
+        var currentScrollPos = window.pageYOffset;
+        var header = document.querySelector(".AppBar")
+        if(header!=null)
+        {
+            if (prevScrollpos > currentScrollPos) {
+                header.style.top = "80px";
+            } else {
+                header.style.top = "-85px";
+            }
+        }
+        prevScrollpos = currentScrollPos;
+    }
+    window.addEventListener('scroll', scrollHandler);
     if(LobbyCategory.length>0)
     return (
         <>
-         <Container fixed className={classes.page} {...other}>
-            <AppBar className={`AppBar ${classes.AppBar}`}>
+         <Container component='main' fixed className={classes.page} {...other}>
+            <AppBar id="lobby_appbar" className={`AppBar ${classes.AppBar}`}>
                 <Tabs 
                     value={tab} 
                     onChange={changePage} 
@@ -120,7 +131,7 @@ function LobbyPage(props) {
                        PagePriceItemSort(Lobby,'asc').map((lobby)=>{
                             return(<LobbyCard key={lobby.id} xs={12} sm={6} md={4} lg={4} lobby={lobby} />)})
                     }
-                    <LobbyCard id="insert_lobby"  xs={12} sm={6} md={4} lg={4} />
+                    { privileges.some(canUpdateLobby) ? <LobbyCard id="insert_lobby"  xs={12} sm={6} md={4} lg={4} /> : <></>}
                 </Container>
             </TabPanel>
             {
@@ -132,7 +143,7 @@ function LobbyPage(props) {
                                     PagePriceItemSort(FilterCategory(Lobby,category),'asc').map((lobby)=>{
                                         return(<LobbyCard key={`${category.id}_${lobby.id}`} xs={12} sm={6} md={4} lg={4} lobby={lobby} />)})
                                 }
-                                <LobbyCard id="insert_lobby"  xs={12} sm={6} md={4} lg={4} lobbyCategory={category}/>
+                                { privileges.some(canUpdateLobby) ? <LobbyCard id="insert_lobby" xs={12} sm={6} md={4} lg={4} lobbyCategory={category}/> : <></>}
                             </Container>
                         </TabPanel>
                     )

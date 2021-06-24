@@ -14,12 +14,12 @@ const useStyles = makeStyles(theme=>(
     {
         margin: '0'
     },
-    CellControl:
-    {
-        display: 'flex',
-        flexDirection:'row',
-        justifyContent:'space-between',
-        alignContent:'center'
+    ControlCell:{
+        padding:"8px"
+    },
+    divControl:{
+        display:"flex",
+        justifyContent:"space-around"
     },
     
     

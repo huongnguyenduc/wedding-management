@@ -24,11 +24,12 @@ import { Add } from '@material-ui/icons/';
 import TableKindList from './TableKindList';
 import {actFetchTablesRequest} from './../../../action/table';
 import {actGetLobbyRequest} from './../../../action/lobby';
-import {actFetchServicesRequest} from './../../../action/service';
-import {actFetchWeddingServicesRequest} from './../../../action/weddingService';
 import {actFetchTableCategoriesRequest} from './../../../action/tableCategory';
 import { useSnackbar } from 'notistack';
 import NumberFormat from 'react-number-format';
+import {Done, Clear } from '@material-ui/icons';
+import {orange, red} from '@material-ui/core/colors';
+import FastfoodIcon from '@material-ui/icons/Fastfood';
 
 const WhiteTextTypography = withStyles({
     root: {
@@ -62,12 +63,20 @@ const useStyles = makeStyles((theme) => ({
     },
     tableInfoItem: {
         backgroundColor: '#4c6ef4',
-        margin: "0px 8px",
+        marginRight: "10px",
         borderRadius: "13px",
         padding: "5px 0px",
         boxShadow: '0 5px 10px -2px rgba(76, 110, 244, 0.9)',
         border: 0,
-        
+        alignSelf: "center"
+    },
+    tableInfoItemTotal: {
+        marginRight: "10px",
+        borderRadius: "13px",
+        padding: "5px 0px",
+        boxShadow: '0 5px 10px -2px rgba(76, 110, 244, 0.9)',
+        border: 0,
+        alignSelf: "center"
     },
     tableInfoFormItem: {
         marginTop: '10px',
@@ -91,17 +100,22 @@ const useStyles = makeStyles((theme) => ({
     },
     buttonTable: {
         margin: "5px 5px"
-    }
+    },
+    inputRoot: {
+        fontSize: 16
+    },
+    labelRoot: {
+        fontSize: 16,
+    },
+    labelFocused: {}
 }));
 
 function Table(props) {
     useEffect(()=>{
         props.fetchAllTableCategoriesInfo(); 
         props.fetchAllTablesInfo(props.weddingId);
-        props.fetchAllServicesInfo();
-        props.fetchAllWeddingServicesInfo(props.weddingId);
         props.getLobby(props.lobbyId);
-    }, [])
+    }, [])// eslint-disable-line
     var initialValues = {
             id: 0,
             tableKind: "",
@@ -163,17 +177,31 @@ function Table(props) {
             if (props.currentTableState.state === ADD_TABLE) {
                 console.log('chuan bi add table')
                 console.log(createTable())
-                props.addTable(createTable());
+                props.addTable(createTable(), addTableSuccess, addTableFailure);
             }
             if (props.currentTableState.state === EDIT_TABLE) {
                 console.log('chuan bi edit table')
                 console.log(createTable())
-                props.editTable(updateTable());
+                props.editTable(updateTable(), updateTableSuccess, updateTableFailure);
             }
             resetForm()
             changeToNormalState()
-            handleClickVariant("success", (props.currentTableState.state === ADD_TABLE ? "Thêm" : "Sửa") + " thông tin đặt bàn thành công!")
         }
+    }
+    const addTableSuccess = () => {
+        handleClickVariant("success", "Thêm thông tin đặt bàn thành công!")
+    }
+
+    const addTableFailure = () => {
+        handleClickVariant("error", "Lỗi hệ thống. Thêm thông tin đặt bàn thất bại!")
+    }
+
+    const updateTableSuccess = () => {
+        handleClickVariant("success", "Chỉnh sửa thông tin đặt bàn thành công!")
+    }
+
+    const updateTableFailure = () => {
+        handleClickVariant("error", "Lỗi hệ thống. Chỉnh sửa thông tin đặt bàn thất bại!")
     }
     const displayCounter = (prop) => values[prop] > 0;
 
@@ -267,6 +295,7 @@ function Table(props) {
     }
     addMiddleware(clickRowTableMiddleware);
     const [openTableCategoryDialog, setOpenTableCategoryDialog] = React.useState(false);
+    console.log(props.recentLobby)
     return (
         props.recentLobby ? <div>
             <Dialog open={openTableCategoryDialog} onClose={() => {setOpenTableCategoryDialog(false)}} aria-labelledby="form-dialog-title" maxWidth="md">
@@ -293,11 +322,14 @@ function Table(props) {
                 <Typography variant='h6' align='center'>{moreInfo}</Typography>
             </Popover>
             <Form onSubmit={handleSubmit}>
-                <Typography variant="h4" className={classes.title}>
+                <Typography id="tableTitle" variant="h4" className={classes.title}>
                     Phiếu đặt bàn
                 </Typography>
                 <Grid container className={classes.tableInfo} maxWidth='md'>
-                    <Grid item sm={4} xs={12} className={classes.tableInfoItem}>
+                    <Grid item sm={2} xs={12}>
+                        
+                    </Grid>
+                    <Grid item sm={2} xs={12} className={classes.tableInfoItem}>
                         <WhiteTextTypography variant="subtitle1" align="center">
                             Đơn giá bàn tối thiểu
                         </WhiteTextTypography>
@@ -305,28 +337,42 @@ function Table(props) {
                             <NumberFormat value={ props.lobbyId ? props.recentLobby.minUnitPriceTable : 0 } displayType={'text'} thousandSeparator={true} suffix={' đ'} style={{marginLeft: "-2px"}} />
                         </WhiteTextTypography>
                     </Grid>
-                    <Grid item sm={4} xs={12} className={classes.tableInfoItem}>
+                    <Grid item sm={2} xs={12} className={classes.tableInfoItem}>
                         <WhiteTextTypography variant="subtitle1" align="center">
                             Số lượng bàn tối đa
                         </WhiteTextTypography>
                         <WhiteTextTypography variant="h6" align="center">
-                            { props.lobbyId ? props.recentLobby.maxtable : '' }
+                            { props.lobbyId ? props.recentLobby.maxtable : '0' }
                         </WhiteTextTypography>
                     </Grid>
-                    <Grid item sm={3} xs={12} className={classes.tableInfoItem}>
+                    <Grid item sm={2} xs={12} className={classes.tableInfoItem}>
+                        <WhiteTextTypography variant="subtitle1" align="center">
+                            Số lượng bàn tối thiểu
+                        </WhiteTextTypography>
+                        <WhiteTextTypography variant="h6" align="center">
+                            { props.lobbyId ? props.recentLobby.minTableCategory : '0' }
+                        </WhiteTextTypography>
+                    </Grid>
+                    <Grid item sm={2} xs={12} className={classes.tableInfoItemTotal}
+                    style={{
+                        backgroundColor: props.tables.feast && props.lobbyId ? 
+                                (totalTables(props.tables.feastTables) >=props.recentLobby.minTableCategory ?
+                                "#66bb6a" : '#ffd600') : "#f44336"
+                    }}
+                    >
                         <WhiteTextTypography variant="subtitle1" align="center" color="#fff">
-                            Tổng số bàn
+                            Tổng số bàn được đặt
                         </WhiteTextTypography>
                         <WhiteTextTypography variant="h6" align="center">
                             { props.tables.feast ? 
                                 totalTables(props.tables.feastTables)
-                                : '' }
+                                : '0' }
                         </WhiteTextTypography>
                     </Grid>
                 </Grid>
                 <Container maxWidth='lg' className={classes.formWedding} >
                     <Container className={classes.formWeddingTitle}>    
-                        <Typography variant="subtitle" align='center'>Thông tin đặt bàn</Typography>
+                        <Typography  variant="subtitle" align='center'>Thông tin đặt bàn</Typography>
                     </Container>
                     <Grid container spacing={6} direction='row'>
                         <Grid item xs={12} sm={6} align='center'>
@@ -337,6 +383,15 @@ function Table(props) {
                                 value={selectedTableValues.tableKind}
                                 id="tableKind"
                                 name="tableKind"
+                                InputProps={{
+                                    classes: { root: classes.inputRoot }
+                                }}
+                                InputLabelProps={{
+                                classes: {
+                                    root: classes.labelRoot,
+                                    focused: classes.labelFocused
+                                }
+                                }}
                                 onChange={handleInputChange} 
                                 {...(errors.tableKind && {error:true,helperText:errors.tableKind})}
                                 label="Loại bàn"
@@ -374,11 +429,15 @@ function Table(props) {
                             </div>
                                 }
                             <FormControl className={classes.tableInfoFormItem} variant="outlined" fullWidth name="numberTables" >
-                            <InputLabel htmlFor="outlined-adornment-password">Số lượng</InputLabel>
+                            <InputLabel htmlFor="outlined-adornment-password" className={classes.inputRoot} >Số lượng</InputLabel>
                             <OutlinedInput
                                 id="outlined-adornment-password"
                                 labelWidth={60}
                                 name="numberTables"
+                                InputProps={{
+                                    classes: { root: classes.inputRoot }
+                                }}
+                                
                                 value={props.currentTableState.state === NORMAL ? selectedTableValues.numberTables :  values.numberTables}
                                 onChange={handleInputChange}
                                 {...(errors.numberTables && {error:true,helperText:errors.numberTables})}
@@ -399,11 +458,20 @@ function Table(props) {
                             )}
                             </FormControl>
                             <FormControl className={classes.tableInfoFormItem} variant="outlined" fullWidth>
-                            <InputLabel htmlFor="outlined-adornment-password">Số lượng dự trữ</InputLabel>
+                            <InputLabel htmlFor="outlined-adornment-password" className={classes.inputRoot} >Số lượng dự trữ</InputLabel>
                             <OutlinedInput
                                 id="outlined-adornment-password"
                                 name="reverseTables"
-                                labelWidth={100}
+                                labelWidth={120}
+                                inputProps={{
+                                    classes: { root: classes.inputRoot }
+                                }}
+                                InputLabelProps={{
+                                classes: {
+                                    root: classes.labelRoot,
+                                    focused: classes.labelFocused
+                                }
+                                }}
                                 value={props.currentTableState.state === NORMAL ? selectedTableValues.reverseTables :  values.reverseTables}
                                 onChange={handleInputChange}
                                 {...(errors.reverseTables && {error:true,helperText:errors.reverseTables})}
@@ -444,27 +512,50 @@ function Table(props) {
                                 {...(errors.note && {error:true,helperText:errors.note})}
                                 id="note"
                                 name="note"
+                                InputProps={{
+                                    classes: { root: classes.inputRoot }
+                                }}
+                                InputLabelProps={{
+                                classes: {
+                                    root: classes.labelRoot,
+                                    focused: classes.labelFocused
+                                }
+                                }}
                                 onChange={handleInputChange} 
                                 label="Ghi chú"
                                 className={classes.tableInfoFormItem} />
-                            { props.selectedTable.id ? <Button 
-                            variant="outlined" 
-                            color="primary" 
-                            label="Chi tiết" 
-                            fullfill 
-                            size='large' 
+                            { props.selectedTable.id && props.currentTableState.state === NORMAL ? 
+                            <Button
+                            variant="contained"
+                            id="openFood"
+                            className={classes.button}
                             onClick={() => 
                                 {props.fetchAllFoods(); 
                                 props.fetchAllTableFoods(props.selectedTable.id);
                                 handleClickOpenTableFoodDialog();
-                                }}>
+                                }}
+                            startIcon={<FastfoodIcon style={{color: "#fff", fontSize: "20px", marginLeft: "-15px" }} />}
+                            style={{ borderRadius: 10, backgroundColor: orange["A700"], fontSize: "12px", color: "#fff", width: 250, marginRight: "10px", marginTop: "20px" }}>
                                 Mở chi tiết phiếu đặt bàn
                             </Button> : <></>}
                             {props.currentTableState.state !== NORMAL ? 
                             <ButtonGroup variant="text" color="primary" aria-label="text primary button group" size='large'>
-                                <Button type="submit">Hoàn tất</Button>
                                 <Button
-                                    onClick={() => {changeToNormalState(); resetForm(); }}>Hủy</Button>
+                            variant="contained"
+                            type="submit"
+                            className={classes.button}
+                            startIcon={<Done style={{color: "#fff", fontSize: "20px", marginLeft: "-15px" }} />}
+                            style={{ borderRadius: 10, backgroundColor: green[400], fontSize: "10px", color: "#fff", width: 150, marginRight: "10px" }}>
+                                Hoàn tất
+                            </Button>
+                                <Button
+                            variant="contained"
+                            onClick={() => {changeToNormalState(); resetForm(); }}
+                            className={classes.button}
+                            startIcon={<Clear style={{color: "#fff", fontSize: "20px", marginLeft: "-15px" }} />}
+                            style={{ borderRadius: 10, backgroundColor: red[400], fontSize: "10px", color: "#fff", width: 150, marginRight: "10px" }}>
+                                Hủy
+                            </Button>
                             </ButtonGroup> : <></>}  
                             
                         </Grid>
@@ -508,11 +599,11 @@ const mapDispatchToProps = (dispatch, props) => {
         fetchAllTableFoods : (tableFoodId) => {
             dispatch(actFetchTableFoodsRequest(tableFoodId));
         },
-        addTable : (table) => {
-            dispatch(actAddTableRequest(table));
+        addTable : (table, addTableSuccess, addTableFailure) => {
+            dispatch(actAddTableRequest(table, addTableSuccess, addTableFailure));
         },
-        editTable : (table) => {
-            dispatch(actUpdateTableRequest(table));
+        editTable : (table, updateTableSuccess, updateTableFailure) => {
+            dispatch(actUpdateTableRequest(table, updateTableSuccess, updateTableFailure));
         },
         fetchAllTablesInfo : (idWedding) => {
             dispatch(actFetchTablesRequest(idWedding));
@@ -520,15 +611,9 @@ const mapDispatchToProps = (dispatch, props) => {
         fetchAllTableCategoriesInfo : () => {
             dispatch(actFetchTableCategoriesRequest());
         },
-        fetchAllServicesInfo : () => {
-            dispatch(actFetchServicesRequest());
-        },
-        fetchAllWeddingServicesInfo : (idWedding) => {
-            dispatch(actFetchWeddingServicesRequest(idWedding));
-        },
         getLobby: (idLobby) => {
             dispatch(actGetLobbyRequest(idLobby));
-        }
+        },
     }
 }
 

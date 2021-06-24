@@ -21,10 +21,15 @@ export const actFetchWeddings = (weddings) => {
     }
 }
 
-export const actDeleteWeddingRequest = (id) => {
+export const actDeleteWeddingRequest = (id, deleteWeddingSuccess, deleteWeddingFailure) => {
     return dispatch => {
         return callApi(`feast/${id}`, 'DELETE', null).then(res =>{
-            dispatch(actDeleteWedding(id));
+            if (res) {
+                dispatch(actDeleteWedding(id));
+                deleteWeddingSuccess();
+            } else {
+                deleteWeddingFailure();
+            }
         })
     }
 }
@@ -36,13 +41,31 @@ export const actDeleteWedding = (id) => {
     }
 }
 
-export const actAddWeddingRequest = (wedding) => {
+export const actAddWeddingRequest = (wedding, addWeddingSuccess, addWeddingFailure, checkWeddingExist, checkWeddingFailure, resetForm, changeToNormalState) => {
     console.log('request')
     console.log(wedding)
     return dispatch => {
-        return callApi('feast', 'POST', wedding).then(res => {
-            if (res)
-                dispatch(actAddWedding(res.data));
+        const { dateOfOrganization, idShift, lobbyId } = wedding;
+        var data = { dateOfOrganization, idShift, lobbyId }
+        callApi('feast/check-exist', 'PUT', data).then( res => {
+            if (res) {
+                if (res.data === true) {
+                    checkWeddingExist();
+                } else {
+                    return callApi('feast', 'POST', wedding).then(res => {
+                        if (res) {
+                            dispatch(actAddWedding(res.data));
+                            resetForm();
+                            changeToNormalState();
+                            addWeddingSuccess();
+                        } else {
+                            addWeddingFailure();
+                        }
+                    });
+                }
+            } else {
+                checkWeddingFailure();
+            }
         });
     }
 }
@@ -69,11 +92,44 @@ export const actGetWedding = (wedding) => {
     }
 }
 
-export const actUpdateWeddingRequest = (wedding) => {
+export const actUpdateWeddingRequest = (wedding, updateWeddingSuccess, updateWeddingFailure, checkWeddingExist, checkWeddingFailure, resetForm, changeToNormalState, oldDateUpdate, oldShift, oldLobby) => {
     return dispatch => {
-        return callApi(`feast`, 'PUT', wedding).then(res => {
-            dispatch(actUpdateWedding(res.data));
-        });
+        const { dateOfOrganization, idShift, lobbyId } = wedding;
+        var data = { dateOfOrganization, idShift, lobbyId }
+        if (oldDateUpdate === dateOfOrganization && idShift === oldShift && lobbyId === oldLobby) {
+            return callApi(`feast`, 'PUT', wedding).then(res => {
+                if (res) {
+                    dispatch(actUpdateWedding(res.data));
+                    resetForm();
+                    changeToNormalState();
+                    updateWeddingSuccess();
+                } else {
+                    console.log(wedding)
+                    updateWeddingFailure();
+                    console.log("alo")
+                }
+            });
+        } else 
+            callApi('feast/check-exist', 'PUT', data).then( res => {
+                if (res) {
+                    if (res.data === true) {
+                        checkWeddingExist();
+                    } else {
+                        return callApi(`feast`, 'PUT', wedding).then(res => {
+                            if (res) {
+                                dispatch(actUpdateWedding(res.data));
+                                resetForm();
+                                changeToNormalState();
+                                updateWeddingSuccess();
+                            } else {
+                                updateWeddingFailure();
+                            }
+                        });
+                    }
+                } else {
+                    checkWeddingFailure();
+                }
+            });
     }
 }
 
@@ -83,3 +139,4 @@ export const actUpdateWedding = (wedding) => {
         wedding
     }
 }
+

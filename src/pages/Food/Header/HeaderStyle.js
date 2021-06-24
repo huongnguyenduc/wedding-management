@@ -9,15 +9,11 @@ const useStyles = makeStyles(theme=>(
         flexWrap:'nowrap',
         alignContent:'center',
         height:'40px',
-        position:'relative',
-    },
-    ScrollHeader:{
         position:'fixed',
-        top:'0',
-        right:'50%',
-        transform:'translateX(50%)',
-        zIndex:'1',
-        backgroundColor:'#ffffff'      
+        top:'80px',
+        left:'0',
+        zIndex:1,
+        transition:"top 0.3s"
     },
     MenuContainer:
     {

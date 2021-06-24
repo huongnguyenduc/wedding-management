@@ -17,6 +17,8 @@ import {actFetchTablesRequest} from './../../../../action/table';
 import clickRowTable from '../../actions/clickRowTable'
 import { useSnackbar } from 'notistack';
 import NumberFormat from 'react-number-format';
+import {green, red} from '@material-ui/core/colors';
+import {Done, Clear } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -116,14 +118,29 @@ function TableDetailDialog(props) {
           if (props.currentFoodState.state === EDIT_ORDER_FOOD) {
             console.log('update ne')
             console.log(updateTableFood())
-            props.updateTableFood(updateTableFood())
+            props.updateTableFood(updateTableFood(), updateTableFoodSuccess, updateTableFoodFailure)
           }
           else
-            props.addTableFood(createTableFood())
+            props.addTableFood(createTableFood(), addTableFoodSuccess, addTableFoodFailure)
           resetForm()
           changeToNormalState()
-          handleClickVariant("success", (props.currentFoodState.state !== EDIT_ORDER_FOOD ? "Thêm" : "Sửa") + " món thành công!")
       }
+  }
+
+  const addTableFoodSuccess = () => {
+      handleClickVariant("success", "Thêm món thành công!")
+  }
+
+  const addTableFoodFailure = () => {
+      handleClickVariant("error", "Lỗi hệ thống. Thêm món thất bại!")
+  }
+
+  const updateTableFoodSuccess = () => {
+      handleClickVariant("success", "Sửa thông tin món thành công!")
+  }
+
+  const updateTableFoodFailure = () => {
+      handleClickVariant("error", "Lỗi hệ thống. Sửa thông tin món thất bại!")
   }
 
   const displayCounter = (prop) => values[prop] > 0;
@@ -295,13 +312,24 @@ function TableDetailDialog(props) {
                   name='note'
                   value={values.note}
                   onChange={handleInputChange} />
-                {props.currentFoodState.state !== NORMAL ? <Button type='submit' variant="outlined" color="primary" fullfill size='large' className={classes.textFieldForm}>
-                {props.currentFoodState.state === EDIT_ORDER_FOOD ? 'Sửa đặt món ăn' : 'Đặt món ăn'}
+                {props.currentFoodState.state !== NORMAL ? 
+                <Button
+                variant="contained"
+                type="submit"
+                className={classes.textFieldForm}
+                startIcon={<Done style={{color: "#fff", fontSize: "20px", marginLeft: "-15px" }} />}
+                style={{ borderRadius: 10, backgroundColor: green[400], fontSize: "10px", color: "#fff", width: 200, marginRight: "10px" }}>
+                    {props.currentFoodState.state === EDIT_ORDER_FOOD ? 'Sửa đặt món ăn' : 'Đặt món ăn'}
                 </Button> : <></>}
                 {props.currentFoodState.state === EDIT_ORDER_FOOD ? 
-                <Button variant="outlined" color="primary" fullfill size='large' className={classes.textFieldForm} onClick={changeToNormalState}>
-                Hủy
-                </Button> : <></>}
+                <Button
+                            variant="contained"
+                            onClick={() => {changeToNormalState(); }}
+                            className={classes.textFieldForm}
+                            startIcon={<Clear style={{color: "#fff", fontSize: "20px", marginLeft: "-15px" }} />}
+                            style={{ borderRadius: 10, backgroundColor: red[400], fontSize: "10px", color: "#fff", width: 150, marginRight: "10px" }}>
+                                Hủy
+                            </Button> : <></>}
               </Form>
             </Grid>
         </Grid>
@@ -326,11 +354,11 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch, props) => {
     return {
-        addTableFood : (tableFood) => {
-            dispatch(actAddTableFoodRequest(tableFood));
+        addTableFood : (tableFood, addTableFoodSuccess, addTableFoodFailure) => {
+            dispatch(actAddTableFoodRequest(tableFood, addTableFoodSuccess, addTableFoodFailure));
         },
-        updateTableFood : (tableFood) => {
-            dispatch(actUpdateTableFoodRequest(tableFood));
+        updateTableFood : (tableFood, updateTableFoodSuccess, updateTableFoodFailure) => {
+            dispatch(actUpdateTableFoodRequest(tableFood, updateTableFoodSuccess, updateTableFoodFailure));
         },
         fetchAllTablesInfo : (idWedding) => {
             dispatch(actFetchTablesRequest(idWedding));

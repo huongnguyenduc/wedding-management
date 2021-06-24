@@ -27,7 +27,14 @@ function AddTableCategoryDialog(props) {
     const handleClickVariant = (variant, message) => {
         enqueueSnackbar(message, { variant, autoHideDuration: 3000 });
     };
+    const addTableCategorySuccess = () => {
+      handleClickVariant("success", "Thêm loại bàn thành công!")
+      handleClose();
+  }
 
+  const addTableCategoryFailure = () => {
+      handleClickVariant("error", "Lỗi hệ thống. Thêm loại bàn thất bại!")
+  }
   return (
     <div>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
@@ -57,7 +64,7 @@ function AddTableCategoryDialog(props) {
           </Button>
           <Button 
           color="primary" 
-          onClick={() => {props.addTableCategoriesInfo({name: tableCategoryName, moreInfo: tableCategoryNote}); handleClickVariant("success", "Thêm loại bàn thành công!"); handleClose();}}>
+          onClick={() => {props.addTableCategoriesInfo({name: tableCategoryName, moreInfo: tableCategoryNote}, addTableCategorySuccess, addTableCategoryFailure);}}>
             Thêm loại bàn
           </Button>
         </DialogActions>
@@ -68,8 +75,8 @@ function AddTableCategoryDialog(props) {
 
 const mapDispatchToProps = (dispatch, props) => {
     return {
-        addTableCategoriesInfo : ({name, moreInfo}) => {
-            dispatch(actAddTableCategoryRequest({name, moreInfo}));
+        addTableCategoriesInfo : ({name, moreInfo}, addTableCategorySuccess, addTableCategoryFailure) => {
+            dispatch(actAddTableCategoryRequest({name, moreInfo}, addTableCategorySuccess, addTableCategoryFailure));
         },
     }
 }

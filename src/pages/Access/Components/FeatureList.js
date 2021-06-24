@@ -2,27 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { lighten, makeStyles } from '@material-ui/core/styles';
-import {Table, TableBody, TableCell, TableHead, TablePagination, TableRow, TableSortLabel, Toolbar, Paper, Checkbox, FormControlLabel, Switch, TableContainer, Typography} from '@material-ui/core';
+import {Table, TableBody, TableCell, TableHead, TablePagination, TableRow, TableSortLabel, Toolbar, Paper, Checkbox, TableContainer, Typography} from '@material-ui/core';
 
-function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
-}
 
-const rows = [
-    createData('Cupcake', 305, 3.7, 67, 4.3),
-    createData('Donut', 452, 25.0, 51, 4.9),
-    createData('Eclair', 262, 16.0, 24, 6.0),
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-    createData('Gingerbread', 356, 16.0, 49, 3.9),
-    createData('Honeycomb', 408, 3.2, 87, 6.5),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-    createData('Jelly Bean', 375, 0.0, 94, 0.0),
-    createData('KitKat', 518, 26.0, 65, 7.0),
-    createData('Lollipop', 392, 0.2, 98, 0.0),
-    createData('Marshmallow', 318, 0, 81, 2.0),
-    createData('Nougat', 360, 19.0, 9, 37.0),
-    createData('Oreo', 437, 18.0, 63, 4.0),
-];
+var rows = [];
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -52,7 +35,7 @@ function stableSort(array, comparator) {
 
 const headCells = [
     { id: 'name', numeric: false, disablePadding: true, label: 'Tên chức năng' },
-    { id: 'feature', numeric: true, disablePadding: false, label: 'Tên giao diện được load' },
+    // { id: 'feature', numeric: true, disablePadding: false, label: 'Tên giao diện được load' },
 ];
 
 function EnhancedTableHead(props) {
@@ -177,15 +160,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function FeatureList() {
+function FeatureList(props) {
     const classes = useStyles();
     const [order, setOrder] = React.useState('asc');
-    const [orderBy, setOrderBy] = React.useState('calories');
-    const [selected, setSelected] = React.useState([]);
+    const [orderBy, setOrderBy] = React.useState('id');
     const [page, setPage] = React.useState(0);
     const [dense, setDense] = React.useState(false);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
+    rows = props.rows;
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
@@ -194,31 +176,31 @@ function FeatureList() {
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-        const newSelecteds = rows.map((n) => n.name);
-        setSelected(newSelecteds);
+        const newSelecteds = rows;
+        props.setSelected(newSelecteds);
         return;
         }
-        setSelected([]);
+        props.setSelected([]);
     };
 
-    const handleClick = (event, name) => {
-        const selectedIndex = selected.indexOf(name);
+    const handleClick = (event, row) => {
+        const selectedIndex = props.selected.findIndex(item => item.id === row.id);
         let newSelected = [];
 
         if (selectedIndex === -1) {
-        newSelected = newSelected.concat(selected, name);
+        newSelected = newSelected.concat(props.selected, row);
         } else if (selectedIndex === 0) {
-        newSelected = newSelected.concat(selected.slice(1));
-        } else if (selectedIndex === selected.length - 1) {
-        newSelected = newSelected.concat(selected.slice(0, -1));
+        newSelected = newSelected.concat(props.selected.slice(1));
+        } else if (selectedIndex === props.selected.length - 1) {
+        newSelected = newSelected.concat(props.selected.slice(0, -1));
         } else if (selectedIndex > 0) {
         newSelected = newSelected.concat(
-            selected.slice(0, selectedIndex),
-            selected.slice(selectedIndex + 1),
+            props.selected.slice(0, selectedIndex),
+            props.selected.slice(selectedIndex + 1),
         );
         }
 
-        setSelected(newSelected);
+        props.setSelected(newSelected);
     };
 
     const handleChangePage = (event, newPage) => {
@@ -234,14 +216,14 @@ function FeatureList() {
         setDense(event.target.checked);
     };
 
-    const isSelected = (name) => selected.indexOf(name) !== -1;
+    const isSelected = (item) => props.selected.findIndex(x => x.id === item.id) !== -1;
 
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
     return (
         <div className={classes.root}>
         <Paper className={classes.paper}>
-            <EnhancedTableToolbar numSelected={selected.length} />
+            <EnhancedTableToolbar numSelected={props.selected.length} />
             <TableContainer>
             <Table
                 className={classes.table}
@@ -251,7 +233,7 @@ function FeatureList() {
             >
                 <EnhancedTableHead
                 classes={classes}
-                numSelected={selected.length}
+                numSelected={props.selected.length}
                 order={order}
                 orderBy={orderBy}
                 onSelectAllClick={handleSelectAllClick}
@@ -262,17 +244,16 @@ function FeatureList() {
                 {stableSort(rows, getComparator(order, orderBy))
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row, index) => {
-                    const isItemSelected = isSelected(row.name);
+                    const isItemSelected = isSelected(row);
                     const labelId = `enhanced-table-checkbox-${index}`;
-
                     return (
                         <TableRow
                         hover
-                        onClick={(event) => handleClick(event, row.name)}
+                        onClick={(event) => handleClick(event, row)}
                         role="checkbox"
                         aria-checked={isItemSelected}
                         tabIndex={-1}
-                        key={row.name}
+                        key={row.id}
                         selected={isItemSelected}
                         >
                         <TableCell padding="checkbox">
@@ -282,9 +263,9 @@ function FeatureList() {
                             />
                         </TableCell>
                         <TableCell component="th" id={labelId} scope="row" padding="none">
-                            {row.name}
+                            {row.description}
                         </TableCell>
-                        <TableCell align="right">{row.calories}</TableCell>
+                        {/* {<TableCell align="right">{row.calories}</TableCell>} */}
                         </TableRow>
                     );
                     })}

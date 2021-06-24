@@ -1,12 +1,10 @@
 const styles = (theme) =>(
     {
         FoodGroupContainer:{
-            paddingTop:'3rem',
-            paddingBottom:'10rem',
             display:'flex', 
             justifyContent:"center", 
             flexDirection:'column',
-            minHeight:'600px',
+            minHeight:'800px',
             alignItem:'center',
             animation:"$First_animation 0.3s ease-out",
             zIndex:'-1'
@@ -55,7 +53,6 @@ const styles = (theme) =>(
             border:'1px solid',
             borderRadius:'10px',
             position:'relative',
-            marginTop:'10rem',
             boxShadow:'0 5px 10px 0 rgba(26,47,51,0.4)',
             paddingTop:'2rem',
             paddingBottom:'2rem',

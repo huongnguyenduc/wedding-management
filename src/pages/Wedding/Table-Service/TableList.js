@@ -1,9 +1,9 @@
 import React , { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import clsx from 'clsx';
+import clsx from 'clsx';// eslint-disable-line
 import { lighten, makeStyles } from '@material-ui/core/styles';
-import {Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Grid, TextField} from '@material-ui/core/';
-import {Toolbar, Typography, Paper, IconButton, Tooltip, FormControlLabel, Switch} from '@material-ui/core/';
+import {Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Grid, TextField, Button} from '@material-ui/core/';
+import {Toolbar, Typography, Paper,Tooltip, FormControlLabel, Switch} from '@material-ui/core/';
 import { Edit, Delete, Add, Search } from '@material-ui/icons/';
 import clickRowTable from '../actions/clickRowTable'
 import { useDispatch, useSelector, connect } from 'react-redux'
@@ -13,6 +13,7 @@ import { NORMAL } from '../reducers/tableState';
 import {actDeleteTableRequest} from '../../../action/table'
 import { useSnackbar } from 'notistack';
 import NumberFormat from 'react-number-format';
+import {green, indigo, red} from '@material-ui/core/colors';
 
 var rows = [];
 
@@ -52,7 +53,7 @@ const headCells = [
 ];
 
 function EnhancedTableHead(props) {
-  const { classes, order, orderBy, numSelected, rowCount, onRequestSort } = props;
+  const { classes, order, orderBy, onRequestSort } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
@@ -147,10 +148,16 @@ const EnhancedTableToolbar = (props) => {
   }
     const onDeleteTable = () => {
     if (confirm('Bạn chắc chắn muốn xóa ?')) { //eslint-disable-line
-      dispatch(actDeleteTableRequest([selectedTable.id]));
-      handleClickVariant("success", "Xóa thông tin đặt bàn thành công!")
+      dispatch(actDeleteTableRequest([selectedTable.id], deleteTableSuccess, deleteTableFailure));
     }
   }
+  const deleteTableSuccess = () => {
+        handleClickVariant("success", "Xoá thông tin đặt bàn thành công!")
+    }
+
+    const deleteTableFailure = () => {
+        handleClickVariant("error", "Lỗi hệ thống. Xoá thông tin đặt bàn thất bại!")
+    }
   return (
     <Toolbar
       className={clsx(classes.root, {
@@ -163,31 +170,55 @@ const EnhancedTableToolbar = (props) => {
         </Typography>
         }
 
-      {numSelected > 0 ? (
+      { currentTableState.state === NORMAL ? (numSelected > 0 ? (
         <>
             <Tooltip title="Chỉnh sửa">
-            <IconButton aria-label="edit" onClick={changeToEditState}>
-                <Edit />
-            </IconButton>
+            <Button
+              aria-label="edit"
+              variant="contained"
+              className={classes.button}
+              startIcon={<Edit style={{color: "#fff", fontSize: "20px", marginLeft: "-15px" }} />}
+              style={{ borderRadius: 10, backgroundColor: indigo[400], fontSize: "10px", color: "#fff", width: 180, marginRight: "10px" }}
+              onClick={changeToEditState}>
+                Sửa đặt bàn
+              </Button>
             </Tooltip>
             <Tooltip title="Xóa">
-            <IconButton aria-label="delete" onClick={onDeleteTable}>
-                <Delete />
-            </IconButton>
+            <Button
+              aria-label="delete"
+              variant="contained"
+              className={classes.button}
+              startIcon={<Delete style={{color: "#fff", fontSize: "20px", marginLeft: "-15px" }} />}
+              style={{ borderRadius: 10, backgroundColor: red[400], fontSize: "10px", color: "#fff", width: 180, marginRight: "10px" }}
+              onClick={onDeleteTable}>
+                Xóa đặt bàn
+              </Button>
             </Tooltip>
             <Tooltip title="Filter list">
-          <IconButton aria-label="filter list" onClick={changeToAddState}>
-            <Add />
-          </IconButton>
+          <Button
+                aria-label="filter list"
+                variant="contained"
+                className={classes.button}
+                startIcon={<Add style={{color: "#fff", fontSize: "20px", marginLeft: "-15px" }} />}
+                style={{ borderRadius: 10, backgroundColor: green[400], fontSize: "10px", color: "#fff", width: 190 }}
+                onClick={changeToAddState}>
+                  Thêm đặt bàn
+            </Button>
         </Tooltip>
         </>
       ) : (
           <Tooltip title="Filter list">
-          <IconButton aria-label="filter list" onClick={changeToAddState}>
-            <Add />
-          </IconButton>
+          <Button
+                aria-label="filter list"
+                variant="contained"
+                className={classes.button}
+                startIcon={<Add style={{color: "#fff", fontSize: "20px", marginLeft: "-15px" }} />}
+                style={{ borderRadius: 10, backgroundColor: green[400], fontSize: "10px", color: "#fff", width: 150 }}
+                onClick={changeToAddState}>
+                  Thêm đặt bàn
+            </Button>
         </Tooltip>
-      )}
+      )) : <></>}
     </Toolbar>
   );
 };
@@ -302,7 +333,7 @@ const handleSearch = (event) => {
           </Grid>
           <Grid item xs={4}>
               <TextField 
-                  id="search" 
+                  id="searchTable" 
                   fullWidth 
                   label={"Tìm kiếm theo loại bàn"}
                   onChange={handleSearch}

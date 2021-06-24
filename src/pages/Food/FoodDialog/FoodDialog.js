@@ -1,4 +1,4 @@
-import {Grid, Select, MenuItem, CardMedia, TextField, Button, Container, useMediaQuery, IconButton, ListItem, List, ListItemIcon, ListItemText} from "@material-ui/core";
+import {Grid, Select, MenuItem, CardMedia, TextField, Button, Container, useMediaQuery, IconButton, ListItem, List, ListItemIcon, ListItemText, Dialog} from "@material-ui/core";
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import {Cancel, CheckCircle, Close, DeleteOutline, Done, Edit, MoreHoriz, PhotoCamera } from "@material-ui/icons";
 import React, { useState } from 'react'
@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { actCloseFoodDialog, actError } from "../actions/actions";
 import { DeleteFood, InsertFood, UpdateFood } from "../FoodService";
 import { useTheme } from "@material-ui/core";
-
+import { getCookie } from '../../../action/Login'
 
 function FoodDialog(props) {
     const {data, handleClose} = props;
@@ -143,12 +143,21 @@ function FoodDialog(props) {
             dispatch(DeleteFood(foodState,CloseDialog))
     }
 
+    const privileges = JSON.parse(getCookie("privileges"))
 
+    const canUpdateFood = (permission) => permission.authority === "UPDATE_FOOD"
 
     return(
-        <Container className={classes.DialogBackGround} >
-            <ClickAwayListener onClickAway={CloseDialog} >
-            <Container className={classes.DialogBody}>
+        <Dialog 
+            open={true} 
+            onClose={CloseDialog} 
+            scroll="body" 
+            keepMounted 
+            maxWidth="lg"
+            fullWidth 
+            className={classes.DialogBackGround} 
+        >
+            <Container maxWidth='lg' className={classes.DialogBody}>
                 <link rel="preconnect" href="https://fonts.gstatic.com"/>
                 <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Patrick+Hand&family=Pattaya&display=swap" rel="stylesheet"/>
                 <input
@@ -172,7 +181,7 @@ function FoodDialog(props) {
                 </Grid>
                 <Grid item xs={12} sm={6} md={6} lg={6} className={classes.Content}>
 
-                <ClickAwayListener onClickAway={()=>setOpenList(false)}>
+                {privileges.some(canUpdateFood) ? <ClickAwayListener onClickAway={()=>setOpenList(false)}>
                     <Grid className={classes.Header}>
                         <IconButton classes={{label: classes.ButtonLabel }} style={{padding:'0'}} onClick={()=>{setOpenList(!openList)}}>
                             <MoreHoriz style={{fontSize:"30px"}} />
@@ -223,7 +232,7 @@ function FoodDialog(props) {
                             }
                         </div>
                     </Grid>
-                </ClickAwayListener>
+                </ClickAwayListener> : <></>}
 
 
                     <Grid className={classes.GrdName}>
@@ -320,8 +329,7 @@ function FoodDialog(props) {
                     </Grid>:null}
                 </Grid>
             </Container>
-            </ClickAwayListener>
-        </Container>
+        </Dialog>
     )
           
 }

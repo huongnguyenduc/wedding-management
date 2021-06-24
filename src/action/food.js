@@ -4,7 +4,10 @@ import callApi from '../utils/apiCaller';
 export const actFetchFoodsRequest = () => {
     return dispatch => {
         return callApi('food', 'GET', null).then(function (res) {
-            dispatch(actFetchFoods(res.data));
+            if (res)
+                dispatch(actFetchFoods(res.data));
+            else
+                dispatch(actFetchFoods([]));
         });
     };
 }

@@ -10,57 +10,126 @@ import Policy from './pages/Policy/Policy';
 import Food from './pages/Food/Food';
 import Lobby from './pages/Lobby/Lobby';
 import Calendar from './pages/Home/Calendar';
+import Login from './pages/Login/Login';
+import {Redirect} from 'react-router-dom';
+import {getCookie} from './action/Login';
+import Revenue from './pages/Revenue/Revenue';
 
 const routes = [
     {
+        path: '/login',
+        exact: true,
+        main: () => <Login/>
+    },
+    {
         path: '/',
         exact: true,
-        main: () => <Calendar />
+        main: () => {
+            if(getCookie("token")!=="") 
+                return (<Calendar />)
+            else
+                return (<Redirect to='./Login'/>)
+            }
     },
     {
         path: '/service',
         exact: true,
-        main: () => <Service />
+        main: () =>{
+            if(getCookie("token")!=="") 
+                return (<Service />)
+            else
+                return (<Redirect to='./Login'/>)
+            } 
     },
     {
         path: '/policy',
         exact: true,
-        main: () => <Policy />
+        main: () =>{
+            if(getCookie("token")!=="") 
+                return ( <Policy />)
+            else
+                return (<Redirect to='./Login'/>)
+            } 
     },
     {
         path: '/food',
         exact: true,
-        main: () => <Food />
+        main: () =>{
+            if(getCookie("token")!=="") 
+                return (<Food />)
+            else
+                return (<Redirect to='./Login'/>)
+            } 
     },
     {
         path: '/lobby',
         exact: true,
-        main: () => <Lobby />
+        main: () =>{
+            if(getCookie("token")!=="") 
+                return (<Lobby />)
+            else
+                return (<Redirect to='./Login'/>)
+            } 
     },
     {
         path: '/wedding',
         exact: true,
-        main: () => <Wedding />
+        main: () =>{
+            if(getCookie("token")!=="") 
+                return ( <Wedding />)
+            else
+                return (<Redirect to='./Login'/>)
+            } 
     },
     {
         path: '/bill',
         exact: true,
-        main: () => <Bill />
+        main: () =>{
+            if(getCookie("token")!=="") 
+                return (<Bill />)
+            else
+                return (<Redirect to='./Login'/>)
+            } 
     },
     {
         path: '/access',
         exact: true,
-        main: () => <Access />
+        main: () =>{
+            if(getCookie("token")!=="") 
+                return (<Access />)
+            else
+                return (<Redirect to='./Login'/>)
+            }  
     },
     {
         path: '/bill/:weddingId',
         exact: false,
-        main: ({match, history}) => <DetailBill match={match} history={history}/>
+        main: ({match, history}) =>{
+            if(getCookie("token")!=="") 
+                return (<DetailBill match={match} history={history}/>)
+            else
+                return (<Redirect to='./Login'/>)
+            }   
     },
     {
         path: '/wedding/:weddingId/:lobbyId',
         exact: true,
-        main: ({match, history}) => <TableService  match={match} history={history}/>
+        main: ({match, history}) =>{
+            if(getCookie("token")!=="") 
+                return (<TableService  match={match} history={history}/>)
+            else
+                return (<Redirect to='./Login'/>)
+            }    
+    },
+    {
+        path: '/Revenue',
+        exact: true,
+        main: ({match, history}) =>{
+            if(getCookie("token")!=="") 
+                return (<Revenue  match={match} history={history}/>)
+            else
+                return (<Redirect to='./Login'/>)
+            }    
     },
     {
         path: '',

@@ -7,7 +7,7 @@ import VerifiedUserIcon from '@material-ui/icons/VerifiedUser';
 export const SidebarData = [
     {
         title: 'Bảng điều khiển',
-        path: '/Calendar',
+        path: '/',
         icon: <MdIcons.MdDashboard />,
         cName: 'nav-text'
     },
@@ -15,13 +15,15 @@ export const SidebarData = [
         title: 'Tiệc cưới',
         path: '/wedding',
         icon: <MdIcons.MdCardGiftcard />,
-        cName: 'nav-text'
+        cName: 'nav-text',
+        access: "READ_FEAST"
     },
     {
         title: 'Sảnh',
         path: '/lobby',
         icon: <GiIcons.GiTempleDoor />,
-        cName: 'nav-text'
+        cName: 'nav-text',
+        access: "READ_LOBBY"
     },
     {
         title: 'Hóa đơn',
@@ -31,21 +33,23 @@ export const SidebarData = [
     },
     {
         title: 'Doanh thu',
-        path: '/',
+        path: '/Revenue',
         icon: <GiIcons.GiReceiveMoney />,
-        cName: 'nav-text'
+        cName: 'nav-text',
     },
     {
         title: 'Món ăn',
         path: '/Food',
         icon: <IoIcons.IoFastFoodOutline />,
-        cName: 'nav-text'
+        cName: 'nav-text',
+        access: "READ_FOOD"
     },
     {
         title: 'Dịch vụ',
         path: '/Service',
         icon: <BiIcons.BiShapeTriangle />,
-        cName: 'nav-text'
+        cName: 'nav-text',
+        access: "READ_SERVICE"
     },
     {
         title: 'Phân quyền',

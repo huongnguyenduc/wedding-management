@@ -5,124 +5,78 @@ const useStyles = makeStyles(theme=>(
 {
     ServicePage:{
         backgroundColor:'#EEEEEE',
+        marginTop:'80px',
         minWidth:'100vw',
-        minHeight:'100vh'
+        minHeight:'calc(100vh - 80px)',
+        "&::-webkit-scrollbar": {
+            display: "none"
+          }
     },
     backdrop: {
-        zIndex: theme.zIndex.drawer + 1,
+        zIndex: theme.zIndex.drawer + 999,
         color: '#fff',
     },
     Header:{
         display:'flex',
         flexDirection:'row',
         alignContent:'center',
-        justifyContent:'space-around',
-        flexWrap:'wrap',
-        padding:'0 2rem',
-        [theme.breakpoints.down('xs')]: {
-            fjustifyContent:'space-between',
-            padding:'0rem',
-        }, 
-        maxWidth:'100%'
-        
-    },
-    HeaderScroll:{
-        display:'flex',
-        flexDirection:'row',
-        alignContent:'center',
-        justifyContent:'space-around',
-        flexWrap:'wrap',
+        justifyContent:'flex-end',
+        flexWrap:'nowrap', 
         position:'fixed',
-        top:'0',
+        top:'80px',
         right:'50%',
         transform:'translateX(50%)',
-        zIndex:'2',
-        backgroundColor:'#ffffff',
-        [theme.breakpoints.down('xs')]: {
-            fjustifyContent:'space-between',
-            padding:'0 1rem',
-        }, 
+        zIndex:3,
+        padding:'0rem 2rem 0rem 3rem',
+        transition: 'top 0.2s',
+        minHeight:'40px'
+        
     },
+
+    "@keyframes grow": {
+        from: { 
+            opacity:'0',
+            transform:'scaleX(0)'
+     },
+        to: { 
+            opacity:'1',
+            transform:'scaleX(1)'
+         }
+    },
+
     HeaderControl:{
-        margin:'1rem 0 1rem 0rem',
-        [theme.breakpoints.down('xs')]: {
-            margin:'0.5rem 0 0.5rem 0rem',
-        }, 
-    
+ 
+        
     },
+    
     PriceControl:{
         display:'flex',
         justifyContent:'center',
         alignContent:'center',
         flexDirection:'row',
     },
-    ControlItem:{
-        display:'flex',
-        justifyContent:'center',
-        flexDirection:'row',
-        justifyContent:'space-between',
-        margin:'1rem 0'
-    },
-    LabelPrice:{
-        display:'flex',
-        fontSize:'1.5rem',
-        fontWeight:'700',
-        justifyContent:'center',
-        alignSelf:'center',
-        paddingRight:'5px'
-    },
-    btnApply:{
-        marginLeft:'0.5rem',
-        fontSize:'1.2rem',
-        fontWeight:700,
-        minWidth:'75px'
-
-    },
-    SortControl:{
-        display:'flex',
-        flexWrap:'nowrap',
-        flexDirection:'row',
-        justifyContent:'flex-end',
-        
-       
-    },
-    SortLabel:{
-        minWidth:'70px',
-        fontSize:'1.5rem',
-        fontWeight:'700',
-        alignSelf:'center',
-        
-    },
-    SelectSort:{
-        fontSize:'1.5rem',
-        '& .MuiOutlinedInput-input':{
-            padding:'7px 20px 7px 7px'
-        },
-        minWidth:'70px',        
-    },
-    tfPrice:{
-        '& .MuiInputBase-input':{
-            fontSize:'1.5rem',
-            padding:'7px'
-        },
-        minWidth:'70px',
-    },
     SearchControl:{
+        position:'relative',
         display:'flex',
         justifyContent:'center',
         alignContent:'center',
         flexDirection:'row', 
-        flexWrap:'wrap'
+        flexWrap:'wrap',
+        margin:'0',
+        padding:'2px 3rem',
+        animation: "$grow 0.3s ease-out" ,
     },
     TextSearch:{
         '& .MuiInputBase-input':{
             fontSize:'1.5rem',
             padding:'7px 0px',
+            backgroundColor:'#fff',
+            textAlign:'center'
         },
         "& .MuiOutlinedInput-adornedStart":{
-            paddingLeft:'5px'
-        },
-        minWidth:'150px'
+            paddingLeft:'5px',
+            backgroundColor:'#fff'
+        },       
     },
     ServicesContainer:
     {
@@ -130,7 +84,7 @@ const useStyles = makeStyles(theme=>(
         flexDirection:'row',
         justifyContent:'center',
         flexWrap:'wrap',
-        padding:'0rem 2rem 0rem 2rem',
+        padding:'1rem 2rem 0rem 2rem',
         zIndex:'1',
     },
     InsertFab: {
@@ -193,8 +147,17 @@ const useStyles = makeStyles(theme=>(
         "& span":{
             marginLeft:'0'
         },
-        zIndex:'2'
-    }
+        zIndex: theme.zIndex.drawer + 999,
+    },
+    SearchButton:{
+       position:'absolute',
+       right:0,
+       bottom:0,
+       padding:0,
+       marginRight:'5px'
+
+    },
+    
 }   
 ))
 export default useStyles

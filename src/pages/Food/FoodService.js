@@ -1,14 +1,17 @@
 import {actPending ,actError, actInitFood, actDeleteFood , actInsertFood, actUpdateFood, actInitFoodCategory, actDeleteFoodCategory, actUpdateFoodCategory, actInsertFoodCategory} from './actions/actions'
-
+import {getCookie} from '../../action/Login'
 const API_SERVER = "https://wedding-management.herokuapp.com/api/";
 const FOOD_API = "food";
 const FOOD_CATEGORY_API = "food-category"
 
 export function CallAPI(endpoint, method='GET', body)
 {
+    const token = getCookie("token")
     const config = {
         method: method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json',
+        "Authorization" : `Bearer ${token}`
+        },
     }
 
     if (body) {
@@ -33,6 +36,7 @@ export function GetFood() {
             dispatch(actInitFood(data))})
         .catch(err=>{
             console.log(err)
+            dispatch(actError("Lỗi: Lấy thông tin món ăn không thành công"))
         })
     }
    
@@ -189,6 +193,7 @@ export function GetFoodCategory() {
             dispatch(actInitFoodCategory(data))})
         .catch(err=>{
             console.log(err)
+            dispatch(actError("Lỗi: Lấy thông tin loại món ăn không thành công"))
         })
     }   
 }

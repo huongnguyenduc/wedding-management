@@ -41,6 +41,13 @@ export default function Input(props) {
             className={classes.textField}
             InputProps={{
                 inputComponent: NumberFormatCustom,
+                classes: { root: classes.inputRoot }
+            }}
+            InputLabelProps={{
+              classes: {
+                root: classes.labelRoot,
+                focused: classes.labelFocused
+              }
             }}
             {...(error && {error:true,helperText:error})}/> : 
         <TextField
@@ -51,8 +58,15 @@ export default function Input(props) {
             value={value}
             onChange={onChange}
             className={classes.textField}
-            InputProps={inputProps}
-            
+            InputProps={{
+                classes: { root: classes.inputRoot }
+            }}
+            InputLabelProps={{
+              classes: {
+                root: classes.labelRoot,
+                focused: classes.labelFocused
+              }
+            }}
             {...(error && {error:true,helperText:error})}
         />
     )

@@ -42,5 +42,15 @@ const useStyles = makeStyles((theme) => ({
     selectEmpty: {
         marginTop: theme.spacing(2),
     },
+    page: {
+        marginTop: "70px"
+    },
+    inputRoot: {
+        fontSize: 16
+    },
+    labelRoot: {
+        fontSize: 16,
+    },
+    labelFocused: {}
 }))
 export default useStyles;

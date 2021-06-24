@@ -1,13 +1,17 @@
 import {actInitLobby,actInsertLobby,actUpdateLobby,actDeleteLobby,actInitLobbyCategory,actInsertLobbyCategory,actUpdateLobbyCategory,actDeleteLobbyCategory,actError, actPending} from './actions/actions';
-
+import {getCookie} from '../../action/Login'
 export const API_SERVER = "https://wedding-management.herokuapp.com/api/";
 const LOBBY_API = 'lobby'
 const LOBBY_CATEGORY_API = "lobbycategory"
+
 export function CallAPI(endpoint, method='GET', body)
 {
+    const token = getCookie("token")
     const config = {
         method: method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json',
+        "Authorization" : `Bearer ${token}`
+        },
     }
 
     if (body) {
@@ -32,6 +36,7 @@ export function GetLobby() {
         .then(data=>{
             dispatch(actInitLobby(data))})
         .catch(err=>{
+            dispatch(actError("Lỗi: Lấy thông tin sảnh không thành công!"))
             console.log(err)
         })
     }

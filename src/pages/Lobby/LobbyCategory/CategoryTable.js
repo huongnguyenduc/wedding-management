@@ -1,4 +1,4 @@
-import { IconButton, Container, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TablePagination, TableRow, TableSortLabel, TextField, Toolbar, Tooltip, Typography, Backdrop, CircularProgress } from '@material-ui/core'
+import { IconButton, Container, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TablePagination, TableRow, TableSortLabel, TextField, Toolbar, Tooltip, Typography} from '@material-ui/core'
 import { Close, Delete, Done, Edit, Search } from '@material-ui/icons'
 import React, { useEffect, useState } from 'react'
 import useStyles from "./CategoryTableStyles"
@@ -8,7 +8,7 @@ import { actCloseError, actError } from '../actions/actions'
 import { Dialog } from '@material-ui/core'
 import Snackbar from '@material-ui/core/Snackbar';
 import { Alert } from '@material-ui/lab'
-
+import { getCookie } from '../../../action/Login'
 
 
 function CategoryTable(props){
@@ -18,7 +18,6 @@ function CategoryTable(props){
     const StoreData = useSelector(state => state.changeLobbyData);
     const dispatch = useDispatch();
     const Status = StoreData.Status;
-    const Pending = StoreData.Pending;
     const LobbyCategory = StoreData.LobbyCategory;
     const  [tableState, setTableState] = useState({keyword:'', order:'asc', orderBy:'name', page:0, rowsPerPage:5})
 
@@ -81,6 +80,9 @@ function CategoryTable(props){
 
     const emptyRows = tableState.rowsPerPage - Math.min(tableState.rowsPerPage, LobbyCategory.length - tableState.page * tableState.rowsPerPage);
     const insertRow = LobbyCategory.length - (tableState.page + 1) * tableState.rowsPerPage; 
+    const privileges = JSON.parse(getCookie("privileges"))
+
+    const canUpdateLobbyCategory = (permission) => permission.authority === "UPDATE_LOBBYCATEGORY"
     return(
         <Dialog 
             open={open} 
@@ -88,6 +90,7 @@ function CategoryTable(props){
             scroll="body" 
             keepMounted
             maxWidth="lg"
+            fullWidth
         >
         <Container maxWidth='lg' className={classes.CategoryTable} {...other}>
             <TableContainer>
@@ -104,7 +107,7 @@ function CategoryTable(props){
                         )   
                         })
                     }
-                    {(emptyRows > 0||insertRow===0) &&(<Row />)}
+                    {privileges.some(canUpdateLobbyCategory) ? (emptyRows > 0||insertRow===0) &&(<Row />) : <></>}
                         {emptyRows > 1 && (
                         <TableRow style={{ height: 54* (emptyRows - 1) }}>
                             <TableCell colSpan={6} />
@@ -218,7 +221,7 @@ function EnhancedTableHead(props) {
           fullWidth
           className={classes.ToolbarFilter}
           variant="outlined"
-          placeholder="Tìm kiếm quy định"
+          placeholder="Tìm kiếm loại sảnh"
           onKeyDown={onEnter}
           value={keyword}
           onChange={onChange}
@@ -311,7 +314,9 @@ function Row(props){
             setRowState({...rowState,id:lobbyCategory.id,name:lobbyCategory.name, mintable:lobbyCategory.mintable})
     },[])
 
+    const privileges = JSON.parse(getCookie("privileges"))
 
+    const canUpdateLobbyCategory = (permission) => permission.authority === "UPDATE_LOBBYCATEGORY"
 
     return(
         <TableRow className={`${classes.BodyRow} ${rowState.editing?classes.rowEditing:''}`}>
@@ -350,8 +355,8 @@ function Row(props){
                 className={classes.ControlCell}
                 align='center'
             >
-                {
-                    rowState.editing?
+                { privileges.some(canUpdateLobbyCategory) ?
+                    (rowState.editing?
                     <div className={classes.divControl}>
                         <IconButton classes={{label:classes.ButtonLabel}} onClick={FinishHandler}>
                             <Done className={classes.Icon}/>
@@ -370,7 +375,7 @@ function Row(props){
                         <IconButton classes={{label:classes.ButtonLabel}} onClick={Deletehandler}>
                             <Delete className={classes.Icon} />
                         </IconButton>
-                    </div>
+                    </div>) : <></>
                 }
             </TableCell>
         </TableRow>

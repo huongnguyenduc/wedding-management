@@ -6,6 +6,7 @@ import { Close, Delete, Done, Edit, Search } from "@material-ui/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { actError} from "../actions/actions";
 import { DeleteShift, InsertShift, UpdateShift } from "../connect";
+import { getCookie } from '../../../action/Login'
 
 const EnhancedTableToolbar = (props) => {
     const classes = useStyles();
@@ -163,7 +164,9 @@ function ShiftTable(){
 
     const emptyRows = tableState.rowsPerPage - Math.min(tableState.rowsPerPage, shiftData.length - tableState.page * tableState.rowsPerPage);
     const insertRow = shiftData.length - (tableState.page + 1) * tableState.rowsPerPage; 
+    const privileges = JSON.parse(getCookie("privileges"))
 
+    const canUpdateShift = (permission) => permission.authority === "UPDATE_SHIFT"
     return(
         <Paper className={classes.shiftTable}>
             <TableContainer>
@@ -185,7 +188,7 @@ function ShiftTable(){
                             })
                           
                     }
-                    {(emptyRows > 0||insertRow===0) &&(<Row />)}
+                    {privileges.some(canUpdateShift) ? (emptyRows > 0||insertRow===0) &&(<Row />) : <></>}
                         {emptyRows > 1 && (
                         <TableRow style={{ height: 54* (emptyRows - 1) }}>
                             <TableCell colSpan={6} />
@@ -294,7 +297,9 @@ function Row(props){
             setRowState({...rowState,id:shift.id,name:shift.name, timeBegin:shift.timeBegin,timeEnd:shift.timeEnd, editing:shift?false:true})
     },[])
 
+    const privileges = JSON.parse(getCookie("privileges"))
 
+    const canUpdateShift = (permission) => permission.authority === "UPDATE_SHIFT"
 
     return(
         <TableRow className={`${classes.BodyRow} ${rowState.editing?classes.rowEditing:''}`}>
@@ -348,8 +353,8 @@ function Row(props){
                 className={classes.ControlCell}
                 align='center'
             >
-                {
-                    rowState.editing?
+                {privileges.some(canUpdateShift) ?
+                    (rowState.editing?
                     <div className={classes.divControl}>
                         <IconButton classes={{label:classes.ButtonLabel}} onClick={FinishHandler}>
                             <Done className={classes.Icon}/>
@@ -368,7 +373,7 @@ function Row(props){
                         <IconButton classes={{label:classes.ButtonLabel}} onClick={Deletehandler}>
                             <Delete className={classes.Icon} />
                         </IconButton>
-                    </div>
+                    </div>) : <></>
                 }
             </TableCell>
         </TableRow>

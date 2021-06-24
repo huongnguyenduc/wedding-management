@@ -7,6 +7,7 @@ import{GetLobby,GetLobbyCategory} from '../Lobby/Connect'
 import useStyles from './Style'
 import { Alert} from '@material-ui/lab';
 import { actCloseError } from './actions/actions';
+import { getCookie } from '../../action/Login'
 
 
 function Lobby() {
@@ -33,7 +34,9 @@ function Lobby() {
     {
         dispatch(actCloseError())
     }
+    const privileges = JSON.parse(getCookie("privileges"))
 
+    const canShowLobbyCategory = (permission) => permission.authority === "READ_LOBBYCATEGORY"
     return (
         <div className={classes.MainPage}>
             <LobbyPage style={{display:page==='lobby'?'':''}}/>
@@ -46,9 +49,9 @@ function Lobby() {
                 <div name='lobby' className={`${classes.button}  ${page==='lobby'?classes.actButton:''}`} onClick={()=>{setPage('lobby')}}>
                     SẢNH
                 </div>
-                <div name='lobbyCategory' className={`${classes.button} ${page==='lobbyCategory'?classes.actButton:''}`} onClick={()=>{setPage('lobbyCategory')}}>
+                { privileges.some(canShowLobbyCategory) ? <div name='lobbyCategory' className={`${classes.button} ${page==='lobbyCategory'?classes.actButton:''}`} onClick={()=>{setPage('lobbyCategory')}}>
                     LOẠI SẢNH   
-                </div>
+                </div> : <></>}
             </div>
 
             <Backdrop open={Pending} className={classes.backdrop} onClick={(e)=>{e.stopPropagation()}}>

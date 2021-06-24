@@ -55,9 +55,6 @@ const useStyles = makeStyles(theme=>(
         display:"flex",
         justifyContent:"space-around"
     },
-    ButtonLabel:{
-        marginLeft:'0',
-    },
     Icon:{
         fontSize:'22px'
     },

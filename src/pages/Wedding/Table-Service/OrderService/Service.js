@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import {Button, Grid, TextField, ButtonGroup, AppBar, Toolbar, Typography, OutlinedInput, FormControl} from '@material-ui/core/';
+import {Button, Grid, TextField, ButtonGroup, Typography, OutlinedInput, FormControl} from '@material-ui/core/';
 import ServiceList from './ServiceList'
 import ServiceOrderList from './ServiceOrderList';
 import { useDispatch, connect } from 'react-redux';
@@ -14,6 +14,10 @@ import {actAddWeddingServiceRequest} from '../../../../action/weddingService';
 import {actUpdateWeddingServiceRequest} from '../../../../action/weddingService';
 import { useSnackbar } from 'notistack';
 import NumberFormat from 'react-number-format';
+import {actFetchServicesRequest} from './../../../../action/service';
+import {actFetchWeddingServicesRequest} from './../../../../action/weddingService';
+import {green, red} from '@material-ui/core/colors';
+import {Done, Clear } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -66,6 +70,10 @@ var initialValues = {
       };
 
 function Service(props) {
+  useEffect(() => {
+      props.fetchAllServicesInfo();
+      props.fetchAllWeddingServicesInfo(props.weddingId);
+  }, [])// eslint-disable-line
   const classes = useStyles();
   const dispatch = useDispatch();
   const handleIncrement = (prop) => (event) => {
@@ -84,7 +92,7 @@ function Service(props) {
   const validate = (fieldValues = values) => {
         let temp = {...errors};
         if ('count' in fieldValues)
-             temp.count = fieldValues.count ? "" :"Không được bỏ trống";
+            temp.count = fieldValues.count ? "" :"Không được bỏ trống";
         setErrors({
             ...temp
         })
@@ -107,14 +115,29 @@ function Service(props) {
           if (props.currentserviceState.state === EDIT_ORDER_SERVICE) {
             console.log('update ne')
             console.log(updateWeddingService())
-            props.updateWeddingService(updateWeddingService())
+            props.updateWeddingService(updateWeddingService(), updateServiceSuccess, updateServiceFailure)
           }
           else
-            props.addWeddingService(createWeddingService())
+            props.addWeddingService(createWeddingService(), addServiceSuccess, addServiceFailure)
           resetForm()
           changeToNormalState()
-          handleClickVariant("success", (props.currentserviceState.state !== EDIT_ORDER_SERVICE ? "Thêm" : "Sửa") + " dịch vụ thành công!")
       }
+  }
+
+  const addServiceSuccess = () => {
+      handleClickVariant("success", "Thêm dịch vụ thành công!")
+  }
+
+  const addServiceFailure = () => {
+      handleClickVariant("error", "Lỗi hệ thống. Thêm dịch vụ thất bại!")
+  }
+
+  const updateServiceSuccess = () => {
+      handleClickVariant("success", "Sửa thông tin dịch vụ thành công!")
+  }
+
+  const updateServiceFailure = () => {
+      handleClickVariant("error", "Lỗi hệ thống. Sửa thông tin dịch vụ thất bại!")
   }
 
   const displayCounter = (prop) => values[prop] > 0;
@@ -247,13 +270,24 @@ function Service(props) {
                 name='note'
                 value={values.note}
                 onChange={handleInputChange} />
-                {props.currentserviceState.state !== NORMAL ? <Button type='submit' variant="outlined" color="primary" fullfill size='large' className={classes.textFieldForm}>
-                {props.currentserviceState.state === EDIT_ORDER_SERVICE ? 'Sửa đặt dịch vụ' : 'Đặt dịch vụ'}
+                {props.currentserviceState.state !== NORMAL ? 
+                <Button
+                variant="contained"
+                type="submit"
+                className={classes.textFieldForm}
+                startIcon={<Done style={{color: "#fff", fontSize: "20px", marginLeft: "-15px" }} />}
+                style={{ borderRadius: 10, backgroundColor: green[400], fontSize: "10px", color: "#fff", width: 200, marginRight: "10px" }}>
+                    {props.currentserviceState.state === EDIT_ORDER_SERVICE ? 'Sửa đặt dịch vụ' : 'Đặt dịch vụ'}
                 </Button> : <></>}
                 {props.currentserviceState.state === EDIT_ORDER_SERVICE ? 
-                <Button variant="outlined" color="primary" fullfill size='large' className={classes.textFieldForm} onClick={changeToNormalState}>
-                Hủy
-                </Button> : <></>}
+                <Button
+                  variant="contained"
+                  onClick={() => {changeToNormalState(); }}
+                  className={classes.textFieldForm}
+                  startIcon={<Clear style={{color: "#fff", fontSize: "20px", marginLeft: "-15px" }} />}
+                  style={{ borderRadius: 10, backgroundColor: red[400], fontSize: "10px", color: "#fff", width: 150, marginRight: "10px" }}>
+                      Hủy
+                  </Button> : <></>}
               </Form>
             </Grid>
         </Grid>
@@ -274,12 +308,19 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = (dispatch, props) => {
     return {
-        addWeddingService : (weddingService) => {
-            dispatch(actAddWeddingServiceRequest(weddingService));
+        addWeddingService : (weddingService, addServiceSuccess, addServiceFailure) => {
+            dispatch(actAddWeddingServiceRequest(weddingService, addServiceSuccess, addServiceFailure));
         },
-        updateWeddingService : (weddingService) => {
-            dispatch(actUpdateWeddingServiceRequest(weddingService));
-        }
+        updateWeddingService : (weddingService, updateServiceSuccess, updateServiceFailure) => {
+            dispatch(actUpdateWeddingServiceRequest(weddingService, updateServiceSuccess, updateServiceFailure));
+        },
+        fetchAllServicesInfo : () => {
+            dispatch(actFetchServicesRequest());
+        },
+        fetchAllWeddingServicesInfo : (idWedding) => {
+            dispatch(actFetchWeddingServicesRequest(idWedding));
+        },
+        
     }
 }
 

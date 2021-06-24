@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import clsx from 'clsx';
+import clsx from 'clsx';// eslint-disable-line
 import { lighten, makeStyles } from '@material-ui/core/styles';
-import {Table, TableBody, Grid,FormControl, MenuItem, InputLabel, Select,TextField, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel} from '@material-ui/core/';
-import {Toolbar, Typography, Paper, IconButton, Tooltip, FormControlLabel, Switch} from '@material-ui/core/';
+import {Table, TableBody, Grid,FormControl, MenuItem, InputLabel, Select,TextField, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Button} from '@material-ui/core/';
+import {Toolbar, Typography, Paper, Tooltip, FormControlLabel, Switch} from '@material-ui/core/';
 import { Edit, Delete, Search, Add } from '@material-ui/icons/';
 import clickRow from './actions/index'
 import { useDispatch, useSelector } from 'react-redux'
@@ -13,6 +13,8 @@ import addState from './actions/weddingState/add';
 import editState from './actions/weddingState/edit';
 import { NORMAL } from './reducers/weddingState';
 import { useSnackbar } from 'notistack';
+import {green, indigo, red} from '@material-ui/core/colors';
+import { getCookie } from '../../action/Login'
 
 var rows = [];
 
@@ -48,7 +50,7 @@ const headCells = [
   { id: 'brideName', numeric: false, disablePadding: false, label: 'Tên cô dâu' },
   { id: 'phone', numeric: false, disablePadding: false, label: 'Điện thoại' },
   { id: 'lobbyName', numeric: false, disablePadding: false, label: 'Sảnh' },
-  { id: 'weddingDate', numeric: true, disablePadding: false, label: 'Ngày đãi tiệc' },
+  { id: 'dateOfOrganization', numeric: true, disablePadding: false, label: 'Ngày đãi tiệc' },
   { id: 'nameShift', numeric: true, disablePadding: false, label: 'Ca' },
   { id: 'note', numeric: true, disablePadding: false, label: 'Ghi chú' },
 ];
@@ -125,16 +127,26 @@ const EnhancedTableToolbar = (props) => {
   const { numSelected, selectedRow } = props;
   const currentWeddingState = useSelector(state => state.weddingState);
   const dispatch = useDispatch();
+  const privileges = JSON.parse(getCookie("privileges"))
+
+  const canUpdateWedding = (permission) => permission.authority === "UPDATE_FEAST"
   const { enqueueSnackbar } = useSnackbar();
     const handleClickVariant = (variant, message) => {
         enqueueSnackbar(message, { variant, autoHideDuration: 3000 });
     };
   const onDeleteWedding = () => {
     if (confirm('Bạn chắc chắn muốn xóa ?')) { //eslint-disable-line
-      dispatch(actDeleteWeddingRequest(selectedRow.id));
-      handleClickVariant("success", "Xóa tiệc cưới thành công!")
+      dispatch(actDeleteWeddingRequest(selectedRow.id, deleteWeddingSuccess, deleteWeddingFailure));
     }
   }
+
+  const deleteWeddingSuccess = () => {
+        handleClickVariant("success", "Xoá tiệc cưới thành công!")
+    }
+
+    const deleteWeddingFailure = () => {
+        handleClickVariant("error", "Lỗi hệ thống. Xoá tiệc cưới thất bại!")
+    }
 
   const changeToAddState = () => {
       if (currentWeddingState.state === NORMAL) {
@@ -167,31 +179,55 @@ const EnhancedTableToolbar = (props) => {
         </Typography>
       )}
 
-      {numSelected > 0 ? (
+      { currentWeddingState.state === NORMAL && privileges.some(canUpdateWedding) ?  (numSelected > 0 ? (
         <>
             <Tooltip title="Chỉnh sửa">
-            <IconButton aria-label="edit" onClick={changeToEditState}>
-                <Edit />
-            </IconButton>
+              <Button
+              aria-label="editWedding"
+              variant="contained"
+              className={classes.button}
+              startIcon={<Edit style={{color: "#fff", fontSize: "20px", marginLeft: "-15px" }} />}
+              style={{ borderRadius: 10, backgroundColor: indigo[400], fontSize: "10px", color: "#fff", width: 140, marginRight: "10px" }}
+              onClick={changeToEditState}>
+                Sửa tiệc
+              </Button>
             </Tooltip>
             <Tooltip title="Xóa">
-            <IconButton aria-label="delete" onClick={()=>{onDeleteWedding()}}>
-                <Delete />
-            </IconButton>
+              <Button
+                aria-label="deleteWedding"
+                variant="contained"
+                className={classes.button}
+                startIcon={<Delete style={{color: "#fff", fontSize: "20px", marginLeft: "-15px" }} />}
+                style={{ borderRadius: 10, backgroundColor: red[400], fontSize: "10px", color: "#fff", width: 150, marginRight: "10px" }}
+                onClick={onDeleteWedding}>
+                  Xóa tiệc
+            </Button>
             </Tooltip>
             <Tooltip title="Thêm">
-          <IconButton aria-label="filter list" onClick={changeToAddState}>
-            <Add />
-          </IconButton>
+            <Button
+                aria-label="addWedding"
+                variant="contained"
+                className={classes.button}
+                startIcon={<Add style={{color: "#fff", fontSize: "20px", marginLeft: "-15px" }} />}
+                style={{ borderRadius: 10, backgroundColor: green[400], fontSize: "10px", color: "#fff", width: 150 }}
+                onClick={changeToAddState}>
+                  Thêm tiệc
+            </Button>
         </Tooltip>
         </>
       ) : (
           <Tooltip title="Thêm">
-          <IconButton aria-label="filter list" onClick={changeToAddState}>
-            <Add />
-          </IconButton>
+          <Button
+                aria-label="addWedding"
+                variant="contained"
+                className={classes.button}
+                startIcon={<Add style={{color: "#fff", fontSize: "20px", marginLeft: "-15px" }} />}
+                style={{ borderRadius: 10, backgroundColor: green[400], fontSize: "10px", color: "#fff", width: 140, marginRight: "10px" }}
+                onClick={changeToAddState}>
+                  Thêm tiệc
+            </Button>
         </Tooltip>
-      )}
+      )) : <></>}
     </Toolbar>
   );
 };
@@ -390,6 +426,7 @@ function EnhancedTable(props) {
                         tabIndex={-1}
                         key={row.id}
                         selected={isItemSelected}
+                        onDoubleClick={() => document.getElementById("formWedding").scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"})}
                       >
                         <TableCell padding="checkbox">
                         </TableCell>

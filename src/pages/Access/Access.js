@@ -7,6 +7,7 @@ import theme from '../../components/MuiTheme';
 import Administration from './Administration';
 import Account from './Account';
 import {actFetchUsersRequest} from './../../action/user';
+import { getCookie } from '../../action/Login'
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -57,6 +58,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
+    marginTop: "70px"
   },
   indicator: {
     backgroundColor: '#FC5404',
@@ -75,11 +77,15 @@ function Access(props) {
     useEffect(() => {
       props.fetchAllUsers();
     }, []);
+    const privileges = JSON.parse(getCookie("privileges"))
+
+    const canShowUser = (permission) => permission.authority === "READ_USER"
+    const canShowPer = (permission) => permission.authority === "UPDATE_PER"
 
     return (
         <MuiThemeProvider theme={theme}>
             <div className={classes.root}>
-            <AppBar position="static" style={{ backgroundColor: '#060b26' }}>   
+            {privileges.some(canShowUser) && privileges.some(canShowPer) ? <AppBar position="static" style={{ backgroundColor: '#060b26' }}>   
                 <Tabs
                 variant="fullWidth"
                 value={value}
@@ -87,17 +93,16 @@ function Access(props) {
                 aria-label="nav tabs example"
                 classes={{indicator: classes.indicator}}
                 >
-                <LinkTab label="Quản lý phân quyền" href="/drafts"  {...a11yProps(0)} />
-                <LinkTab label="Quản lý tài khoản" href="/trash" {...a11yProps(1)} />
+                { privileges.some(canShowPer) ? <LinkTab label="Quản lý phân quyền" href="/drafts"  {...a11yProps(0)} /> : <></>}
+                { privileges.some(canShowUser) ? <LinkTab label="Quản lý tài khoản" href="/trash" {...a11yProps(1)} /> : <></>}
                 </Tabs>
-            </AppBar>
-            <TabPanel value={value} index={0} style={{fontSize:'13px', fontWeight:'500', color: "#fff"}}>
+            </AppBar> : <></>}
+            { privileges.some(canShowPer) ? <TabPanel value={value} index={0} style={{fontSize:'13px', fontWeight:'500', color: "#fff"}}>
                 <Administration />
-            </TabPanel>
-            <TabPanel value={value} index={1}>
+            </TabPanel> : <></>}
+            {privileges.some(canShowUser) ? <TabPanel value={value} index={privileges.some(canShowPer) ? 1 : 0}>
                 {props.users ? <Account data={ props.users } /> : <CircularProgress />}
-                
-            </TabPanel>
+            </TabPanel> : <></>}
             </div>
         </MuiThemeProvider>
     );

@@ -5,8 +5,13 @@
   flex-basis: auto;
   align-items: center;
   padding: 0 20px 0 0px;
-  position: relative;
+  /* position: relative; */
   z-index: 3;
+  width:100%;
+  position: fixed;
+  top:0;
+  left:0;
+  transition: top 0.3s;
 }
 
 .menu-bars {
@@ -25,7 +30,7 @@
   top: 0;
   left: -100%;
   transition: 850ms;
-  z-index: 3;
+  z-index: 999;
 }
 
 .nav-menu.active {
@@ -166,4 +171,33 @@ button {
   to {
     transform: rotate(10deg);
   }
+}
+.recent-control {
+  width: 80%;
+  height: 5rem;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  transform: translate(0,calc(100% - 5px));
+  background-color:#060b26;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+  border-radius: 0 0 5px 5px;
+  margin-right: 3px;
+}
+.control-logout {
+  width: 100%;
+  font-size: 18px;
+  font-weight: 600;
+  background-color: #060b26;
+  border: #060b26;
+  color: #ccc;
+  cursor: pointer;
+  padding: 5px;
+}
+.control-logout:hover {
+  background-color: #161b3f;
 }

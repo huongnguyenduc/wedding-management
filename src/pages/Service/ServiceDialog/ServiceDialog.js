@@ -1,5 +1,5 @@
 
-import { CardMedia, Container, Grid, ListItem, IconButton, List, ListItemIcon, TextField, Typography, ListItemText, Button, useTheme, useMediaQuery } from '@material-ui/core'
+import { CardMedia, Container, Grid, ListItem, IconButton, List, ListItemIcon, TextField, Typography, ListItemText, Button, useTheme, useMediaQuery, Dialog } from '@material-ui/core'
 import React, { useState } from 'react'
 import useStyles from './DialogStyles'
 import NumberFormatCustom from '../../Food/FormartNumber'
@@ -67,6 +67,14 @@ function ServiceDialog(props)
         }
         return true
     }
+
+    function success()
+    {
+        if(data)
+            setIsEdit(false)
+        else
+            closeHandler();
+    }
     const handlerInsert = () =>
     {
         if(!CheckDetail())
@@ -75,13 +83,12 @@ function ServiceDialog(props)
         }
         if(data)
         {
-            dispatch(UpdateService(ServiceData));
-            setIsEdit(false);
+            dispatch(UpdateService(ServiceData, success));
+           
         }
         else
         {
-            dispatch(InsertService(ServiceData));
-            setIsEdit(false);
+            dispatch(InsertService(ServiceData, success));
         }  
     }
 
@@ -116,8 +123,15 @@ function ServiceDialog(props)
     }
 
     return(
-    <Container className={classes.DialogBackGround}>
-        <ClickAwayListener onClickAway={closeHandler}>
+    <Dialog c
+        lassName={classes.DialogBackGround}
+        open={true} 
+        onClose={closeHandler} 
+        scroll="body" 
+        keepMounted 
+        maxWidth="lg"
+        fullWidth     
+    >
         <Container className={classes.DialogBody} >
             <link rel="preconnect" href="https://fonts.gstatic.com"/>
             <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700&display=swap" rel="stylesheet"/>
@@ -239,8 +253,7 @@ function ServiceDialog(props)
                 </Grid>:null}
             </Grid>      
         </Container>
-        </ClickAwayListener>
-    </Container>
+    </Dialog>
     )
 }
 

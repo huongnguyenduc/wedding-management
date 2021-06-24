@@ -1,5 +1,5 @@
-import { CircularProgress, Dialog, Fade, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TablePagination, TableRow, TableSortLabel, TextField} from "@material-ui/core"
-import React,{useState} from "react"
+import { Dialog, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TablePagination, TableRow, TableSortLabel, TextField} from "@material-ui/core"
+import React,{useEffect, useState} from "react"
 import useStyles from './CategoryStyle';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -12,10 +12,8 @@ import { actError } from "../actions/actions";
 
 function EnhancedTableHead(props) {
     const headCells =[
-        {id:0,Name:"id",width:'5%',align:"center",label:"ID"},
         {id:1,Name:"name",width:'25%', align: "center", label:"Tên loại món"},
         {id:2,Name:"moreInfo",width:'70%', align:"center", label:"Mô tả"}
-        
     ]
   
     const {order, orderBy, onRequestSort } = props;
@@ -90,17 +88,13 @@ function stableSort(array, comparator) {
 
 function CategoryDialog(props) {
     const {Open, handleClose} = props;
-    const dispatch = useDispatch()
-    const classes = useStyles();
     const [order,setOrder] = useState("asc");
     const [orderBy, setOrderBy] = useState("id");
     const StoreData = useSelector(state=>state.ChangeFoodData)
     const categoryData = StoreData.FoodCategory;
-    const Pending = StoreData.Pending
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [page, setPage] = useState(0);
-    const [rowEdit,SetRowEdit] = useState({id:'', name:'', moreInfo:''});
-    const [rowInsert, setRowInsert] = useState({name:'', moreInfo:''})
+
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -117,66 +111,9 @@ function CategoryDialog(props) {
     {
         setPage(newPage)
     }
-    const handleEdit = (id, name, moreInfo) =>
-    {
-        SetRowEdit({...rowEdit,id:id, name:name,moreInfo:moreInfo})
-    }
 
-    
-
-    const handleDelete = (category) =>
-    {
-        dispatch(DeleteFoodCategory(category))
-    }
-    const handleCloseEdit = () =>
-    {    
-        SetRowEdit({...rowEdit,id:"", name:"",moreInfo:""})
-    }
-
-    const handleFinishEdit = ()=>
-    {
-        if(rowEdit.id&&rowEdit.name&&rowEdit.moreInfo)
-        {
-           dispatch(UpdateFoodCategory(rowEdit, handleCloseEdit))
-        }
-        else
-        {
-            dispatch(actError("Vui lòng nhập đầy đủ thông tin"))
-        }
-        
-        
-    }
-    const handleReset =(index)=>
-    {
-        if(index!==rowEdit.id&&rowEdit.id!=="")
-        {
-            SetRowEdit({...rowEdit,id:"", name:"",moreInfo:""})
-        }
-       
-    }
-
-    const success = ()=>{
-        setRowInsert({name:'', moreInfo:''})
-    }
-
-    const handleInsert = () =>
-    {
-        if(rowInsert.name&&rowInsert.moreInfo)
-        {
-            dispatch(InsertFoodCategory(rowInsert,success))
-            setRowInsert({name:'', moreInfo:''})
-        }
-        else
-        {
-            dispatch(actError("Lỗi: Vui lòng nhập đầy đủ thông tin!"))
-        }
-    }
-    
-    const handleChange = (e)=>
-    {
-        SetRowEdit({...rowEdit,[e.target.name]:e.target.value});
-       
-    }
+    const emptyRows = rowsPerPage - Math.min(rowsPerPage, categoryData.length - page * rowsPerPage);
+    const insertRow = categoryData.length - (page + 1) * rowsPerPage; 
     return(
         <Dialog 
             open={Open} 
@@ -200,133 +137,20 @@ function CategoryDialog(props) {
                                 .slice(page*rowsPerPage,page*rowsPerPage+rowsPerPage)
                                 .map((row) =>{
                                     return (
-                                        <TableRow 
-                                                key={row.id}
-                                                hover
-                                        >
-                                            <TableCell  className={classes.inputText} name="id"> {row.id} </TableCell>
-                                            <TableCell>
-                                                <TextField
-                                                    name='name'
-                                                    placeholder="Tên loại món"
-                                                    fullWidth
-                                                    InputProps={{
-                                                        disableUnderline:true,
-                                                        className:classes.inputText
-                                                    }}
-                                                    value={row.id===rowEdit.id?rowEdit.name:row.name}
-                                                    disabled={row.id===rowEdit.id?false:true}
-                                                    onChange={handleChange} 
-                                                    multiline
-                                                />
-                                            </TableCell>
-                                            <TableCell >
-                                                <TextField 
-                                                    name="moreInfo"
-                                                    placeholder="Mô tả"
-                                                    fullWidth
-                                                    InputProps={{
-                                                        disableUnderline:true,
-                                                        className:classes.inputText
-                                                    }}
-                                                    value={row.id===rowEdit.id?rowEdit.moreInfo:row.moreInfo}
-                                                    onChange={handleChange} 
-                                                    disabled={row.id===rowEdit.id?false:true}
-                                                    multiline
-                                                />
-                                            </TableCell>
-                                            <TableCell>
-                                                <div className={classes.CellControl}>
-                                                    {
-                                                        rowEdit.id===row.id?(<>
-                                                            <IconButton classes={{ label: classes.ButtonLabel }} onClick={handleFinishEdit} disabled={Pending} >
-                                                                <DoneIcon/>
-                                                            </IconButton>
-                                                            <IconButton classes={{ label: classes.ButtonLabel }}  onClick={handleCloseEdit} disabled={Pending}>
-                                                                <CloseIcon/>
-                                                            </IconButton>
-                                                            </>):(<>
-                                                            <IconButton  classes={{ label: classes.ButtonLabel }}  onClick={()=>handleEdit(row.id,row.name, row.moreInfo)} disabled={Pending}>
-                                                                <EditIcon/>
-                                                            </IconButton>
-                                                            <IconButton classes={{ label: classes.ButtonLabel }}  onClick={()=>handleDelete(row)} disabled={Pending}>
-                                                                <DeleteIcon />
-                                                            </IconButton></>)
-                                                    }
-                                                    
-                                                </div>
-                                            </TableCell>
-                                        </TableRow>
+                                        <Row key={`cate_${row.id}`} category={row}/>
                                     )
                                 })
                             }
-                            {
-                                categoryData.length<=page*rowsPerPage+rowsPerPage?(<TableRow hover  onClick={handleReset} >
-                                    <TableCell>
-    
-                                    </TableCell>
-                                    <TableCell
-                                         align='center'
-                                    >
-                                        <TextField
-                                            name = "name"
-                                            placeholder="Tên loại món"
-                                            fullWidth
-                                            InputProps={{
-                                                disableUnderline:true,
-                                            }}
-                                            inputProps={{
-                                                style: { textAlign: 'center' }
-                                            }}
-                                            classes={{
-                                                root:classes.inputDisabled
-                                            }}
-                                            value={rowInsert.name}
-                                            onChange={(e)=>setRowInsert({...rowInsert,name:e.target.value})}
-                                            multiline
-                                        />
-                                    </TableCell>
-                                    <TableCell 
-                                        className={classes.CellInfo}
-                                        align='center'
-                                    >
-                                        <TextField 
-                                            name="moreInfo"
-                                            placeholder="Mô tả"
-                                            fullWidth
-                                            value={rowInsert.moreInfo}
-                                            InputProps={{
-                                                disableUnderline:true
-                                            }}
-                                            inputProps={{
-                                                style: { textAlign: 'center' }
-                                            }}
-                                            classes={{
-                                                root:classes.inputDisabled
-                                            }}
-                                            onChange={(e)=>setRowInsert({...rowInsert,moreInfo:e.target.value})}
-                                            multiline
-                                        />
-    
-                                    </TableCell>
-                                    <TableCell>
-                                        <IconButton classes={{ label: classes.ButtonLabel }} onClick={handleInsert} disabled={Pending}>
-                                            <DoneIcon style={{fontSize:'20px'}} />
-                                        </IconButton>
-                                    </TableCell>
-                                </TableRow>):null
-                            }
+                             {(emptyRows > 0||insertRow===0) &&(<Row />)}
+                            {emptyRows > 1 && (
+                            <TableRow style={{ height: 54* (emptyRows - 1) }}>
+                                <TableCell colSpan={6} />
+                            </TableRow>
+                            )}
+                            
                         </TableBody>
                         <TableFooter >
                             <TableRow>
-                            <TableCell style={{paddingTop:'5px', marginLeft:'20px'}}>
-                                <Fade 
-                                    in={Pending}
-                                    unmountOnExit
-                                >
-                                    <CircularProgress/>
-                                </Fade>
-                            </TableCell>
                             <TablePagination
                                 rowsPerPageOptions={[5,10,15]}
                                 rowsPerPage={rowsPerPage}
@@ -348,3 +172,127 @@ function CategoryDialog(props) {
 
 export default CategoryDialog;
 
+function Row(props)
+{
+    const {category, ...other} = props
+
+    const classes = useStyles();
+    const dispatch = useDispatch()
+    const [rowState, setRowState] = useState({id:'',name:'', moreInfo:'', editing:category?false:true})
+
+    function ChangeValue(event)
+    {   
+        setRowState({...rowState, [event.target.name]:event.target.value})
+    }
+
+    function CancelHandler()
+    {
+        if(category)
+            setRowState({...rowState,id:category.id, name:category.name, moreInfo:category.moreInfo, editing:false})
+        else
+            setRowState({id:'',name:'', moreInfo:'', editing:false})
+    }
+
+
+    function success(){
+        if(category)
+            setRowState({...rowState, editing:false})
+        else
+           setRowState({id:'',name:'', moreInfo:'', editing:false})
+    }
+
+
+    function FinishHandler()
+    {
+        if(rowState.name&&rowState.moreInfo)
+        {
+            if(rowState.id !=='')
+                dispatch(UpdateFoodCategory(rowState, success))
+            else
+                dispatch(InsertFoodCategory(rowState, success))
+        }
+        else
+        {
+            dispatch(actError("Vui lòng nhập đầy đủ thông tin"))
+        }
+    }
+
+    function DeleteHandler()
+    {
+        dispatch(DeleteFoodCategory(rowState))
+    }
+
+    useEffect(()=>{
+        if(category)
+            setRowState({...rowState,id:category.id, name:category.name, moreInfo:category.moreInfo, editing:false})
+    },[])
+
+    return(
+    <TableRow 
+            hover
+            {...other}
+    >
+        <TableCell
+             className={classes.InputCell}  
+             align='center'
+        >
+            <TextField
+                name='name'
+                placeholder="Tên loại món"
+                fullWidth
+                InputProps={{
+                    disableUnderline:true,
+                    className:classes.inputText
+                }}
+                value={rowState.name}
+                disabled={!rowState.editing}
+                onChange={ChangeValue} 
+                multiline
+            />
+        </TableCell>
+        <TableCell
+            className={classes.InputCell}  
+            align='center'
+        >
+            <TextField 
+                name="moreInfo"
+                placeholder="Mô tả"
+                fullWidth
+                InputProps={{
+                    disableUnderline:true,
+                    className:classes.inputText
+                }}
+                value={rowState.moreInfo}
+                onChange={ChangeValue} 
+                disabled={!rowState.editing}
+                multiline
+            />
+        </TableCell>
+        <TableCell
+            className={classes.ControlCell}
+            align='center'
+        >
+            <div className={classes.divControl}>
+                {
+                    rowState.editing?(<>
+                        <IconButton classes={{ label: classes.ButtonLabel }} onClick={FinishHandler} >
+                            <DoneIcon/>
+                        </IconButton>
+                        {category?<IconButton classes={{ label: classes.ButtonLabel }}  onClick={CancelHandler}>
+                            <CloseIcon/>
+                        </IconButton>:null}
+                        </>)
+                        :(<>
+                        <IconButton  classes={{ label: classes.ButtonLabel }}  onClick={()=>{setRowState({...rowState,editing:true})}}>
+                            <EditIcon/>
+                        </IconButton>
+                        <IconButton classes={{ label: classes.ButtonLabel }}  onClick={DeleteHandler}>
+                            <DeleteIcon />
+                        </IconButton></>)
+                }
+                
+            </div>
+        </TableCell>
+    </TableRow>
+    )
+}

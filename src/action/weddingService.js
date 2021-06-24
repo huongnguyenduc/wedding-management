@@ -33,10 +33,15 @@ export const actFetchWeddingServices = (weddingServices) => {
 //     }
 // }
 
-export const actUpdateWeddingServiceRequest = (weddingService) => {
+export const actUpdateWeddingServiceRequest = (weddingService, updateServiceSuccess, updateServiceFailure) => {
     return dispatch => {
         return callApi(`feast/service`, 'PUT', weddingService).then(res => {
-            dispatch(actUpdateWeddingService(res.data));
+            if (res) {
+                dispatch(actUpdateWeddingService(res.data));
+                updateServiceSuccess();
+            } else {
+                updateServiceFailure();
+            }
         });
     }
 }
@@ -49,10 +54,15 @@ export const actUpdateWeddingService = (weddingService) => {
 }
 
 
-export const actDeleteWeddingServiceRequest = (feastId, serviceId) => {
+export const actDeleteWeddingServiceRequest = (feastId, serviceId, deleteServiceSuccess, deleteServiceFailure) => {
     return dispatch => {
         return callApi(`feast/${feastId}/service/${serviceId}`, 'DELETE', null).then(res =>{
-            dispatch(actDeleteWeddingService(serviceId));
+            if (res) {
+                dispatch(actDeleteWeddingService(serviceId));
+                deleteServiceSuccess();
+            } else {
+                deleteServiceFailure();
+            }
         })
     }
 }
@@ -64,13 +74,17 @@ export const actDeleteWeddingService= (serviceId) => {
     }
 }
 
-export const actAddWeddingServiceRequest = (weddingService) => {
+export const actAddWeddingServiceRequest = (weddingService, addServiceSuccess, addServiceFailure) => {
     console.log('request')
     console.log(weddingService)
     return dispatch => {
         return callApi('feast/service', 'POST', weddingService).then(res => {
-            if (res)
+            if (res) {
                 dispatch(actAddWeddingService(res.data));
+                addServiceSuccess();
+            } else {
+                addServiceFailure();
+            }
         });
     }
 }

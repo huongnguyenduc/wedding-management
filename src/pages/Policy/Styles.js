@@ -15,6 +15,7 @@ const useStyles = makeStyles(theme=>(
         [theme.breakpoints.down('xs')]: {
             padding:'1rem 1rem',
         },
+        marginTop:'80px'
     },
     backdrop: {
         zIndex: theme.zIndex.drawer + 999,

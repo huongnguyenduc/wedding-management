@@ -49,6 +49,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
+    marginTop: "80px"
   },
   backButton: {
     marginRight: theme.spacing(2),

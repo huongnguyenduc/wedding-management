@@ -14,6 +14,7 @@ import {GetFood, GetFoodCategory} from "./FoodService";
 import { useDispatch } from "react-redux";
 import { useSelector } from 'react-redux'
 import { actCloseError } from './actions/actions';
+import { getCookie } from '../../action/Login'
 
 function Food() {
     const classes = useStyles();
@@ -59,38 +60,40 @@ function Food() {
             e.stopPropagation()
     }
 
+    const privileges = JSON.parse(getCookie("privileges"))
+
+    const canUpdateFood = (permission) => permission.authority === "UPDATE_FOOD"
     
     return (
         
         <MuiThemeProvider theme={theme}>
-        <div>
+        <div >
             <Backdrop open={Pending} className={classes.backdrop} onClick={(e)=>{e.stopPropagation()}}>
                 <CircularProgress color="inherit"/>
             </Backdrop>
             <Header  category={FoodCategory} setKeyword={setKeyword} id="Food_header" ></Header>
             {
-                FoodCategory.map((group)=>
+                FoodCategory.map((group, index)=>
                 {
                     return(
-                        <Element key = {group.id} name={`category_tab_${group.id}`} style={{ marginBottom:'400px'}} >
+                        <Element key = {group.id} name={`category_tab_${group.id}`} style={{paddingTop:index===0?'200px':'100px', paddingBottom:'100px'}}>
                             <FoodGroup key={group.id} foodData={finalData} category={group}></FoodGroup>
                         </Element>
                     )
                 })
             }  
-            <div className={classes.buttonArea} >
+            {privileges.some(canUpdateFood) ? <div className={classes.buttonArea} >
                 <Fab  color='primary' aria-label='add' variant='extended'   onClick={handlefooDialogOpen} className={`insertFab ${classes.InsertFab}`} classes={{label: classes.ButtonLabel }}>
                     <AddIcon />
                 Thêm món ăn 
                 </Fab>
-               
 
                 <Fab color='primary' aria-label="edit" variant='extended'  className='categoryFab' onClick={()=>{setCategoryDialogOpen(!categoryDialogOpen)}}  classes={{ root:classes.MenuFab, label:classes.ButtonLabel }} >
                     <RestaurantMenuIcon />
                     Quản lý loại món 
                 </Fab>   
                 
-            </div>  
+            </div> : <></>}  
         </div>
 
             {categoryDialogOpen?<CategoryDialog  Open={categoryDialogOpen} handleClose={handleCategoryDialogClose} ></CategoryDialog>:null}

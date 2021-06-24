@@ -2,7 +2,7 @@ const styles = (theme) =>(
     {
         Card:{
             
-            padding:'3rem 3rem 3rem 3rem',
+            padding:'3rem 1.5rem',
             position:'relative',
     
         },
@@ -106,7 +106,8 @@ const styles = (theme) =>(
             paddingLeft:'5px',
             paddingRight:'5px',
             textTransform:'uppercase',
-            fontFamily:'"Pacifico", cursive'
+            fontFamily:'"Pacifico", cursive',
+            cursor:'pointer'
         },
         GdPrice:
         {
