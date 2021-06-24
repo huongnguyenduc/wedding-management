@@ -33,7 +33,7 @@ export const SidebarData = [
     },
     {
         title: 'Doanh thu',
-        path: '/',
+        path: '/Revenue',
         icon: <GiIcons.GiReceiveMoney />,
         cName: 'nav-text',
     },

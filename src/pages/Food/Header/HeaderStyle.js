@@ -12,7 +12,7 @@ const useStyles = makeStyles(theme=>(
         position:'fixed',
         top:'80px',
         left:'0',
-        zIndex:3,
+        zIndex:1,
         transition:"top 0.3s"
     },
     MenuContainer:
