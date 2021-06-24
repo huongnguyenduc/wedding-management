@@ -66,7 +66,7 @@ const useStyles = makeStyles(theme=>(
         "& .SearchButton":{
             color:'#fff'
         },
-        zIndex:'3',
+        zIndex:'1',
         transition: 'top 0.3s'
     },
     AppBarScroll:{

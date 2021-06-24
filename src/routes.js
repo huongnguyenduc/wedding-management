@@ -12,7 +12,8 @@ import Lobby from './pages/Lobby/Lobby';
 import Calendar from './pages/Home/Calendar';
 import Login from './pages/Login/Login';
 import {Redirect} from 'react-router-dom';
-import {getCookie} from './action/Login'
+import {getCookie} from './action/Login';
+import Revenue from './pages/Revenue/Revenue';
 
 const routes = [
     {
@@ -116,6 +117,16 @@ const routes = [
         main: ({match, history}) =>{
             if(getCookie("token")!=="") 
                 return (<TableService  match={match} history={history}/>)
+            else
+                return (<Redirect to='./Login'/>)
+            }    
+    },
+    {
+        path: '/Revenue',
+        exact: true,
+        main: ({match, history}) =>{
+            if(getCookie("token")!=="") 
+                return (<Revenue  match={match} history={history}/>)
             else
                 return (<Redirect to='./Login'/>)
             }    
