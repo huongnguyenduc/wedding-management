@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import * as FaIcons from "react-icons/fa";
 import * as AiIcons from "react-icons/ai";
 import {Link} from 'react-router-dom';
@@ -13,9 +13,7 @@ function Navbar() {
     const [sidebar, setSidebar] = useState(false);
     const [controlPanel, setControlPanel] = useState(false)
     const showSidebar = () => setSidebar(!sidebar);
-    const fullname=getCookie("fullname")
-    const image = getCookie("image")
-    const role = getCookie("role")
+    const [userData, setUserData] = useState({fullname:'', image:'https://images.complex.com/complex/images/fl_lossy,q_auto/c_crop,h_1400,w_1374,x_0,y_100/v1/el91rtzrnvpaeemkjegt/girl-in-red-3', role:''})
     let history = useHistory();
     function logout()
     {
@@ -25,7 +23,6 @@ function Navbar() {
         setCookie("token","",-1)
         setCookie("role","",-1)
         setCookie("privileges","",-1)
-        console.log(document.cookie)
         history.replace('/')
     }
     var prevScrollpos = window.pageYOffset;
@@ -38,7 +35,18 @@ function Navbar() {
     }
     prevScrollpos = currentScrollPos;
     }
+    
+    useEffect(()=>{
+        const image = getCookie("image")
+        const fullname=getCookie("fullname")
+        const role = getCookie("role")
+        setUserData({fullname:fullname, image:image, role:role})
+    },[])
 
+    function update()
+    {
+
+    }
     const privileges = getCookie("privileges") ? JSON.parse(getCookie("privileges")) : JSON.parse('[{"id":394,"authority":"UPDATE_USER","description":"Chỉnh sửa người dùng"},{"id":393,"authority":"READ_USER","description":"Xem danh sách người dùng"},{"id":395,"authority":"UPDATE_PER","description":"Chỉnh sửa phân quyền"},{"id":398,"authority":"READ_SHIFT","description":"Xem danh sách ca"},{"id":399,"authority":"UPDATE_SHIFT","description":"Thêm sửa xóa ca"},{"id":392,"authority":"UPDATE_FEAST","description":"Thêm xóa sửa tiệc cưới"},{"id":391,"authority":"READ_FEAST","description":"Xem danh sách tiệc cưới"},{"id":396,"authority":"READ_FOOD","description":"Xem danh sách món ăn"},{"id":397,"authority":"UPDATE_FOOD","description":"Thêm sửa xóa món ăn"},{"id":400,"authority":"READ_LOBBY","description":"Xem danh sách sảnh"},{"id":401,"authority":"UPDATE_LOBBY","description":"Thêm sửa xóa sảnh"},{"id":402,"authority":"READ_LOBBYCATEGORY","description":"Xem danh sách loại sảnh"},{"id":403,"authority":"UPDATE_LOBBYCATEGORY","description":"Thêm sửa xóa loại sảnh"},{"id":404,"authority":"READ_SERVICE","description":"Xem danh sách dịch vụ"},{"id":405,"authority":"UPDATE_SERVICE","description":"Thêm sửa xóa dịch vụ"}]')
 
     const canShowMenuItem = (permission, access) => permission.authority === access
@@ -56,10 +64,10 @@ function Navbar() {
                         <div class="bell-noti-status"></div>
                     </div>
                     <div className="recent-info">
-                        <h3 className="recent-author">{fullname}</h3>
-                        <span className="recent-position">{role?role.slice(5).toLowerCase():''}</span>
+                        <h3 className="recent-author">{userData.fullname}</h3>
+                        <span className="recent-position">{userData.role?userData.role.slice(5).toLowerCase():''}</span>
                     </div>
-                    <img src={image?image:"https://images.complex.com/complex/images/fl_lossy,q_auto/c_crop,h_1400,w_1374,x_0,y_100/v1/el91rtzrnvpaeemkjegt/girl-in-red-3"} alt="" className="recent-image" />
+                    <img src={userData.image} alt="" className="recent-image" />
                     {controlPanel?<ClickAwayListener onClickAway={()=>setControlPanel(false)}>
                         <div className="recent-control">
                             <input type="button" value="Đăng xuất" className="control-logout" onClick={logout}/>
