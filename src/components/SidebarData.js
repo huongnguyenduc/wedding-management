@@ -29,13 +29,15 @@ export const SidebarData = [
         title: 'Hóa đơn',
         path: '/bill',
         icon: <BiIcons.BiReceipt />,
-        cName: 'nav-text'
+        cName: 'nav-text',
+        access: "READ_BILL"
     },
     {
         title: 'Doanh thu',
         path: '/Revenue',
         icon: <GiIcons.GiReceiveMoney />,
         cName: 'nav-text',
+        access: "READ_REPORT"
     },
     {
         title: 'Món ăn',

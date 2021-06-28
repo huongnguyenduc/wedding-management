@@ -65,6 +65,8 @@ function Management(props) {
         enqueueSnackbar("Lỗi hệ thống. Lưu hóa đơn thất bại!", { variant: "error", autoHideDuration: 3000 });
     }
     const fullname=getCookie("fullname")
+    const privileges = JSON.parse(getCookie("privileges"))
+    const canUpdateBill = (permission) => permission.authority === "UPDATE_BILL"
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -113,11 +115,11 @@ function Management(props) {
                                 In hóa đơn
                             </Button>
                         </Grid>
-                        <Grid item xs={4} align="center">
+                        {privileges.some(canUpdateBill) ? <Grid item xs={4} align="center">
                                 <Button variant="contained" color="primary" disabled={isSaved} onClick={handleClickVariant}>
                                     Lưu hóa đơn
                                 </Button>
-                        </Grid>
+                        </Grid> : <></>}
                         <Grid item xs={4} align="center">
                             <Link to="/bill">
                                 <Button variant="contained" color="primary">
