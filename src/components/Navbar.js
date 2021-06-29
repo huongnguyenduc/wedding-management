@@ -84,7 +84,7 @@ function Navbar(props) {
         <>
         <MuiThemeProvider theme={theme}>
             <div style={{paddingLeft: theme.spacing(2),}}>
-                <UserUpdateDialog open={openUserDialog} handleClose={handleCloseUserDialog} initialValues={{...userData, password: ""}} onSubmit={onSubmit}/>
+                <UserUpdateDialog isUpdateNav={true} open={openUserDialog} handleClose={handleCloseUserDialog} initialValues={{...userData, password: ""}} onSubmit={onSubmit}/>
             </div>
         </MuiThemeProvider>
         <IconContext.Provider value={{color: '#fff'}}>

@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
 
 function UserUpdateDialog(props) {
 
-    const { open, handleClose, initialValues, onSubmit } = props;
+    const { open, handleClose, initialValues, onSubmit, isUpdateNav } = props;
     const firstName = initialValues.username;
     const classes = useStyles();
     const validate = (fieldValues = values) => {
@@ -46,7 +46,9 @@ function UserUpdateDialog(props) {
             temp.username = fieldValues.username ? (props.users.some((user) => user.username.replace(/\s/g, '').toUpperCase() === fieldValues.username.replace(/\s/g, '').toUpperCase() && fieldValues.username.replace(/\s/g, '').toUpperCase() !== firstName.replace(/\s/g, '').toUpperCase()) ? "Tên đăng nhập đã tồn tại" : "") :"Không được bỏ trống";
         if ('password' in fieldValues)
             temp.password = fieldValues.password ? "" :"Không được bỏ trống";
-        if ('role' in fieldValues)
+        if ('confirmPassword' in fieldValues )
+            temp.confirmPassword = fieldValues.confirmPassword ? ('password' in fieldValues && fieldValues.password === fieldValues.confirmPassword) ? "" : "Mật khẩu không trùng khớp" :"Không được bỏ trống";
+        if ('role' in fieldValues && !isUpdateNav)
             temp.role = fieldValues.role ? "" :"Không được bỏ trống";
         setErrors({
             ...temp
@@ -55,7 +57,7 @@ function UserUpdateDialog(props) {
         if (fieldValues === values)
             return Object.values(temp).every(x => x === "")
     }
-    const {values, setValues, errors, setErrors, handleInputChange, resetForm} = useForm({...initialValues, newImage: null, role: initialValues.roles ? initialValues.roles[0].name : initialValues.role}, true, validate);
+    const {values, setValues, errors, setErrors, handleInputChange, resetForm} = useForm({...initialValues, newImage: null, role: initialValues.roles ? initialValues.roles[0].name : initialValues.role, confirmPassword: ""}, true, validate);
 
     function selectedFile(event){ 
         if(event.target.files[0])
@@ -101,7 +103,7 @@ function UserUpdateDialog(props) {
                                 name="username" 
                                 label="Tên đăng nhập" 
                                 value={values.username}
-                                disabled
+                                disabled={true}
                                 error={errors.username}/>
                             <Controls.Input
                                 className={classes.item}
@@ -113,10 +115,21 @@ function UserUpdateDialog(props) {
                                 value={values.password}
                                 onChange={handleInputChange}
                                 error={errors.password}/>
+                            <Controls.Input
+                                className={classes.item}
+                                defaultValue=''
+                                id="confirmPassword"
+                                password={true}
+                                name="confirmPassword" 
+                                label="Xác nhận mật khẩu" 
+                                value={values.confirmPassword}
+                                onChange={handleInputChange}
+                                error={errors.confirmPassword}/>
                             <Controls.Select
                                 label="Tên nhóm người dùng"
                                 className={classes.item}
                                 name="role" 
+                                disabled={isUpdateNav ? true : null}
                                 value={values.role}
                                 onChange={handleInputChange}
                                 options={[{role: "ROLE_ADMIN", name: "Admin"}, {role: "ROLE_MANAGER", name: "Quản lý"}, {role: "ROLE_USER", name: "Nhân viên"}]}

@@ -67,7 +67,7 @@ var initialValues = {
           price: 0,
           count: 0,
           foodKind: "", 
-          note: "",
+          note: " ",
       };
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -193,7 +193,7 @@ function TableDetailDialog(props) {
       feastTableId: props.selectedTable.id,
       foodId: props.selectedFood.id,
       count: values.count,
-      note: values.note,
+      note: values.note ? values.note : "  ",
       totalPrice: values.count * values.price,
       unitPrice: values.price
     }
@@ -203,7 +203,7 @@ function TableDetailDialog(props) {
       feastTableId: values.feastTableId,
       foodId: values.foodId,
       count: values.count,
-      note: values.note,
+      note: values.note ? values.note : "  ",
       totalPrice: values.count * values.price,
       unitPrice: values.price
     }
@@ -311,6 +311,7 @@ function TableDetailDialog(props) {
                 <TextField 
                   className={classes.textFieldForm} 
                   fullWidth
+                  defaultValue=" "
                   name='note'
                   value={values.note}
                   onChange={handleInputChange} />

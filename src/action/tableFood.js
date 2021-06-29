@@ -61,6 +61,7 @@ export const actDeleteTableFoodRequest = (feastTableId, foodId, deleteTableFoodS
                 dispatch(actDeleteTableFood(foodId));
                 deleteTableFoodSuccess();
             } else {
+                dispatch(actDeleteTableFood(foodId));
                 deleteTableFoodFailure();
             }
         })

@@ -44,6 +44,8 @@ function UserAddDialog(props) {
              temp.password = fieldValues.password ? "" :"Không được bỏ trống";
         if ('role' in fieldValues)
              temp.role = fieldValues.role ? "" :"Không được bỏ trống";
+        if ('confirmPassword' in fieldValues )
+            temp.confirmPassword = fieldValues.confirmPassword ? ('password' in fieldValues && fieldValues.password === fieldValues.confirmPassword) ? "" : "Mật khẩu không trùng khớp" :"Không được bỏ trống";
         setErrors({
             ...temp
         })
@@ -110,6 +112,16 @@ function UserAddDialog(props) {
                                 value={values.password}
                                 onChange={handleInputChange}
                                 error={errors.password}/>
+                            <Controls.Input
+                                className={classes.item}
+                                defaultValue=''
+                                id="confirmPassword"
+                                password={true}
+                                name="confirmPassword" 
+                                label="Xác nhận mật khẩu" 
+                                value={values.confirmPassword}
+                                onChange={handleInputChange}
+                                error={errors.confirmPassword}/>
                             <Controls.Select
                                 label="Tên nhóm người dùng"
                                 name="role" 
