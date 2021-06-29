@@ -134,7 +134,7 @@ function DetailBill(props) {
                         <Payment bill={props.notPaidBillItem} />         
                     </Grid>
                     <Grid item md={6} xs={12}  justifyContent="center" alignContent="center">
-                        <Management bill={{...props.notPaidBillItem, service: (props.weddingServices.services ? props.weddingServices.services : [])}}/>         
+                        <Management />         
                     </Grid>
                 </Grid>
                 </div>

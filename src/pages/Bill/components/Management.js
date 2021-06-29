@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import {Typography, Paper, Grid, Container, Button} from '@material-ui/core/';
 import {Link} from 'react-router-dom';
@@ -50,7 +50,10 @@ const useStyles = makeStyles((theme) => ({
 
 function Management(props) {
     const classes = useStyles();
-    const {dateOfPayment, status, feast} = props.bill;
+    const {dateOfPayment, status, feast} = props.notPaidBillItem;
+    useEffect(() => {
+        setIsSaved(status===1);
+    }, [props.notPaidBillItem])
     const [isSaved, setIsSaved] = React.useState((status===1));
     const { enqueueSnackbar } = useSnackbar();
     const handleClickVariant = () => {
@@ -144,6 +147,13 @@ function convertDateToStringDMY(date) {
         return result;
 }
 
+const mapStateToProps = state => {
+    return {
+        notPaidBillItem: state.notPaidBillItem,
+        weddingServices: state.weddingServices,
+    }
+}
+
 const mapDispatchToProps = (dispatch, props) => {
     return {
         saveBill : (id, savedBillSuccess, savedBillFailure) => {
@@ -152,4 +162,4 @@ const mapDispatchToProps = (dispatch, props) => {
     }
 }
 
-export default connect(null, mapDispatchToProps)(Management);
+export default connect(mapStateToProps, mapDispatchToProps)(Management);
