@@ -110,7 +110,7 @@ function Management(props) {
                             </Grid>
                         </Grid>
                         <Grid item xs={4} align="center">
-                            <BillPrint open={open} handleClose={handleClose} bill={props.bill}/>
+                            <BillPrint open={open} handleClose={handleClose}/>
                             <Button variant="contained" color="primary" className={classes.billInfoItem} onClick={handleClickOpen}>
                                 In hóa đơn
                             </Button>

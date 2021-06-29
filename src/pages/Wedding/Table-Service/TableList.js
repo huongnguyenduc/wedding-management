@@ -170,7 +170,7 @@ const EnhancedTableToolbar = (props) => {
         </Typography>
         }
 
-      { currentTableState.state === NORMAL ? (numSelected > 0 ? (
+      { currentTableState.state === NORMAL && props.status === "order" ? (numSelected > 0 ? (
         <>
             <Tooltip title="Chỉnh sửa">
             <Button
@@ -346,7 +346,7 @@ const handleSearch = (event) => {
       </Grid>
       <div className={classes.root}>
         <Paper className={classes.paper}>
-          <EnhancedTableToolbar numSelected={selected.length} />
+          <EnhancedTableToolbar numSelected={selected.length} status={props.status}/>
           <TableContainer>
             <Table
               className={classes.table}

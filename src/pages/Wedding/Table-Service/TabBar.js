@@ -86,10 +86,10 @@ export default function TableServiceTabBar(props) {
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={1}>
-        <Table weddingId={props.weddingId} lobbyId={props.lobbyId} />
+        <Table weddingId={props.weddingId} lobbyId={props.lobbyId} status={props.status} />
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <Service weddingId={props.weddingId} lobbyId={props.lobbyId} />
+        <Service weddingId={props.weddingId} lobbyId={props.lobbyId} status={props.status} />
       </TabPanel>
     </div>
   );

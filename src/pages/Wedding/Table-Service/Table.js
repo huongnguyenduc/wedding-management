@@ -142,19 +142,23 @@ function Table(props) {
     const handleDecrement = (prop) => (event) => {
         setValues({ ...values, [prop]: parseInt(values[prop]) - 1 });
     };
+
+    const checkTableKindExist = (tableKind, tables) => {
+        if (tables) {
+            return tables.some((existTable) => existTable.tableCategory.id === tableKind)
+        }
+        return false
+    }
     const validate = (fieldValues = values) => {
         let temp = {...errors};
-        console.log((+fieldValues.numberTables + totalTables(props.tables.feastTables)));
-        console.log(props.recentLobby.maxtable);
-        let checkTables = ((+fieldValues.numberTables + totalTables(props.tables.feastTables)) <= props.recentLobby.maxtable ? true : false)
-        console.log(checkTables);
-        console.log(fieldValues);
-        console.log(temp);
+        let checkTables = ((+fieldValues.numberTables + +fieldValues.reverseTables + totalTables(props.tables.feastTables)) <= props.recentLobby.maxtable ? true : false)
         if ('numberTables' in fieldValues)
             temp.numberTables = ((checkTables === false) ? "Tổng số lượng bàn đã đặt vượt quá số lượng bàn tối đa!" : (+fieldValues.numberTables <= 0) ? "Số lượng bàn phải lớn hơn 0" :  "");
+        if ('reverseTables' in fieldValues)
+            temp.reverseTables = ((checkTables === false) ? "Tổng số lượng bàn đã đặt vượt quá số lượng bàn tối đa!" : (+fieldValues.reverseTables <= 0) ? "Số lượng bàn tối thiểu phải lớn hơn 0" :  "");
         if ('tableKind' in fieldValues)
             temp.tableKind = 
-                fieldValues.tableKind ? "" :"Không được để trống";
+                fieldValues.tableKind ? (checkTableKindExist(fieldValues.tableKind, props.tables.feastTables) ? "Loại bàn này đã tồn tại" : "") :"Không được để trống";
         setErrors({
             ...temp
         })
@@ -241,7 +245,7 @@ function Table(props) {
     const totalTables = (tables) => {
         let totalTables = 0;
         if (tables)
-            tables.forEach((table) => {totalTables+=parseInt(table.numberTables)});
+            tables.forEach((table) => {totalTables+=parseInt(table.numberTables) + parseInt(table.reverseTables)});
         return totalTables;
     }
 
@@ -301,7 +305,7 @@ function Table(props) {
             <Dialog open={openTableCategoryDialog} onClose={() => {setOpenTableCategoryDialog(false)}} aria-labelledby="form-dialog-title" maxWidth="md">
           {props.tableCategories ? <TableKindList rows={props.tableCategories} /> : <CircularProgress />}
         </Dialog>
-            <TableDetailDialog weddingId={props.weddingId} openTableFoodDialog = {openTableFoodDialog} handleCloseTableFoodDialog={handleCloseTableFoodDialog}/>
+            <TableDetailDialog weddingId={props.weddingId} openTableFoodDialog = {openTableFoodDialog} handleCloseTableFoodDialog={handleCloseTableFoodDialog} status={props.status}/>
             <AddTableCategoryDialog open={openDialog} handleClickOpen={handleClickOpen} handleClose={handleClose}/>
             <Popover
                 className={classes.popover}
@@ -365,7 +369,7 @@ function Table(props) {
                         </WhiteTextTypography>
                         <WhiteTextTypography variant="h6" align="center">
                             { props.tables.feast ? 
-                                totalTables(props.tables.feastTables)
+                                (totalTables(props.tables.feastTables))
                                 : '0' }
                         </WhiteTextTypography>
                     </Grid>
@@ -564,7 +568,7 @@ function Table(props) {
                 <Container maxWidth='lg' className={classes.listFormWedding}>
                     <Grid container spacing={0} >
                         <Grid item xs={12}>
-                            <TableList rows={props.tables.feastTables ? mapTableKindProperty(props.tables.feastTables) : []}/>
+                            <TableList rows={props.tables.feastTables ? mapTableKindProperty(props.tables.feastTables) : []} status={props.status}/>
                         </Grid>
                     </Grid>
                 </Container>

@@ -213,7 +213,7 @@ function Service(props) {
 
   return (
     <div>
-        <Grid container className={classes.foodForm}>
+        {props.status === "order" ? <Grid container className={classes.foodForm}>
             <Grid item xs={7} >
                 <ServiceList services={mapServiceKindProperty(props.services)}/>
             </Grid>
@@ -236,10 +236,12 @@ function Service(props) {
             </Grid>
             <Grid item xs={2} className={classes.textField}>
               <Form onSubmit={handleSubmit}>
-                <TextField 
+                <Typography 
+                variant="subtitle1"
+                name='name'
                 className={classes.textFieldForm} 
-                fullWidth
-                value={values.name} />
+                style={{marginLeft: "6px"}}
+                >{values.name ? values.name : "Tên dịch vụ"}</Typography>
                 <Typography variant="subtitle1" className={classes.textFieldForm} name='price' >
                   <NumberFormat name='price' value={values.price} displayType={'text'} thousandSeparator={true} suffix={' đ'} style={{marginLeft: "6px"}} />
                 </Typography>
@@ -290,8 +292,8 @@ function Service(props) {
                   </Button> : <></>}
               </Form>
             </Grid>
-        </Grid>
-        <ServiceOrderList rows = {mapWeddingServiceProperty(props.weddingServices)} weddingId={props.weddingId}/>
+        </Grid> : <></>}
+        <ServiceOrderList rows = {mapWeddingServiceProperty(props.weddingServices)} weddingId={props.weddingId} status={props.status}/>
     </div>
   );
 }

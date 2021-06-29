@@ -1,4 +1,4 @@
-import React , {Component} from 'react';
+import React , {useEffect} from 'react';
 import { Text, View, StyleSheet , Font} from '@react-pdf/renderer';
 import Infomation from './infomation';
 import ServiceHeader from './serviceheader';
@@ -89,44 +89,39 @@ const styles = StyleSheet.create({
       },
 });
 
-class invoice extends Component {
-  constructor(props){
-      super(props);
-      this.state = {
-          id: props.bill.id,
-          dateOfPayment: convertDateToStringDMY(props.bill.dateOfPayment),
-
-          groomName : props.bill.feast.groomname,
-          brideName : props.bill.feast.bridename,
-          phone : props.bill.feast.phone,
-          weddingDate: convertDateToStringDMY(props.bill.feast.dateOfOrganization),
-
-          totalTablePrice: formatVal(props.bill.totalTablePrice),
-          totalServicePrice: formatVal(props.bill.totalServicePrice),
-          totalBill: formatVal(props.bill.totalBill),
-          deposit: formatVal(props.bill.feast.deposit),
-          fine: formatVal(props.bill.totalFine),
-          unpaidMoney:formatVal(props.bill.unpaidMoney),
-      // 
-          services : props.bill.service
-      }
-  }
-   render(){
-      
-      var elemServiceRow = this.state.services.map((services,index) =>{ // render service, H 
-          return (
-              <ServiceRow 
-                  key = {services.service.id}
-                  index = {(index + 1)}
-                  name = { services.service.name}
-                  quantity = { services.count}
-                  unitprice = { services.unitPrice}
-                  total = { services.totalPrice}
-                  />
-          )
-      });
-
-      return (
+function Invoice(props) {
+  const bill = props.bill;
+  console.log(bill)
+  const service = props.service;
+  const state = {
+      id: bill.id,
+      dateOfPayment: convertDateToStringDMY(bill.dateOfPayment),
+      groomname: bill.feast.groomname,
+      bridename: bill.feast.bridename,
+      phone : bill.feast.phone,
+      dateOfOrganization: convertDateToStringDMY(bill.feast.dateOfOrganization),
+      totalTablePrice: formatVal(bill.totalTablePrice),
+      totalServicePrice: formatVal(bill.totalServicePrice),
+      totalBill: formatVal(bill.totalBill),
+      deposit: formatVal(bill.feast.deposit),
+      totalFine: formatVal(bill.totalFine),
+      unpaidMoney:formatVal(bill.unpaidMoney),
+  // 
+      services : service
+    }
+  var elemServiceRow = state.services.map((services,index) =>{ 
+        return (
+            <ServiceRow 
+                key = {services.service.id}
+                index = {(index + 1)}
+                name = { services.service.name}
+                quantity = { services.count}
+                unitprice = { services.unitPrice}
+                total = { services.totalPrice}
+                />
+        )
+    });
+   return (
          <View style= {styles.page}>
             <View className="header" style= { styles.header}>
                 <View style= { styles.header_left}>
@@ -135,16 +130,13 @@ class invoice extends Component {
                 </View>
                 
                 <View className="id-NgayThanhToan" style = {styles.header_right}>
-                  <Text style={ styles.regular }>Số hóa đơn: {this.state.id} </Text>
-                  <Text style={ styles.regular }>Ngày thanh toán: {this.state.dateOfPayment}</Text>
+                  <Text style={ styles.regular }>Số hóa đơn: {state.id} </Text>
+                  <Text style={ styles.regular }>Ngày thanh toán: {state.dateOfPayment}</Text>
                 </View>
             </View>
             <View style= { styles.container }>
                 <Infomation 
-                  groomName = {this.state.groomName}
-                  brideName = {this.state.brideName}
-                  phone = {this.state.phone}
-                  weddingDate = {this.state.weddingDate}
+                  state = {state}
                 />
             </View>
             <View style= { styles.container }>
@@ -153,24 +145,25 @@ class invoice extends Component {
             </View>
             <View style= { styles.footer }>
                 <View style={ styles.note}>
-                    <Text style={ styles.regular }>Ghi chú: { this.state.note}</Text>
+                    <Text style={ styles.regular }>Ghi chú: { state.note}</Text>
                 </View>
                 <View style={ styles.money}>
-                    <Text style={ styles.regular }>Tổng tiền bàn: { this.state.totalTablePrice}</Text>
-                    <Text style={ styles.regular }>Tổng tiền dịch vụ { this.state.totalServicePrice}</Text>
-                    <Text style={ styles.regular }>Tổng tiền hóa đơn: { this.state.totalBill}</Text>
-                    <Text style={ styles.regular }>Tiền đặt cọc: { this.state.deposit}</Text>
-                    <Text style={ styles.regular }>Tiền Phạt: { this.state.fine}</Text>
-                    <Text style={ styles.regular }>Còn lại: { this.state.unpaidMoney}</Text>
+                    <Text style={ styles.regular }>Tổng tiền bàn: { state.totalTablePrice}</Text>
+                    <Text style={ styles.regular }>Tổng tiền dịch vụ { state.totalServicePrice}</Text>
+                    <Text style={ styles.regular }>Tổng tiền hóa đơn: { state.totalBill}</Text>
+                    <Text style={ styles.regular }>Tiền đặt cọc: { state.deposit}</Text>
+                    <Text style={ styles.regular }>Tiền Phạt: { state.totalFine}</Text>
+                    <Text style={ styles.regular }>Còn lại: { state.unpaidMoney}</Text>
                 </View>
             </View>
             
          </View> 
-    );
-  }
+  )
 }
 
-export default invoice;
+
+export default Invoice;
+// export default invoice;
 
 function convertDateToStringDMY(date) {
     if (date == null) return;

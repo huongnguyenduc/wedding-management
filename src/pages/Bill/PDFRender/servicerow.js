@@ -82,9 +82,3 @@ class ServiceRow extends Component {
 }
 
 export default ServiceRow;
-            //<Text style={styles.index}>{ this.props.index }</Text>
-            //<Text style={styles.name}>{ this.props.name }</Text>
-            //<Text style={styles.quantity}>{ this.props.quantity }</Text>
-            //<Text style={styles.unitprice}>{ this.props. unitprice }</Text>
-            //<Text style={styles.total}>{ this.props.total }</Text> 
-//

@@ -20,7 +20,7 @@ export default function AlertDialogSlide(props) {
             aria-labelledby="alert-dialog-slide-title"
             aria-describedby="alert-dialog-slide-description"
         >
-            <PdfView bill={props.bill} />
+            <PdfView />
         </Dialog>
         </div>
     );

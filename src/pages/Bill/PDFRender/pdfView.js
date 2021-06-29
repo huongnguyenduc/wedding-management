@@ -1,8 +1,9 @@
 import { Page, Document, StyleSheet } from '@react-pdf/renderer';
-import React from 'react'
+import React, {useEffect} from 'react'
 import { PDFViewer } from '@react-pdf/renderer';
 import Invoice from './invoice';
 import './pdf.css';
+import { useSelector } from 'react-redux'
 const styles = StyleSheet.create({
   page: {
     flexDirection: 'row',
@@ -18,16 +19,21 @@ const styles = StyleSheet.create({
 
 
 
-function pdfView(props) {
+function PdfView(props) {
+  const bills = useSelector((state) => state.notPaidBillItem)
+  const services = useSelector((state) => state.weddingServices)
     return (
+      <>
         <PDFViewer className="w5-h7" >
           <Document >
             <Page size="A4" style={styles.page}>
-                <Invoice bill={props.bill}/>
+                <Invoice service={(services.services ? services.services : [])} bill={bills}/>
             </Page>
           </Document>
         </PDFViewer>
+        </>
     );
 }
 
-export default pdfView;
+
+export default PdfView;

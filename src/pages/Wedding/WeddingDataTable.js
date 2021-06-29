@@ -4,7 +4,7 @@ import clsx from 'clsx';// eslint-disable-line
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import {Table, TableBody, Grid,FormControl, MenuItem, InputLabel, Select,TextField, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, Button} from '@material-ui/core/';
 import {Toolbar, Typography, Paper, Tooltip, FormControlLabel, Switch} from '@material-ui/core/';
-import { Edit, Delete, Search, Add } from '@material-ui/icons/';
+import { Edit, Delete, Search, Add, Brightness1 } from '@material-ui/icons/';
 import clickRow from './actions/index'
 import { useDispatch, useSelector } from 'react-redux'
 import { connect } from 'react-redux';
@@ -53,6 +53,7 @@ const headCells = [
   { id: 'dateOfOrganization', numeric: true, disablePadding: false, label: 'Ngày đãi tiệc' },
   { id: 'nameShift', numeric: true, disablePadding: false, label: 'Ca' },
   { id: 'note', numeric: true, disablePadding: false, label: 'Ghi chú' },
+  { id: 'status', numeric: true, disablePadding: false, label: 'Tình trạng' },
 ];
 
 function EnhancedTableHead(props) {
@@ -179,7 +180,7 @@ const EnhancedTableToolbar = (props) => {
         </Typography>
       )}
 
-      { currentWeddingState.state === NORMAL && privileges.some(canUpdateWedding) ?  (numSelected > 0 ? (
+      { currentWeddingState.state === NORMAL && privileges.some(canUpdateWedding) ?  (numSelected > 0 && !props.paidBills.some((feast) => feast.feast.id === selectedRow.id) ? (
         <>
             <Tooltip title="Chỉnh sửa">
               <Button
@@ -290,6 +291,10 @@ function EnhancedTable(props) {
         return 'brideName';
       case 'Số điện thoại':
         return 'phone';
+      case 'Sảnh':
+        return 'lobbyName';
+      case 'Ca':
+        return 'nameShift';
       default:
         return 'groomName'
     }
@@ -388,13 +393,15 @@ function EnhancedTable(props) {
               <MenuItem value={'Tên chú rể'}>Tên chú rể</MenuItem>
               <MenuItem value={'Tên cô dâu'}>Tên cô dâu</MenuItem>
               <MenuItem value={'Số điện thoại'}>Số điện thoại</MenuItem>
+              <MenuItem value={'Sảnh'}>Sảnh</MenuItem>
+              <MenuItem value={'Ca'}>Ca</MenuItem>
               </Select>
           </FormControl>
       </Grid>
     <Grid item xs={12}>
       <div className={classes.root}>
         <Paper className={classes.paper}>
-          <EnhancedTableToolbar numSelected={selected.length} selectedRow={selectedRow} />
+          <EnhancedTableToolbar numSelected={selected.length} selectedRow={selectedRow} paidBills={props.paidBills} />
           <TableContainer>
             <Table
               className={classes.table}
@@ -417,6 +424,7 @@ function EnhancedTable(props) {
                   .map((row, index) => {
                     const isItemSelected = isSelected(row.id);
                     const labelId = `enhanced-table-checkbox-${index}`;
+                    rows[rows.findIndex( (r) => r.id === row.id)] = {...row, status: props.paidBills.some((feast) => feast.feast.id === row.id) ? true : false}
                     return (
                       <TableRow
                         hover
@@ -438,7 +446,8 @@ function EnhancedTable(props) {
                         <TableCell align="left">{row.lobbyName}</TableCell>
                         <TableCell align="right">{convertDateToStringDMYNew(row.dateOfOrganization)}</TableCell>
                         <TableCell align="right">{row.nameShift}</TableCell>
-                        <TableCell align="right">{row.note}</TableCell>    
+                        <TableCell align="right">{row.note}</TableCell>
+                        <TableCell align="right"><Brightness1 style={{color: props.paidBills.some((feast) => feast.feast.id === row.id) ?'#9e9e9e':'#4caf50'}}/></TableCell>     
                       </TableRow>
                     );
                   })}
@@ -472,7 +481,8 @@ function EnhancedTable(props) {
 
 const mapStateToProps = state => {
     return {
-        weddings : state.weddings
+        weddings : state.weddings,
+        paidBills: state.paidBills
     }
 }
 function convertDateToStringMDY(date) {

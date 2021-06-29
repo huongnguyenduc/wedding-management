@@ -12,6 +12,7 @@ import { useSnackbar } from 'notistack';
 function UpdateTableCategoryDialog(props) {
 
   const {open, handleClose, data} = props;
+  const firstName = data.name;
   const [tableCategoryName, setTableCategoryName] = React.useState(data.name);
 
   const handleNameChange = (event) => {
@@ -64,13 +65,24 @@ function UpdateTableCategoryDialog(props) {
           </Button>
           <Button 
           color="primary" 
-          onClick={() => {props.updateTableCategoriesInfo({id: data.id, name: tableCategoryName, moreInfo: tableCategoryNote}, updateTableCategorySuccess, updateTableCategoryFailure);}}>
+          onClick={() => {
+            if (props.tableCategories.some((category) => category.name.replace(/\s/g, '').toUpperCase() === tableCategoryName.replace(/\s/g, '').toUpperCase() && firstName.replace(/\s/g, '').toUpperCase() !== tableCategoryName.replace(/\s/g, '').toUpperCase()))
+              enqueueSnackbar("Tên loại bàn bị trùng", { variant: "warning", autoHideDuration: 3000 });
+            else 
+            props.updateTableCategoriesInfo({id: data.id, name: tableCategoryName, moreInfo: tableCategoryNote}, updateTableCategorySuccess, updateTableCategoryFailure);
+          }}>
             Chỉnh sửa
           </Button>
         </DialogActions>
       </Dialog>
     </div>
   );
+}
+
+const mapStateToProps = state => {
+    return {
+        tableCategories: state.tableCategories,
+    }
 }
 
 const mapDispatchToProps = (dispatch, props) => {
@@ -80,4 +92,4 @@ const mapDispatchToProps = (dispatch, props) => {
         },
     }
 }
-export default connect(null, mapDispatchToProps)(UpdateTableCategoryDialog);
+export default connect(mapStateToProps, mapDispatchToProps)(UpdateTableCategoryDialog);

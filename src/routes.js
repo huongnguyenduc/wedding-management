@@ -112,7 +112,7 @@ const routes = [
             }   
     },
     {
-        path: '/wedding/:weddingId/:lobbyId',
+        path: '/wedding/:weddingId/:lobbyId/:status',
         exact: true,
         main: ({match, history}) =>{
             if(getCookie("token")!=="") 
