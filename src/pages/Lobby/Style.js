@@ -4,7 +4,7 @@ const useStyles = makeStyles(theme=>(
 {    
     MainPage:{
         width:'100%',
-        minHeight:'calc(100vh - 80px)',
+        minHeight:'100vh',
         maxWidth:'100%',
         padding:'0',
         backgroundColor:'#EEEEEE',

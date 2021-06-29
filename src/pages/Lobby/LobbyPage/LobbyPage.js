@@ -35,6 +35,16 @@ function LobbyPage(props) {
         setTab(newValue)
     }
 
+    function filterByKeyword(data, keyword)
+    {
+        if(keyword === '')
+            return data;
+        else
+            return data.filter(item=>{ 
+                return (item.name.toLowerCase().search(keyword)!==-1 || item.maxTable == keyword || item.minUnitPriceTable == keyword)
+            })
+    }
+
     function FilterCategory(data, category){
         if(!category)
             return data
@@ -45,10 +55,12 @@ function LobbyPage(props) {
         }
             
     }
+
+
     function changeKeyword(event)
     {
         if(event.key==='Enter')
-           setKeyword({...keyword,value:event.target.value})
+           setKeyword({...keyword,value:event.target.value.toLowerCase()})
     }
 
     function OpenSearchBox (){
@@ -128,7 +140,7 @@ function LobbyPage(props) {
             <TabPanel value={tab} index={0} className={classes.TabPanel}>
                 <Container maxWidth="lg" className={classes.container} >
                     {
-                       PagePriceItemSort(Lobby,'asc').map((lobby)=>{
+                       PagePriceItemSort(filterByKeyword(Lobby,keyword.value),'asc').map((lobby)=>{
                             return(<LobbyCard key={lobby.id} xs={12} sm={6} md={4} lg={4} lobby={lobby} />)})
                     }
                     { privileges.some(canUpdateLobby) ? <LobbyCard id="insert_lobby"  xs={12} sm={6} md={4} lg={4} /> : <></>}
@@ -140,7 +152,13 @@ function LobbyPage(props) {
                         <TabPanel key={category.id} value={tab} index={index+1} >
                             <Container maxWidth="lg" className={classes.container}>
                                 {
-                                    PagePriceItemSort(FilterCategory(Lobby,category),'asc').map((lobby)=>{
+                                    PagePriceItemSort(
+                                        FilterCategory(
+                                            filterByKeyword(Lobby,keyword.value)
+                                            ,category
+                                        )
+                                        ,'asc'
+                                    ).map((lobby)=>{
                                         return(<LobbyCard key={`${category.id}_${lobby.id}`} xs={12} sm={6} md={4} lg={4} lobby={lobby} />)})
                                 }
                                 { privileges.some(canUpdateLobby) ? <LobbyCard id="insert_lobby" xs={12} sm={6} md={4} lg={4} lobbyCategory={category}/> : <></>}

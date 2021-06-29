@@ -56,6 +56,7 @@ const styles = (theme) =>(
             boxShadow:'0 5px 10px 0 rgba(26,47,51,0.4)',
             paddingTop:'2rem',
             paddingBottom:'2rem',
+            minHeight:'480px'
         },
         GroupLabel:
         {

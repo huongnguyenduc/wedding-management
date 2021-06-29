@@ -22,8 +22,10 @@
     "@types/react-dom": "^17.0.3",
     "apexcharts": "^3.27.1",
     "axios": "^0.21.1",
+    "chokidar": "^3.5.2",
     "cloudinary": "^1.26.0",
     "date-fns": "^2.19.0",
+    "file-saver": "^2.0.5",
     "material-ui-image": "^3.3.2",
     "moment": "^2.29.1",
     "notistack": "^1.0.9",
@@ -45,7 +47,8 @@
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^2.0.3",
     "typescript": "^4.3.2",
-    "web-vitals": "^1.1.1"
+    "web-vitals": "^1.1.1",
+    "xlsx": "^0.17.0"
   },
   "scripts": {
     "start": "react-scripts start",

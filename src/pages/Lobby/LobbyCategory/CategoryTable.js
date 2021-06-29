@@ -60,7 +60,14 @@ function CategoryTable(props){
       if(keyword==="")
         return array;
       return array.filter(item=>{
-        return item.name.toLowerCase().search(keyword)!==-1
+        if(item.name.toLowerCase() === keyword)
+            return true  
+        if(item.mintable == keyword)
+            return true  
+        if(item.minPriceTable == keyword)   
+            return true
+        
+        return false
       })
     }
     function handleChangeRowsPerPage(event){
@@ -142,9 +149,9 @@ export default CategoryTable
 
 function EnhancedTableHead(props) {
     const headCells =[
-        {id:1,Name:"name",width:'45%', align: "center", label:"Tên loại sảnh"},
-        {id:2,Name:"mintable",width:'45%', align:"center", label:"Số bàn tối thiểu"}
-        
+        {id:1,Name:"name",width:'40%', align: "center", label:"Tên loại sảnh"},
+        {id:2,Name:"mintable",width:'25%', align:"center", label:"Số bàn tối thiểu"},
+        {id:3,Name:"minPriceTable",width:'25%', align:"center", label:"Đơn giá bàn tối thiểu"}
     ]
   
     const {order, orderBy, onRequestSort } = props;
@@ -240,7 +247,9 @@ function Row(props){
     const classes = useStyles();
     const {lobbyCategory}= props;
     const dispatch = useDispatch();
-    const [rowState, setRowState]= useState({id:'',name:'', mintable:'', editing:lobbyCategory?false:true})
+    const StoreData = useSelector(state => state.changeLobbyData);
+    const LobbyCategory = StoreData.LobbyCategory;
+    const [rowState, setRowState]= useState({id:'',name:'', mintable:'', minPriceTable:'', editing:lobbyCategory?false:true})
 
     function EditHandler(){
         setRowState({...rowState, editing:true})
@@ -250,6 +259,18 @@ function Row(props){
         const confirm = window.confirm("Thông tin về loại sảnh sẽ bị xoá hoàn toàn khỏi hệ thống! Bạn có muốn tiếp tục?")
         if(confirm)
             dispatch(DeleteLobbyCategory(rowState))
+    }
+
+    function checkExist()
+    {
+        const find =  LobbyCategory.find(item=> item.name.toLowerCase().replace( /\s/g, '') === rowState.name.toLowerCase().replace( /\s/g, ''))
+        if(find)
+            if(find.id === rowState.id)
+                return false;
+            else
+                return true;
+        else 
+            return false;
     }
 
     function check()
@@ -262,6 +283,8 @@ function Row(props){
             if(rowState.mintable<0)
                 return {value:false, message:'Số bàn tối thiểu không thể là số âm!'}
 
+            if(checkExist())
+                return {value:false, message:'Tên loại sảnh đã được sử dụng!'}
             else
                 return {value:true, message:''}
         }
@@ -274,7 +297,7 @@ function Row(props){
         if(lobbyCategory)
             setRowState({...rowState, editing:false})
         else
-            setRowState({...rowState,id:'',name:'', mintable:'',editing:true})
+            setRowState({...rowState,id:'',name:'', mintable:'',minPriceTable:'', editing:true})
     }
     function FinishHandler()
     {
@@ -283,13 +306,13 @@ function Row(props){
         {
             if(lobbyCategory)
             {
-                const category = {id:rowState.id, name:rowState.name, mintable:rowState.mintable}
+                const category = {id:rowState.id, name:rowState.name, mintable:rowState.mintable, minPriceTable:rowState.minPriceTable}
                 dispatch(UpdateLobbyCategory(category,Success))
             }
             else
             {
                 
-                const category = {name:rowState.name, mintable:rowState.mintable}
+                const category = {name:rowState.name, mintable:rowState.mintable, minPriceTable:rowState.minPriceTable}
                 dispatch(InsertLobbyCategory(category,Success))
             }
         }
@@ -302,7 +325,7 @@ function Row(props){
 
     function Cancelhandler()
     {
-        setRowState({...rowState, name:lobbyCategory.name, mintable:lobbyCategory.mintable, editing:false})
+        setRowState({...rowState, name:lobbyCategory.name, mintable:lobbyCategory.mintable,minPriceTable:lobbyCategory.minPriceTable, editing:false})
     }
 
     function handleChange(event)
@@ -311,7 +334,7 @@ function Row(props){
     }
     useEffect(()=>{
         if(lobbyCategory)
-            setRowState({...rowState,id:lobbyCategory.id,name:lobbyCategory.name, mintable:lobbyCategory.mintable})
+            setRowState({...rowState,id:lobbyCategory.id,name:lobbyCategory.name, mintable:lobbyCategory.mintable, minPriceTable:lobbyCategory.minPriceTable})
     },[])
 
     const privileges = JSON.parse(getCookie("privileges"))
@@ -344,6 +367,23 @@ function Row(props){
                     value={rowState.mintable}
                     name="mintable"
                     placeholder="Số bàn tối thiểu"
+                    onChange={handleChange}
+                    inputProps={{min:0}}
+                    InputProps={{
+                        disableUnderline:true,
+                        className:classes.inputText}}
+                />
+            </TableCell>
+            <TableCell 
+                className={classes.InputCell}
+                align='center'
+            >
+                <TextField
+                    type="number"
+                    disabled={rowState.editing?false:true}
+                    value={rowState.minPriceTable}
+                    name="minPriceTable"
+                    placeholder="Đơn giá bàn tối thiểu"
                     onChange={handleChange}
                     inputProps={{min:0}}
                     InputProps={{

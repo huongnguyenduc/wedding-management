@@ -225,6 +225,8 @@ function Row(props){
     const classes = useStyles();
     const {shift}= props;
     const dispatch = useDispatch();
+    const StoreData = useSelector(state => state.PolicyReducer)
+    const shiftData = StoreData.Shift;
     const [rowState, setRowState]= useState({id:'',name:'', timeBegin:'',timeEnd:'', editing:shift?false:true})
 
     function EditHandler(){
@@ -237,6 +239,18 @@ function Row(props){
             dispatch(DeleteShift(rowState))
     }
 
+    function checkExist()
+    {
+        const find =  shiftData.find(item=> item.name.toLowerCase().replace( /\s/g, '') === rowState.name.toLowerCase().replace( /\s/g, ''))
+        if(find)
+            if(find.id === rowState.id)
+                return false;
+            else
+                return true;
+        else 
+            return false;
+    }
+
     function check()
     {
         if(rowState.name&&rowState.timeBegin&&rowState.timeEnd)
@@ -245,6 +259,10 @@ function Row(props){
             {
                 return {value:false, message:'Thời gian bắt đầu phải trước thời gian kết thúc!'}
             }
+
+            if(checkExist())
+                return {value:false, message:'Tên ca đã được sử dụng!'}
+
             return {value:true, message:'vui lòng nhập đầy đủ thông tin!'}
         }
         else

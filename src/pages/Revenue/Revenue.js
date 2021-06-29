@@ -9,10 +9,11 @@ import MonthlyRevenueChart from './RevenueChart/RevenueChart'
 import  PieChart from './PieChart/PieChart';
 import ReportTable from './Table/Table'
 import  {GetReport, GetFoodReport, GetLobbyReport, GetServiceReport } from './connect'
+import {ExportReport} from './exportReport'
 
 function Revenue() {
     const classes = useStyles()
-    const [revenueState, setRevenueState] = useState(moment())
+    const [revenueState, setRevenueState] = useState({dateObject:moment()})
     const [tab, setTab] = useState(0)
     const [monthlyReport, setMonthlyReport] = useState([])
     const [foodReport, setFoodReport] = useState([])
@@ -48,42 +49,37 @@ function Revenue() {
 
     function daysInMonth()
     {
-        return revenueState.daysInMonth();
+        return revenueState.dateObject.daysInMonth();
     }
 
     function year()
     {
-        return revenueState.format('Y');
+        return revenueState.dateObject.format('Y');
     }
 
     function month()
     {
-        return moment(revenueState).format('M')
+        return moment(revenueState.dateObject).format('M')
     }
 
     function monthText(){
-        return moment(revenueState).format('MMMM')
+        return moment(revenueState.dateObject).format('MMMM')
     }
 
     function setYear(y)
     {
-        let dateObject = Object.assign({}, revenueState);
+        let dateObject = Object.assign({}, revenueState.dateObject);
         let termtDateObject = moment(dateObject).set('year',y)
-        setRevenueState(termtDateObject)
+        setRevenueState({...revenueState,dateObject:termtDateObject})
     }
 
     function setMonth(m)
     {
-        let dateObject = Object.assign({}, revenueState);
+        let dateObject = Object.assign({}, revenueState.dateObject);
         let termtDateObject = moment(dateObject).set('month',m)
-        setRevenueState(termtDateObject)
+        setRevenueState({...revenueState,dateObject:termtDateObject})
     }
 
-    function setMonthYear(mm , yy)
-    {
-        let termtDateObject = moment().set({'year': yy, 'month': mm});
-        setRevenueState(termtDateObject)
-    }    
     //Init data for month Report
 
     function Percent(d)
@@ -93,7 +89,7 @@ function Revenue() {
         let find = monthlyReport.find(item=>item.date === dateCheck)
         if(find)
         {
-        return find.ratio.toFixed(4)*100;
+        return find.ratio.toFixed(3)*100;
         }  
         else
             return 0;
@@ -122,7 +118,7 @@ function Revenue() {
     {
         let Series = []
         let Labels = []
-        lobbyReport.map(item=>{
+        lobbyReport.forEach(item=>{
             Series.push(item.count)
             Labels.push(item.lobbyName)
         })
@@ -170,13 +166,61 @@ function Revenue() {
         }
     }
 
+    // export report 
+    function exportHandler()
+    {
+        const allData = []
+
+        let monthData = []   
+        const monthHeader = ["Ngày", "Số lượng tiệc", "Doanh số", "Tỉ lệ" ]
+        monthData.push(monthHeader)
+        monthlyReport.forEach(item =>{
+            monthData.push([item.date, item.feastCount, 
+                item.revenue.toLocaleString('vi-VN', {
+                    style: 'currency',
+                    currency: 'VND'}),
+                `${item.ratio.toFixed(4)*100} %`])
+        })
+        allData.push({sheet:'Báo cáo tháng', data: monthData})
+        
+        /////
+        const ServiceHeader = ["Tên", "Số lượng"]
+
+        let lobbyData = []   
+        lobbyData.push(ServiceHeader)
+        lobbyReport.forEach(item =>{
+            lobbyData.push([item.lobbyName, item.count])
+        })
+        allData.push({sheet:'Báo cáo sảnh', data: lobbyData})
+        //////
+
+        let foodData=[]
+        foodData.push(ServiceHeader)
+        foodReport.forEach(item =>{
+            foodData.push([item.foodName, item.count])
+        })
+        allData.push({sheet:'Báo cáo món ăn', data: foodData})
+        /////
+
+        let serviceData = []   
+        serviceData.push(ServiceHeader)
+        serviceReport.forEach(item =>{
+            serviceData.push([item.serviceName, item.count])
+        })
+        allData.push({sheet:'Báo cáo dịch vụ', data: serviceData})
+
+        ExportReport(`Doanh thu tháng ${month()}/${year()}`, allData)
+    }
+
     return (
         <Grid className={classes.Revenuepage}>
+            
             <Backdrop open={pending < 4} className={classes.backdrop} onClick={(e)=>{e.stopPropagation()}}>
                     <CircularProgress  color="inherit"/>
             </Backdrop>
             <Container maxWidth='lg'>
-                <RevenueToolbar setMonthYear={setMonthYear} currentMonth={month()} setMonth={setMonth} currentYear={year()} setYear={setYear} />
+                {/* <ExportReport></ExportReport> */}
+                <RevenueToolbar currentMonth={month()} setMonth={setMonth} currentYear={year()} setYear={setYear} onExport={exportHandler}/>
                 <MonthlyRevenue data={InitDataForMonthlyRevenue()}/>
             </Container>   
             <Container maxWidth='lg' className={classes.MainContent}>
@@ -324,28 +368,11 @@ function MonthlyRevenue(props)
 
 function RevenueToolbar(props)
     {
-        const {setMonthYear, currentMonth,currentYear} = props
+        const {currentMonth, currentYear, setMonth, setYear, onExport} = props
         const classes = useStyles();
         const [openSelector, setOpenSelector] = useState("")
-        const [tootbarState, setToolbarState] = useState({month:currentMonth-1, year:currentYear})
         
         const months = moment.months()
-
-        function setTimeHandler(){
-           let mm = parseInt(tootbarState.month);
-           let yy = parseInt(tootbarState.year);
-           setMonthYear(mm,yy)
-        }
-
-        function setNewMonth(newMonth)
-        {
-            setToolbarState({...tootbarState,month:newMonth})
-        }
-
-        function setNewYear(newYear)
-        {
-            setToolbarState({...tootbarState,year:newYear})
-        }
 
         return (
             <Toolbar className={classes.toolbar}>
@@ -355,23 +382,23 @@ function RevenueToolbar(props)
                 <ClickAwayListener onClickAway={()=>{setOpenSelector("")}}>
                     <Grid className={classes.MonthYearBox}>
                         <Typography className={classes.txtMonth} onClick={()=>{setOpenSelector("Month")}} >
-                            {months.find((m, index)=>index == tootbarState.month)} 
+                            {months.find((m, index)=>index == currentMonth - 1)} 
                         </Typography>
                         <Typography className={classes.txtYear} onClick={()=>{setOpenSelector("Year")}}>
-                            {tootbarState.year}
+                            {currentYear}
                         </Typography>
                         <Grid className={classes.GridSelector}>
                             <MonthSelector 
-                                currentMonth={tootbarState.month} 
-                                setMonth={setNewMonth} 
+                                currentMonth={currentMonth - 1} 
+                                setMonth={setMonth} 
                                 className={classes.MonthSelector} 
                                 style={{display:openSelector==='Month'?'':'none'}}
                                 onClose={()=>{setOpenSelector("")}}
                             />
 
                             <YearSelector 
-                                currentYear={tootbarState.year} 
-                                setYear={setNewYear} 
+                                currentYear={currentYear} 
+                                setYear={setYear} 
                                 selectMonth={()=>{setOpenSelector('Month')}} 
                                 className={classes.YearSelector} 
                                 style={{display:openSelector==='Year'?'':'none'}}
@@ -379,7 +406,7 @@ function RevenueToolbar(props)
                         </Grid>
                     </Grid>     
                 </ClickAwayListener>                 
-                <Button onClick={setTimeHandler} className={classes.ToolbarButton}>
+                <Button onClick={onExport} className={classes.ToolbarButton}>
                 Xuất
                 </Button>
             </Toolbar>

@@ -9,8 +9,6 @@ import Styles from './FoodGroupStyle';
 function FoodGroup(props){
     const {category, foodData,handleUpdate,classes} = props;
     const data = foodData.filter(item=>{ return (item.category!=null&&category.id ===  item.category.id)})
-    if( data.length===0)
-        return (<></>)
     return (
         <Grid item xs={12}  container className = {classes.FoodGroupContainer}>
                 <Container  className={classes.FoodGroup}>

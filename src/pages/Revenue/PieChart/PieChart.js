@@ -12,11 +12,44 @@ function MonthlyRevenueChart(props)
           chart: {
             width: 500,
             type: 'donut',
+            toolbar: {
+              show: true,
+              offsetX: 0,
+              offsetY: 0,
+              tools: {
+                download: true,
+                selection: true,
+                zoom: true,
+                zoomin: true,
+                zoomout: true,
+                pan: true,
+                reset: true | '<img src="/static/icons/reset.png" width="20">',
+                customIcons: []
+              },
+              export: {
+                csv: {
+                  filename: undefined,
+                  columnDelimiter: ',',
+                  headerCategory: 'category',
+                  headerValue: 'value',
+                  dateFormatter(timestamp) {
+                    return new Date(timestamp).toDateString()
+                  }
+                },
+                svg: {
+                  filename: undefined,
+                },
+                png: {
+                  filename: undefined,
+                }
+              },
+              autoSelected: 'zoom' 
+            },
           },
           plotOptions: {
             pie: {
               startAngle: -90,
-              endAngle: 270
+              endAngle: 270,
             }
           },
           labels: labels,
@@ -25,7 +58,7 @@ function MonthlyRevenueChart(props)
                 blur: 3,
                 opacity: 0.8
             }
-            },
+          },
           fill: {
             type: 'gradient',
           },

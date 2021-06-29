@@ -14,6 +14,7 @@ function LobbyCard(props){
 
     const StoreData = useSelector(state => state.changeLobbyData);
     const categoryData = StoreData.LobbyCategory;
+    const Lobby = StoreData.Lobby;
     const dispatch = useDispatch();
     const [lobbyState, setLobbyState] = useState(lobby?
         {
@@ -60,6 +61,18 @@ function LobbyCard(props){
             dispatch(DeleteLobby(lobbyState))
     }
 
+    function checkExist()
+    {
+        const find =  Lobby.find(item=> item.name.toLowerCase().replace( /\s/g, '') === lobbyState.name.toLowerCase().replace( /\s/g, ''))
+        if(find)
+            if(find.id === lobbyState.id)
+                return false;
+            else
+                return true;
+        else 
+            return false;
+    }
+
     function check()
     {
         if(lobbyState.name&&lobbyState.lobbyCategory&&lobbyState.maxTable!==''&&lobbyState.minUnitPriceTable&&lobbyState.imageURL)
@@ -74,12 +87,19 @@ function LobbyCard(props){
             }
             if(lobbyState.minUnitPriceTable<0)
                 return {value:false ,message:'Đơn giá bàn tối thiểu không thể là số âm!'}
-
+            
+            if(lobbyState.minUnitPriceTable < lobbyState.lobbyCategory.minPriceTable)
+                return {value:false ,message:'Đơn giá bàn tối thiểu của sảnh không thể nhỏ hơn đơn giá bàn tối thiểu của loại sảnh!'}
+            
             if(isNaN(parseInt(lobbyState.maxTable)))
                 return {value:false ,message:'Số bàn tối đa phải là số!'}
 
             if(isNaN(parseInt(lobbyState.minUnitPriceTable)))
                 return {value:false ,message:'Đơn giá bàn tối thiểu phải là số!'}
+
+            if(checkExist())
+                return {value:false ,message:'Tên sảnh đã được sử dụng!'}
+           
             else
                 return {value:true ,message:''}
         }
@@ -188,10 +208,18 @@ function LobbyCard(props){
                                 value={lobbyState.lobbyCategory.id}
                                 onChange={ChangeCategory}
                                 className={classes.InputCategory}
+                                InputProps={{
+                                    disableUnderline:true,
+                                }}
                                 >
                                 {categoryData.map((category) => (
                                     <MenuItem key={category.id} value={category.id} className={classes.MenuItem}>
-                                    {`${category.name}, Tối thiểu ${category.mintable} bàn`}
+                                        <Typography className={classes.categoryInfo}>
+                                            {`${category.name}, Tối thiểu ${category.mintable} bàn,`}   
+                                        </Typography>
+                                        <Typography className={classes.categoryInfo}>
+                                            {`Đơn giá bàn tối thiểu: ${category.minPriceTable}`}   
+                                        </Typography>
                                     </MenuItem>
                                 ))}
                             </Select> 
