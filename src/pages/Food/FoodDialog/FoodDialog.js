@@ -16,6 +16,7 @@ function FoodDialog(props) {
     const theme = useTheme();
     const matches = useMediaQuery(theme.breakpoints.down('xs'));
     const StoreData = useSelector(state=>state.ChangeFoodData)
+    const FoodData = StoreData.Food;
     const FoodCategory = StoreData.FoodCategory;
     const Pending  = StoreData.Pending;
     const classes = useStyles();
@@ -113,6 +114,18 @@ function FoodDialog(props) {
             
     }
 
+    const checkExist = ()=>
+    {
+        const find =  FoodData.find(item=> item.name.toLowerCase().replace( /\s/g, '') === foodState.name.toLowerCase().replace( /\s/g, ''))
+        if(find)
+            if(find.id === foodState.id)
+                return false;
+            else
+                return true;
+        else 
+            return false;
+    }
+
     const onDoneCLick = () =>{
         if(!(foodState.imgURL&&foodState.category!==-1&&foodState.name&&foodState.price&&foodState.moreInfo))
         {
@@ -125,6 +138,8 @@ function FoodDialog(props) {
         else if(foodState.price<0)
             dispatch(actError("Lỗi: Giá món ăn không thể là số âm!"))
 
+        else if(checkExist())
+            dispatch(actError("Lỗi: Tên món ăn này đã được sử dụng!"))
         else if(foodState.id)
         {
             dispatch(UpdateFood(foodState,HandleFinish))

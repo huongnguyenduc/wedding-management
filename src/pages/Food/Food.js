@@ -31,7 +31,7 @@ function Food() {
 
 
     const [keyword,setKeyword] = useState("");
-    const finalData = FoodData.filter((item)=>{return (keyword==="" || item.name.toLowerCase().search(keyword)!==-1)})
+    const finalData = FoodData.filter((item)=>{return (keyword==="" || item.name.toLowerCase().search(keyword)!==-1 || item.price == keyword)})
                         .sort((food1 , food2)=>{return food1.price - food2.price})
 
     useEffect(()=>{
