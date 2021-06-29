@@ -159,7 +159,7 @@ function Table(props) {
         if ('numberTables' in fieldValues)
             temp.numberTables = ((checkTables === false) ? "Tổng số lượng bàn đã đặt vượt quá số lượng bàn tối đa!" : (+fieldValues.numberTables <= 0) ? "Số lượng bàn phải lớn hơn 0" :  "");
         if ('reverseTables' in fieldValues)
-            temp.reverseTables = ((checkTables === false) ? "Tổng số lượng bàn đã đặt vượt quá số lượng bàn tối đa!" : (+fieldValues.reverseTables <= 0) ? "Số lượng bàn tối thiểu phải lớn hơn 0" :  "");
+            temp.reverseTables = ((checkTables === false) ? "Tổng số lượng bàn đã đặt vượt quá số lượng bàn tối đa!" : (+fieldValues.reverseTables < 0) ? "Số lượng bàn tối thiểu phải lớn hơn hoặc bằng 0" :  "");
         if ('tableKind' in fieldValues)
             temp.tableKind = 
                 fieldValues.tableKind ? (checkTableKindExist(fieldValues.tableKind, props.tables.feastTables) ? "Loại bàn này đã tồn tại" : "") :"Không được để trống";
