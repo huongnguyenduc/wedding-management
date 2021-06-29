@@ -47,12 +47,7 @@ export function DeleteFood(Food, success) {
     {
         dispatch(actPending())
         let data = [Food.id]
-        var option = {
-            method:'DELETE',
-            headers: {'Content-Type': 'application/json'},
-            body:JSON.stringify(data)
-        }
-        fetch(API_SERVER+FOOD_API , option)
+        CallAPI(FOOD_API, "DELETE", data)
             .then(response => {
                 if(!response.ok)
                     throw new Error("Server error:" + response.statusText+ "    "+ response.url)
