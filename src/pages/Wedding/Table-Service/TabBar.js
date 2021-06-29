@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
-    marginTop: "80px"
+    marginTop: "130px"
   },
   backButton: {
     marginRight: theme.spacing(2),
@@ -68,10 +68,9 @@ export default function TableServiceTabBar(props) {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-
   return (
     <div className={classes.root}>
-      <AppBar position="static" style={{ backgroundColor: '#060b26' }}>
+      <AppBar position="static" style={{ backgroundColor: '#060b26', position: "fixed", top: 80, left:0, transition: "top 0.3s", zIndex: 1 }} id="appBarTable">
         <Tabs classes={{indicator: classes.indicator}} value={value} onChange={handleChange} aria-label="simple tabs example">
           <Link to="/wedding">
             <IconButton
@@ -86,10 +85,10 @@ export default function TableServiceTabBar(props) {
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={1}>
-        <Table weddingId={props.weddingId} lobbyId={props.lobbyId} />
+        <Table weddingId={props.weddingId} lobbyId={props.lobbyId} status={props.status} />
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <Service weddingId={props.weddingId} lobbyId={props.lobbyId} />
+        <Service weddingId={props.weddingId} lobbyId={props.lobbyId} status={props.status} />
       </TabPanel>
     </div>
   );

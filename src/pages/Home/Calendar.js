@@ -203,7 +203,7 @@ function Calendar(props)
                                 <Grid className={classes.SubDetailContent}>
                                     <Typography className ={classes.txtSubText}>
                                         <Event className={classes.SubTextIcon}/>
-                                        {item.weddingDate} 
+                                        {item.dateOfOrganization} 
                                     </Typography>
                                     <Typography className ={classes.txtSubText}>
                                         <AccessTimeIcon className={classes.SubTextIcon}/>
@@ -228,12 +228,12 @@ function Calendar(props)
         
         let DateObject = moment(calendarState.dateObject).set('date',date)
 
-        let txtDateOfObject = DateObject.format("DD/MM/YYYY");
+        let txtDateOfObject = DateObject.format("YYYY/MM/DD");
 
        
 
         const allStatus = feastData.map(item=>{
-            if(item.weddingDate === txtDateOfObject)
+            if(item.dateOfOrganization === txtDateOfObject)
                 return (
                    <GridStatus  key={`status_${item.id}`} item={item} date={date}/>
                 )

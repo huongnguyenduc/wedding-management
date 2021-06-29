@@ -241,7 +241,7 @@ function TableDetailDialog(props) {
             </Typography>
           </Toolbar>
         </AppBar>
-        <Grid container className={classes.foodForm}>
+        {props.status === "order" ? <Grid container className={classes.foodForm}>
             <Grid item xs={7} >
                 <FoodList foods={mapFoodKindProperty(props.foods)}/>
             </Grid>
@@ -272,10 +272,12 @@ function TableDetailDialog(props) {
                 variant="subtitle1">
                   <NumberFormat value={calculateUnitPriceTable()} displayType={'text'} thousandSeparator={true} suffix={' đ'} style={{marginLeft: "4px"}} />
                 </Typography>
-                <TextField 
+                <Typography 
+                variant="subtitle1"
+                name='name'
+                style={{marginLeft: "6px"}}
                 className={classes.textFieldForm} 
-                fullWidth
-                value={values.name} />
+                >{values.name ? values.name : "Tên món ăn"}</Typography>
 
                 <Typography variant="subtitle1" className={classes.textFieldForm} name='price' >
                   <NumberFormat name='price' value={values.price} displayType={'text'} thousandSeparator={true} suffix={' đ'} style={{marginLeft: "6px"}} />
@@ -332,8 +334,8 @@ function TableDetailDialog(props) {
                             </Button> : <></>}
               </Form>
             </Grid>
-        </Grid>
-        <FoodOrderList rows = {mapTableFoodProperty(props.tableFoods)}/>
+        </Grid> : <></>}
+        <FoodOrderList rows = {mapTableFoodProperty(props.tableFoods)} status={props.status}/>
       </Dialog>
     </div>
   );

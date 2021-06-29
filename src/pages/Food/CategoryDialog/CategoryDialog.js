@@ -178,6 +178,8 @@ function Row(props)
 
     const classes = useStyles();
     const dispatch = useDispatch()
+    const StoreData = useSelector(state=>state.ChangeFoodData)
+    const categoryData = StoreData.FoodCategory;
     const [rowState, setRowState] = useState({id:'',name:'', moreInfo:'', editing:category?false:true})
 
     function ChangeValue(event)
@@ -201,19 +203,34 @@ function Row(props)
            setRowState({id:'',name:'', moreInfo:'', editing:false})
     }
 
+    const checkExist = ()=>
+    {
+        const find =  categoryData.find(item=> item.name.toLowerCase().replace( /\s/g, '') === rowState.name.toLowerCase().replace( /\s/g, ''))
+        if(find)
+            if(find.id === rowState.id)
+                return false;
+            else
+                return true;
+        else 
+            return false;
+    }
 
     function FinishHandler()
     {
         if(rowState.name&&rowState.moreInfo)
         {
-            if(rowState.id !=='')
+            if(checkExist())
+            {
+                dispatch(actError("Tên loại món đã được sử dụng!"))
+            }
+            else if(rowState.id !=='')
                 dispatch(UpdateFoodCategory(rowState, success))
             else
                 dispatch(InsertFoodCategory(rowState, success))
         }
         else
         {
-            dispatch(actError("Vui lòng nhập đầy đủ thông tin"))
+            dispatch(actError("Vui lòng nhập đầy đủ thông tin!"))
         }
     }
 

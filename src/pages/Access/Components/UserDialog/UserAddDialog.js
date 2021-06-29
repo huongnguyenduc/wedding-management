@@ -3,8 +3,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Card, CardMe
 import { Form, useForm } from './useForm';
 import { makeStyles } from '@material-ui/core/styles';
 import Controls from './controls/Controls'
-import { default as UserPlaceholder } from '../../../../assets/svg/userPlaceholder.svg'
-import { PhotoCamera, } from "@material-ui/icons";
+import { connect } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
     item: {
@@ -29,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function UserAddDialog(props) {
+function UserAddDialog(props) {
 
     const { open, handleClose, initialValues, onSubmit } = props;
     const classes = useStyles();
@@ -39,7 +38,7 @@ export default function UserAddDialog(props) {
         if ('fullname' in fieldValues)
              temp.fullname = fieldValues.fullname ? "" :"Không được bỏ trống";
         if ('username' in fieldValues) {
-            temp.username = fieldValues.username ? "" :"Không được bỏ trống";
+            temp.username = fieldValues.username ? (props.users.some((user) => user.username.replace(/\s/g, '').toUpperCase() === fieldValues.username.replace(/\s/g, '').toUpperCase()) ? "Tên đăng nhập đã tồn tại" : "") :"Không được bỏ trống";
         }
         if ('password' in fieldValues)
              temp.password = fieldValues.password ? "" :"Không được bỏ trống";
@@ -62,7 +61,9 @@ export default function UserAddDialog(props) {
     };
 
     const fileInput = React.useRef();
-
+    console.log("alo")
+    console.log(props.users)
+    console.log("alo")
     return (
         <div >
                 <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" onEnter={resetForm}  >
@@ -103,7 +104,8 @@ export default function UserAddDialog(props) {
                                 className={classes.item}
                                 defaultValue=''
                                 id="password"
-                                name="password" 
+                                name="password"
+                                password={true} 
                                 label="Mật khẩu" 
                                 value={values.password}
                                 onChange={handleInputChange}
@@ -129,3 +131,11 @@ export default function UserAddDialog(props) {
         </div>
     );
 }
+
+const mapStateToProps = state => {
+    return {
+        users: state.users
+    }
+}
+
+export default connect(mapStateToProps, null)(UserAddDialog);

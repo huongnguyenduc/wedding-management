@@ -8,11 +8,12 @@ import WeddingForm from './WeddingForm';
 import {actFetchWeddingsRequest} from './../../action/index';
 import {actFetchShiftsRequest} from './../../action/shift';
 import {actFetchLobbiesRequest} from './../../action/lobby';
-
+import {actFetchPaidBillsRequest} from './../../action/paidBill';
 function Wedding(props) {
     const classes = useStyles();
     useEffect(()=>{
         props.fetchAllWeddingsInfo();
+        props.fetchAllPaidBills();
     })
 
     return (
@@ -47,6 +48,9 @@ const mapDispatchToProps = (dispatch, props) => {
             dispatch(actFetchWeddingsRequest());
             dispatch(actFetchShiftsRequest());
             dispatch(actFetchLobbiesRequest());
+        },
+        fetchAllPaidBills : () => {
+            dispatch(actFetchPaidBillsRequest());
         },
     }
 }

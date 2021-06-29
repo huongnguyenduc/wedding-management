@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import {Typography, Paper, Grid, Container, Button} from '@material-ui/core/';
 import {Link} from 'react-router-dom';
@@ -50,7 +50,10 @@ const useStyles = makeStyles((theme) => ({
 
 function Management(props) {
     const classes = useStyles();
-    const {dateOfPayment, status, feast} = props.bill;
+    const {dateOfPayment, status, feast} = props.notPaidBillItem;
+    useEffect(() => {
+        setIsSaved(status===1);
+    }, [props.notPaidBillItem])
     const [isSaved, setIsSaved] = React.useState((status===1));
     const { enqueueSnackbar } = useSnackbar();
     const handleClickVariant = () => {
@@ -65,6 +68,8 @@ function Management(props) {
         enqueueSnackbar("Lỗi hệ thống. Lưu hóa đơn thất bại!", { variant: "error", autoHideDuration: 3000 });
     }
     const fullname=getCookie("fullname")
+    const privileges = JSON.parse(getCookie("privileges"))
+    const canUpdateBill = (permission) => permission.authority === "UPDATE_BILL"
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -108,16 +113,16 @@ function Management(props) {
                             </Grid>
                         </Grid>
                         <Grid item xs={4} align="center">
-                            <BillPrint open={open} handleClose={handleClose} bill={props.bill}/>
+                            <BillPrint open={open} handleClose={handleClose}/>
                             <Button variant="contained" color="primary" className={classes.billInfoItem} onClick={handleClickOpen}>
                                 In hóa đơn
                             </Button>
                         </Grid>
-                        <Grid item xs={4} align="center">
+                        {privileges.some(canUpdateBill) ? <Grid item xs={4} align="center">
                                 <Button variant="contained" color="primary" disabled={isSaved} onClick={handleClickVariant}>
                                     Lưu hóa đơn
                                 </Button>
-                        </Grid>
+                        </Grid> : <></>}
                         <Grid item xs={4} align="center">
                             <Link to="/bill">
                                 <Button variant="contained" color="primary">
@@ -142,6 +147,13 @@ function convertDateToStringDMY(date) {
         return result;
 }
 
+const mapStateToProps = state => {
+    return {
+        notPaidBillItem: state.notPaidBillItem,
+        weddingServices: state.weddingServices,
+    }
+}
+
 const mapDispatchToProps = (dispatch, props) => {
     return {
         saveBill : (id, savedBillSuccess, savedBillFailure) => {
@@ -150,4 +162,4 @@ const mapDispatchToProps = (dispatch, props) => {
     }
 }
 
-export default connect(null, mapDispatchToProps)(Management);
+export default connect(mapStateToProps, mapDispatchToProps)(Management);

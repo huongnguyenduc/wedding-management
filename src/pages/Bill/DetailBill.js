@@ -82,7 +82,7 @@ function DetailBill(props) {
                 <img src={ErrorIcon} width="90px" />
                 <Typography variant="h3">Chưa có thông tin đặt bàn</Typography>
                 <Typography variant="h5" style={{marginTop: "10px"}}>
-                    <Link to={`/wedding/${props.match.params.weddingId}/${props.notPaidBillItem.feast.id_lobby.id}`} style={{color: "blue"}}>
+                    <Link to={`/wedding/${props.match.params.weddingId}/${props.notPaidBillItem.feast.id_lobby.id}/order`} style={{color: "blue"}}>
                         Đặt bàn</Link> cho tiệc cưới này!
                 </Typography>
             </div> :
@@ -100,7 +100,7 @@ function DetailBill(props) {
                 <img src={ErrorIcon} width="90px" />
                 <Typography variant="h3">Số lượng bàn ({props.notPaidBillItem.numberOfTables}) nhỏ hơn số lượng bàn tối thiểu của sảnh ({props.notPaidBillItem.feast.id_lobby.lobbyCategory.mintable})</Typography>
                 <Typography variant="h5" style={{marginTop: "10px"}}>
-                    <Link to={`/wedding/${props.match.params.weddingId}/${props.notPaidBillItem.feast.id_lobby.id}`} style={{color: "blue"}}>
+                    <Link to={`/wedding/${props.match.params.weddingId}/${props.notPaidBillItem.feast.id_lobby.id}/order`} style={{color: "blue"}}>
                         Đặt thêm bàn</Link> cho tiệc cưới này!
                 </Typography>
             </div> :
@@ -134,7 +134,7 @@ function DetailBill(props) {
                         <Payment bill={props.notPaidBillItem} />         
                     </Grid>
                     <Grid item md={6} xs={12}  justifyContent="center" alignContent="center">
-                        <Management bill={{...props.notPaidBillItem, service: (props.weddingServices.services ? props.weddingServices.services : [])}}/>         
+                        <Management />         
                     </Grid>
                 </Grid>
                 </div>

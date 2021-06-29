@@ -14,6 +14,7 @@ import { useSnackbar } from 'notistack';
 import {Done, Clear } from '@material-ui/icons';
 import {green, orange, red} from '@material-ui/core/colors';
 import FastfoodIcon from '@material-ui/icons/Fastfood';
+import NumberFormat from 'react-number-format';
 
 const initialValues = {
         groomName: "",
@@ -78,7 +79,7 @@ function WeddingForm(props) {
         if ('phone' in fieldValues)
             temp.phone = fieldValues.phone.length > 9 ? "" : fieldValues.phone.length === 0 ? "Không được bỏ trống" : "Tối thiểu 10 chữ số";
         if ('deposit' in fieldValues)
-            temp.deposit = fieldValues.deposit ? "" :"Không được bỏ trống";
+            temp.deposit = fieldValues.deposit ? (+fieldValues.deposit >= (getCurrentLobby(fieldValues.lobbyId) ? getCurrentLobby(fieldValues.lobbyId).minUnitPriceTable : 0) ? "" : "Tiền đặt cọc phải lớn hơn hoặc bằng đơn giá bàn tối thiểu") :"Không được bỏ trống";
         if ('weddingDate' in fieldValues && props.currentWeddingState.state === ADD_WEDDING_STATE)
             temp.weddingDate = checkDateValidate(fieldValues.weddingDate) ? "" :"Ngày không hợp lệ";
         if ('dateOfOrganization' in fieldValues && props.currentWeddingState.state === ADD_WEDDING_STATE)
@@ -202,6 +203,16 @@ function WeddingForm(props) {
     const handleClickVariant = (variant, message) => {
         enqueueSnackbar(message, { variant, autoHideDuration: 3000 });
     };
+    const getCurrentLobby = (idLobby) => {
+        if (idLobby && props.lobbies ) {
+            return props.lobbies[props.lobbies.findIndex((lobby) => lobby.id === idLobby)];
+        }
+        else 
+            return null;
+    };
+    const minTablePriceUI = (value) => {
+        return (<NumberFormat name='totalPrice' value={value} displayType={'text'} thousandSeparator={true} suffix={' đ'} style={{marginLeft: "6px"}} />)
+    }
     return (
     <>
         <Popover
@@ -220,13 +231,21 @@ function WeddingForm(props) {
             }}
             disableRestoreFocus
         >
+            {moreInfo.timeBegin !== undefined ? <Typography 
+            variant='h6' 
+            align='center'>
+                {"Thời gian bắt đầu: " + moreInfo.timeBegin.toString() + ". Thời gian kết thúc: " + moreInfo.timeEnd.toString()}
+            </Typography> : moreInfo.maxTable !== undefined ?
             <Typography 
             variant='h6' 
             align='center'>
-                {moreInfo.timeBegin !== undefined ? 
-                    "Thời gian bắt đầu: " + moreInfo.timeBegin.toString() + ". Thời gian kết thúc: " + moreInfo.timeEnd.toString() 
-                    : moreInfo.maxTable !== undefined ? "Loại sảnh: " + moreInfo.lobbyCategory.name + ". Tổng số bàn: " + moreInfo.maxTable + ". Đơn giá bàn tối thiểu: " + moreInfo.minUnitPriceTable : ""}
-            </Typography>
+                Loại sảnh: {moreInfo.lobbyCategory.name}. Tổng số bàn: {moreInfo.maxTable}. Đơn giá bàn tối thiểu: {minTablePriceUI(moreInfo.minUnitPriceTable)}
+            </Typography> :
+            <Typography 
+            variant='h6' 
+            align='center'>
+                ""
+            </Typography>}
         </Popover>
         <Form onSubmit={handleSubmit}>
             <Grid container spacing={6} direction='row'>
@@ -319,7 +338,7 @@ function WeddingForm(props) {
                             value={props.currentWeddingState.state === NORMAL ? selectedRowValues.note : values.note}
                             error={errors.note}
                             onChange={handleInputChange}/>
-                        <Link to={`/wedding/${props.selectedWedding.id}/${props.selectedWedding.lobbyId}`} >
+                        <Link to={`/wedding/${props.selectedWedding.id}/${props.selectedWedding.lobbyId}/${props.paidBills.some((feast) => feast.feast.id === props.selectedWedding.id) ? "read" : "order"}`} >
                         {props.selectedWedding.id && props.currentWeddingState.state === NORMAL ? 
                         <Button
                             id="btnTableService"
@@ -395,7 +414,8 @@ const mapStateToProps = state => {
         shifts : state.shifts,
         lobbies : state.lobbies,
         currentWeddingState : state.weddingState,
-        selectedWedding : state.selectedRow
+        selectedWedding : state.selectedRow,
+        paidBills: state.paidBills
     }
 }
 

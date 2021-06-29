@@ -1,4 +1,4 @@
-import React , {Component} from 'react';
+import React  from 'react';
 import { Page, Text, View, Document, StyleSheet , Font} from '@react-pdf/renderer';
 
 
@@ -41,37 +41,26 @@ const styles = StyleSheet.create({
     }
 });
 
-class infomation extends Component {
-    constructor(props){
-        super(props);
-        this.state = {
-            groomName : this.props.groomName,
-            brideName : this.props.brideName,
-            phone : this.props.phone,
-            weddingDate : this.props.weddingDate
-        }
-    }
-   render(){
+function Infomation(props) {
+    const state = props.state
       return (
         <View style={styles.container}>
             <View style= { styles.grid}>
               <Text style= { styles.regular }>Khu phố 6, phường Linh Trung</Text>
                 <Text style= { styles.regular }>Quận Thủ Đức</Text>
-                <Text>01234546789</Text>
+                <Text>0259636896</Text>
                <Text>uit@gm.uit.edu.vn</Text>
           </View>
           <View style= { styles.grid}>
-               <Text style= { styles.regular }>Chú rể: {this.state.groomName}</Text>
-               <Text style= { styles.regular }>Cô dâu: {this.state.brideName}</Text>
-               <Text style= { styles.regular }>Số điện thoại:{this.state.phone}</Text>
-               <Text style= { styles.regular }>Ngày đãi tiệc:{this.state.weddingDate} </Text>
+               <Text style= { styles.regular }>Chú rể: {state.groomname}</Text>
+               <Text style= { styles.regular }>Cô dâu: {state.bridename}</Text>
+               <Text style= { styles.regular }>Số điện thoại:{state.phone}</Text>
+               <Text style= { styles.regular }>Ngày đãi tiệc:{state.dateOfOrganization} </Text>
             </View>
         </View>
     );
-  }
-  
 }
 
-export default infomation;
+export default Infomation;
 
 //

@@ -31,7 +31,6 @@ function AddTableCategoryDialog(props) {
       handleClickVariant("success", "Thêm loại bàn thành công!")
       handleClose();
   }
-
   const addTableCategoryFailure = () => {
       handleClickVariant("error", "Lỗi hệ thống. Thêm loại bàn thất bại!")
   }
@@ -64,13 +63,24 @@ function AddTableCategoryDialog(props) {
           </Button>
           <Button 
           color="primary" 
-          onClick={() => {props.addTableCategoriesInfo({name: tableCategoryName, moreInfo: tableCategoryNote}, addTableCategorySuccess, addTableCategoryFailure);}}>
+          onClick={() => {
+            if (props.tableCategories.some((category) => category.name.replace(/\s/g, '').toUpperCase() === tableCategoryName.replace(/\s/g, '').toUpperCase()))
+              enqueueSnackbar("Tên loại bàn bị trùng", { variant: "warning", autoHideDuration: 3000 });
+            else 
+              props.addTableCategoriesInfo({name: tableCategoryName, moreInfo: tableCategoryNote}, addTableCategorySuccess, addTableCategoryFailure);
+          }}>
             Thêm loại bàn
           </Button>
         </DialogActions>
       </Dialog>
     </div>
   );
+}
+
+const mapStateToProps = state => {
+    return {
+        tableCategories: state.tableCategories,
+    }
 }
 
 const mapDispatchToProps = (dispatch, props) => {
@@ -80,4 +90,4 @@ const mapDispatchToProps = (dispatch, props) => {
         },
     }
 }
-export default connect(null, mapDispatchToProps)(AddTableCategoryDialog);
+export default connect(mapStateToProps, mapDispatchToProps)(AddTableCategoryDialog);

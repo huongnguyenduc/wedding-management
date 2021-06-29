@@ -3,10 +3,12 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Card, CardMe
 import { Form, useForm } from './useForm';
 import { makeStyles } from '@material-ui/core/styles';
 import Controls from './controls/Controls'
+import { connect } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
   item: {
-        marginBottom: "20px"
+        marginBottom: "20px",
+        alignSelf: "center"
     },
     card: {
         width: 250,
@@ -31,16 +33,17 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function UserUpdateDialog(props) {
+function UserUpdateDialog(props) {
 
     const { open, handleClose, initialValues, onSubmit } = props;
+    const firstName = initialValues.username;
     const classes = useStyles();
     const validate = (fieldValues = values) => {
         let temp = {...errors};
         if ('fullName' in fieldValues)
             temp.fullName = fieldValues.fullName ? "" :"Không được bỏ trống";
         if ('username' in fieldValues)
-            temp.username = fieldValues.username ? "" :"Không được bỏ trống";
+            temp.username = fieldValues.username ? (props.users.some((user) => user.username.replace(/\s/g, '').toUpperCase() === fieldValues.username.replace(/\s/g, '').toUpperCase() && fieldValues.username.replace(/\s/g, '').toUpperCase() !== firstName.replace(/\s/g, '').toUpperCase()) ? "Tên đăng nhập đã tồn tại" : "") :"Không được bỏ trống";
         if ('password' in fieldValues)
             temp.password = fieldValues.password ? "" :"Không được bỏ trống";
         if ('role' in fieldValues)
@@ -52,7 +55,7 @@ export default function UserUpdateDialog(props) {
         if (fieldValues === values)
             return Object.values(temp).every(x => x === "")
     }
-    const {values, setValues, errors, setErrors, handleInputChange, resetForm} = useForm({...initialValues, newImage: null, role: initialValues.roles[0].name}, true, validate);
+    const {values, setValues, errors, setErrors, handleInputChange, resetForm} = useForm({...initialValues, newImage: null, role: initialValues.roles ? initialValues.roles[0].name : initialValues.role}, true, validate);
 
     function selectedFile(event){ 
         if(event.target.files[0])
@@ -104,6 +107,7 @@ export default function UserUpdateDialog(props) {
                                 className={classes.item}
                                 defaultValue=''
                                 id="password"
+                                password={true}
                                 name="password" 
                                 label="Mật khẩu" 
                                 value={values.password}
@@ -111,6 +115,7 @@ export default function UserUpdateDialog(props) {
                                 error={errors.password}/>
                             <Controls.Select
                                 label="Tên nhóm người dùng"
+                                className={classes.item}
                                 name="role" 
                                 value={values.role}
                                 onChange={handleInputChange}
@@ -130,3 +135,11 @@ export default function UserUpdateDialog(props) {
         </div>
     );
 }
+
+const mapStateToProps = state => {
+    return {
+        users: state.users
+    }
+}
+
+export default connect(mapStateToProps, null)(UserUpdateDialog);

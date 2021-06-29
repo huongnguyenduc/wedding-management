@@ -196,32 +196,24 @@ const useStyles = makeStyles(theme=>(
     },
     divCategory:{
         display:'flex',
-        justifyContent:'space-around',
-        flexDirection:'row'
+        // justifyContent:'space-around',
+        flexDirection:'column'
     },
     InputCategory:{
-        textAlign:'center',
-        letterSpacing:'0.5px',
-        lineHeight:'24px',
         margin:'0',
-        fontSize:'15px',
-        fontWeight:'400',
         color:'#000',
         width:'auto',
-        "&:before":
-        {
-            borderBottom:'0'
+        maxWidth:'100%',
+        padding:'0 3px',
+        "&:before":{
+            border:'0'
         },
-        "&:after":
-        {
-            borderBottom:'0'
+        "&:after":{
+            border:'0'
         },
         '& .MuiInputBase-input':
         {
-            padding:'0 20px 0 0'
-        },
-        "&.MuiInputBase-root.Mui-disabled": {
-            color: '#4b4b4b',
+            padding:'0 20px 0 0',
         },
         "&:focus":{
             backgroundColor:'#fff'
@@ -230,7 +222,15 @@ const useStyles = makeStyles(theme=>(
             top:'calc(50% - 10px)',
             fontSize:'20px'
         },
-        
+        "& .MuiTypography-root":{
+            textAlign:'center',
+            lineHeight:'24px',
+            fontSize:'15px',
+            fontWeight:'400',
+        },        
+    },
+    categoryInfo:{
+        fontSize:'13px'
     },
     divMaxTable:{
         display:'flex',

@@ -96,8 +96,12 @@ function Administration(props) {
     };
 
     const featureData = () => {
-        if (props.allPermission.privileges && props.permission.privileges)
-            return props.allPermission.privileges.filter(n => !props.permission.privileges.some(m => m.id === n.id));
+        if (props.allPermission.privileges && props.permission.privileges) {
+            if (role === "ROLE_ADMIN")
+                return props.allPermission.privileges.filter(n => !props.permission.privileges.some(m => m.id === n.id));
+            else 
+                return props.allPermission.privileges.filter(n => n.authority !== "UPDATE_PER" && n.authority !== "UPDATE_USER").filter(n => !props.permission.privileges.some(m => m.id === n.id));
+        }
         return [];
     }
     const privileges = JSON.parse(getCookie("privileges"))

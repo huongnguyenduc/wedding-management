@@ -157,6 +157,9 @@ const useStyles = makeStyles((theme) => ({
     top: 20,
     width: 1,
   },
+  page: {
+    marginTop: "80px"
+  }
 }));
 
 
@@ -251,7 +254,7 @@ function BillPaid(props) {
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
   return (
-    <Grid container spacing={2} direction='row'>
+    <Grid container spacing={2} direction='row' className={classes.page}>
         <Grid item xs={12} md={6}>
             <Grid container spacing={1} alignItems="flex-end">
                 <Grid item xs={1} align='right'>

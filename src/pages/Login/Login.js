@@ -5,7 +5,6 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import useStyles from './styles';
 import {CardMedia, Backdrop} from '@material-ui/core';
-import { useHistory } from 'react-router';
 import { Container } from '@material-ui/core';
 import PersonIcon from '@material-ui/icons/Person';
 import { InputAdornment } from '@material-ui/core';
@@ -20,7 +19,6 @@ import Slide from '@material-ui/core/Slide';
   const classes = useStyles();
 
 
-  let history = useHistory();
   const [status,setStatus] = useState({open:false, severiry:'', message:'',name:''})
   const [pending, setPending] = useState(false)
   const [account, setAccount] = useState({
@@ -39,7 +37,7 @@ import Slide from '@material-ui/core/Slide';
     setPending(false)
     if(data.status==='success')
     {
-      history.replace('/')
+      window.location.replace('/')
     }
     else if(data.status ==='wrong')
     {

@@ -5,14 +5,17 @@ import useStyles from './DialogStyles'
 import NumberFormatCustom from '../../Food/FormartNumber'
 import { Cancel, CheckCircle, DeleteOutline, Edit, MoreHoriz, PhotoCamera } from '@material-ui/icons'
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import {InsertService, UpdateService, DeleteService} from '../Connect'
+import {actError} from '../actions/actions';
 
 
 function ServiceDialog(props)
 {
     const {data, closeHandler, edit} = props
     const dispatch = useDispatch();
+    const StoreData = useSelector(state => state.changeServices);
+    const Services = StoreData.Services;
     const classes = useStyles()
     const theme = useTheme();
     const matches = useMediaQuery(theme.breakpoints.down('xs'));
@@ -45,27 +48,32 @@ function ServiceDialog(props)
                   
     };
 
+    function checkExist()
+    {
+        const find =  Services.find(item=> item.name.toLowerCase().replace( /\s/g, '') === ServiceData.name.toLowerCase().replace( /\s/g, ''))
+        if(find)
+            if(find.id === ServiceData.id)
+                return false;
+            else
+                return true;
+        else 
+            return false;
+    }
+
     const CheckDetail = () =>{
-        if(ServiceData.imgURL == null)
+        if(ServiceData.imgURL && ServiceData.name && ServiceData.price && ServiceData.moreInfo )
         {
-            return false
+            if(isNaN(parseInt(ServiceData.price)))
+                return {value: false, message:'Giá của dịch vụ phải là số!'}
+            else if(parseInt(ServiceData.price) < 0)
+                return {value: false, message:'Giá của dịch vụ không thể là số âm!'}
+            else if(checkExist())
+                return {value: false, message:'Tên dịch vụ đã được sử dụng!'}
+            else
+                return {value: true, message:''}
         }
-            
-        if(ServiceData.name==='')
-        {
-            return false
-        }
-
-        if(ServiceData.price===''||ServiceData.price<0)
-        {
-            return false
-        }
-
-        if(ServiceData.moreInfo===''||ServiceData.moreInfo==null)
-        {
-            return false
-        }
-        return true
+        else
+            return {value: false, message:'Vui lòng nhập đầy đủ thông tin!'}
     }
 
     function success()
@@ -77,9 +85,11 @@ function ServiceDialog(props)
     }
     const handlerInsert = () =>
     {
-        if(!CheckDetail())
+        let checkResult = CheckDetail()
+        if(!checkResult.value)
         {
-            return 
+            dispatch(actError(checkResult.message))
+            return;
         }
         if(data)
         {

@@ -1,5 +1,5 @@
-import {Button, Container, Fab, Grid, InputAdornment, Select, Snackbar, TextField, Typography, useMediaQuery, useTheme, Backdrop, CircularProgress, IconButton } from '@material-ui/core';
-import { Add, Remove, Search} from '@material-ui/icons';
+import { Container, Fab, Grid, InputAdornment, Snackbar, TextField, Backdrop, CircularProgress, IconButton } from '@material-ui/core';
+import { Add, Search} from '@material-ui/icons';
 import { Alert } from '@material-ui/lab';
 import React, { useEffect, useState} from 'react'
 import ServiceCard from './ServiceCard/ServiceCard';
@@ -8,7 +8,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import {GetServices} from './Connect'
 import {actCloseError} from '../Service/actions/actions' 
 import ServiceDialog from '../Service/ServiceDialog/ServiceDialog'
-import NumberFormatCustom from '../Food/FormartNumber'
 import { getCookie } from '../../action/Login'
 
 function Service() {
@@ -44,7 +43,10 @@ function Service() {
     const Filer =(service)=>{
         var key = keyWord.toLowerCase()
        var str = service.name.toLowerCase();
-       return str.search(key)!==-1;
+        if (str.search(key)!==-1 || service.price == keyWord)
+            return true
+        else
+            return false
     }
 
     var prevScrollpos = window.pageYOffset;

@@ -159,7 +159,7 @@ const EnhancedTableToolbar = (props) => {
           </IconButton>
         </Tooltip>
         </>
-      ) : numSelected > 0 ? (
+      ) : numSelected > 0 && props.status === "order" ? (
         <>
             <Tooltip title="Chỉnh sửa">
             <Button
@@ -315,7 +315,7 @@ function ServiceOrderList(props) {
       </Grid>
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} weddingId={props.weddingId} />
+        <EnhancedTableToolbar numSelected={selected.length} weddingId={props.weddingId} status={props.status}/>
         <TableContainer>
           <Table
             className={classes.table}

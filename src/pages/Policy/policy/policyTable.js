@@ -9,7 +9,7 @@ import Alert from '@material-ui/lab/Alert';
 import { AddOutlined, Brightness1, Done, Remove } from "@material-ui/icons"
 import { useDispatch, useSelector } from 'react-redux'
 import { actCloseError, actError } from "../actions/actions"
-
+import { getCookie } from '../../../action/Login'
 
 
 
@@ -72,7 +72,8 @@ function PolicyPanel() {
     useEffect(()=>{
         setFine({...fine,...StoreData.Fine})
     },[oldFine])
-
+    const privileges = JSON.parse(getCookie("privileges"))
+    const canUpdateFine = (permission) => permission.authority === "UPDATE_FINE"
     return(
         <Paper className={classes.policyTable}> 
             <TableContainer>
@@ -145,16 +146,16 @@ function PolicyPanel() {
                                     InputProps={{
                                         disableUnderline:true,
                                         className:classes.PercentContent,
-                                        startAdornment:<InputAdornment>
+                                        startAdornment: privileges.some(canUpdateFine) ? <InputAdornment>
                                             <IconButton classes={{root:classes.Button,label:classes.ButtonLabel}} onClick={DecreasePercent}>
                                                 <Remove className={classes.ButtonIcon}/>
                                             </IconButton>
-                                        </InputAdornment>,
-                                        endAdornment:<InputAdornment>
+                                        </InputAdornment> : <></>,
+                                        endAdornment: privileges.some(canUpdateFine) ? <InputAdornment>
                                         <IconButton classes={{root:classes.Button,label:classes.ButtonLabel}} onClick={IncreasePercent}>
                                             <AddOutlined className={classes.ButtonIcon}/>
                                         </IconButton>
-                                    </InputAdornment>
+                                    </InputAdornment> : <></>
 
                                     }}
                                 />
@@ -163,7 +164,7 @@ function PolicyPanel() {
                                 align='center'
                                 className={classes.BodyRow}
                             >
-                                <Brightness1 className={classes.ButtonIcon} style={{color: check()?oldFine.percent>0?'#08dc2cde':'#e60707':'#e4b817de'}} onDoubleClick={DisableHandler}/>
+                                <Brightness1 className={classes.ButtonIcon} style={{color: check()?oldFine.percent>0?'#08dc2cde':'#e60707':'#e4b817de'}} onDoubleClick={ privileges.some(canUpdateFine) ? DisableHandler : () => {}}/>
                             </TableCell>
                             <TableCell 
                                     align='center'
