@@ -142,13 +142,17 @@ function Table(props) {
     const handleDecrement = (prop) => (event) => {
         setValues({ ...values, [prop]: parseInt(values[prop]) - 1 });
     };
-
+    const [firstName, setFirstName] = React.useState();
     const checkTableKindExist = (tableKind, tables) => {
         if (tables) {
-            return tables.some((existTable) => existTable.tableCategory.id === tableKind)
+            if (props.currentTableState.state === EDIT_TABLE)
+                return (tables.some((existTable) => existTable.tableCategory.id === tableKind) && tableKind !== firstName)
+            if (props.currentTableState.state === ADD_TABLE)
+                return tables.some((existTable) => existTable.tableCategory.id === tableKind)
         }
         return false
     }
+
     const validate = (fieldValues = values) => {
         let temp = {...errors};
         let checkTables = ((+fieldValues.numberTables + +fieldValues.reverseTables + totalTables(props.tables.feastTables)) <= props.recentLobby.maxtable ? true : false)
@@ -293,10 +297,12 @@ function Table(props) {
             console.log('middleware clickrow ne')
             if (action.payload.tableCategory){
                 setValues({...action.payload, tableKind: action.payload.tableCategory.id});
+                setFirstName(action.payload.tableCategory.id);
             }
         }
         return next(action)
     }
+
     addMiddleware(clickRowTableMiddleware);
     const [openTableCategoryDialog, setOpenTableCategoryDialog] = React.useState(false);
     console.log(props.recentLobby)
@@ -375,7 +381,7 @@ function Table(props) {
                     </Grid>
                 </Grid>
                 <Container maxWidth='lg' className={classes.formWedding} >
-                    <Container className={classes.formWeddingTitle}>    
+                    <Container className={classes.formWeddingTitle} id="tableTitle">    
                         <Typography  variant="subtitle" align='center'>Thông tin đặt bàn</Typography>
                     </Container>
                     <Grid container spacing={6} direction='row'>

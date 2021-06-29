@@ -7,7 +7,8 @@ import { connect } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
   item: {
-        marginBottom: "20px"
+        marginBottom: "20px",
+        alignSelf: "center"
     },
     card: {
         width: 250,
@@ -54,7 +55,7 @@ function UserUpdateDialog(props) {
         if (fieldValues === values)
             return Object.values(temp).every(x => x === "")
     }
-    const {values, setValues, errors, setErrors, handleInputChange, resetForm} = useForm({...initialValues, newImage: null, role: initialValues.roles[0].name}, true, validate);
+    const {values, setValues, errors, setErrors, handleInputChange, resetForm} = useForm({...initialValues, newImage: null, role: initialValues.roles ? initialValues.roles[0].name : initialValues.role}, true, validate);
 
     function selectedFile(event){ 
         if(event.target.files[0])
@@ -106,6 +107,7 @@ function UserUpdateDialog(props) {
                                 className={classes.item}
                                 defaultValue=''
                                 id="password"
+                                password={true}
                                 name="password" 
                                 label="Mật khẩu" 
                                 value={values.password}
@@ -113,6 +115,7 @@ function UserUpdateDialog(props) {
                                 error={errors.password}/>
                             <Controls.Select
                                 label="Tên nhóm người dùng"
+                                className={classes.item}
                                 name="role" 
                                 value={values.role}
                                 onChange={handleInputChange}

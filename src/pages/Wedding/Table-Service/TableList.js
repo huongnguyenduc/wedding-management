@@ -132,7 +132,8 @@ const EnhancedTableToolbar = (props) => {
   const changeToAddState = () => {
       if (currentTableState.state === NORMAL) {
           dispatch(addState());
-          dispatch(clickRowTable([]))            
+          dispatch(clickRowTable([]))
+          document.getElementById("tableTitle").scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});             
       }
       else {
           alert("Bạn phải hoàn thành / hủy bỏ tác vụ thêm / sửa đặt bàn!");
@@ -140,7 +141,8 @@ const EnhancedTableToolbar = (props) => {
   }
   const changeToEditState = () => {
       if (currentTableState.state === NORMAL) {
-          dispatch(editState());            
+          dispatch(editState());          
+          document.getElementById("tableTitle").scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});    
       }
       else {
           alert("Bạn phải hoàn thành / hủy bỏ tác vụ thêm / sửa đặt bàn!");
@@ -378,6 +380,7 @@ const handleSearch = (event) => {
                         tabIndex={-1}
                         key={row.tableKind}
                         selected={isItemSelected}
+                        onDoubleClick={() => document.getElementById("tableTitle").scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"})}
                       >
                         <TableCell padding="checkbox">
                         </TableCell>

@@ -104,7 +104,8 @@ function UserAddDialog(props) {
                                 className={classes.item}
                                 defaultValue=''
                                 id="password"
-                                name="password" 
+                                name="password"
+                                password={true} 
                                 label="Mật khẩu" 
                                 value={values.password}
                                 onChange={handleInputChange}
