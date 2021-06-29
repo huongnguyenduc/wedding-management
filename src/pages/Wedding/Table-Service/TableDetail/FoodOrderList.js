@@ -130,7 +130,7 @@ const EnhancedTableToolbar = (props) => {
     };
   const onDeleteTableFood = () => {
     if (confirm('Bạn chắc chắn muốn xóa ?')) { //eslint-disable-line
-      dispatch(actDeleteTableFoodRequest(selectedRowTable.id, selectedRowFood.food.id, deleteTableFoodSuccess, deleteTableFoodFailure));
+      dispatch(actDeleteTableFoodRequest(selectedRowTable.id, selectedRowFood.food.id, deleteTableFoodSuccess, deleteTableFoodSuccess));
     }
   }
   const deleteTableFoodSuccess = () => {

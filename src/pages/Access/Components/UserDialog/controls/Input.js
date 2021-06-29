@@ -17,11 +17,11 @@ export default function Input(props) {
     const [values, setValues] = React.useState({
         showPassword: false,
     });
-    const { name, label, value, error=null, onChange, inputProps, className, password } = props;
+    const { name, label, value, error=null, onChange, inputProps, className, password, disabled } = props;
     return (
         password ?
         <FormControl className={className} variant="outlined" fullWidth autoComplete={false}>
-          <InputLabel htmlFor="outlined-adornment-password">Mật khẩu</InputLabel>
+          <InputLabel htmlFor="outlined-adornment-password">{label}</InputLabel>
           <OutlinedInput
             label={label}
             name={name}
@@ -60,6 +60,7 @@ export default function Input(props) {
             className={className}
             variant="outlined"
             fullWidth
+            disabled={disabled}
             label={label}
             name={name}
             value={value}
