@@ -90,13 +90,13 @@ export function UpdateShift(shift, FinishHandle)
     return dispatch =>{
         dispatch(actPending())
         const data = {
-            active: true,
             id:shift.id,
             name:shift.name,
-            timeBegin:shift.timeBegin,
-            timeEnd:shift.timeEnd,
+            timeBegin:shift.timeBegin.slice(0, 5)+':00',
+            timeEnd:shift.timeEnd.slice(0, 5)+":00",
         }
-        CallAPI(SHIFT_API , "PUT",shift)
+
+        CallAPI(SHIFT_API , "PUT",data)
         .then(res=>{
             if(!res.ok)
                 throw new Error(res.status + res.statusText);
@@ -119,7 +119,12 @@ export function InsertShift(shift, FinishHandle)
 
     return dispatch =>{
         dispatch(actPending())
-        CallAPI(SHIFT_API , "POST",shift)
+        const data = {
+            name:shift.name,
+            timeBegin:shift.timeBegin.slice(0, 5)+':00',
+            timeEnd:shift.timeEnd.slice(0, 5)+":00",
+        }
+        CallAPI(SHIFT_API , "POST",data)
         .then(res=>{
             if(!res.ok)
                 throw new Error(res.status + res.statusText);
