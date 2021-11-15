@@ -11,7 +11,6 @@ import { InputAdornment } from "@material-ui/core";
 import { LockOpen } from "@material-ui/icons";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { login } from "./AuthService";
-import Slide from "@material-ui/core/Slide";
 import ProBackground from "./../../assets/image/pexels-edward-eyer-1045541.jpg";
 
 function Login() {

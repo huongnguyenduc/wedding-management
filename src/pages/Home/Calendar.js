@@ -258,6 +258,7 @@ function Calendar(props) {
 
     let txtDateOfObject = DateObject.format("YYYY/MM/DD");
 
+    // eslint-disable-next-line array-callback-return
     const allStatus = feastData.map((item) => {
       if (item.dateOfOrganization === txtDateOfObject)
         return <GridStatus key={`status_${item.id}`} item={item} date={date} />;

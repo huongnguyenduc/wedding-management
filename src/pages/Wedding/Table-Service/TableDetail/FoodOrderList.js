@@ -137,9 +137,9 @@ const EnhancedTableToolbar = (props) => {
       handleClickVariant("success", "Xóa thông tin món thành công!")
   }
 
-  const deleteTableFoodFailure = () => {
-      handleClickVariant("error", "Lỗi hệ thống. Xóa thông tin món thất bại!")
-  }
+  // const deleteTableFoodFailure = () => {
+  //     handleClickVariant("error", "Lỗi hệ thống. Xóa thông tin món thất bại!")
+  // }
 
   return (
     <Toolbar

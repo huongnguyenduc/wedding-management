@@ -2,7 +2,7 @@ import * as GiIcons from "react-icons/gi";
 import * as MdIcons from "react-icons/md";
 import * as BiIcons from "react-icons/bi";
 import * as IoIcons from "react-icons/io5";
-import VerifiedUserIcon from "@material-ui/icons/VerifiedUser";
+// import VerifiedUserIcon from "@material-ui/icons/VerifiedUser";
 
 export const SidebarData = [
   {

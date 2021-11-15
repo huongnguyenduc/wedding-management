@@ -71,6 +71,7 @@ function PolicyPanel() {
 
     useEffect(()=>{
         setFine({...fine,...StoreData.Fine})
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     },[oldFine])
     const privileges = JSON.parse(getCookie("privileges"))
     const canUpdateFine = (permission) => permission.authority === "UPDATE_FINE"

@@ -222,8 +222,6 @@ function Table(props) {
     e.preventDefault();
     if (validate()) {
       if (props.currentTableState.state === ADD_TABLE) {
-        console.log("chuan bi add table");
-        console.log(createTable());
         props.addTable(createTable(), addTableSuccess, addTableFailure);
       }
       if (props.currentTableState.state === EDIT_TABLE) {

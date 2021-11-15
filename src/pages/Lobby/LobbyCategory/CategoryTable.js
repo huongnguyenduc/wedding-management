@@ -62,8 +62,10 @@ function CategoryTable(props){
       return array.filter(item=>{
         if(item.name.toLowerCase() === keyword)
             return true  
+        // eslint-disable-next-line eqeqeq
         if(item.mintable == keyword)
             return true  
+        // eslint-disable-next-line eqeqeq
         if(item.minPriceTable == keyword)   
             return true
         
@@ -335,6 +337,7 @@ function Row(props){
     useEffect(()=>{
         if(lobbyCategory)
             setRowState({...rowState,id:lobbyCategory.id,name:lobbyCategory.name, mintable:lobbyCategory.mintable, minPriceTable:lobbyCategory.minPriceTable})
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 
     const privileges = JSON.parse(getCookie("privileges"))

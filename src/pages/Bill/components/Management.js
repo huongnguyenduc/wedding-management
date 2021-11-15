@@ -53,6 +53,7 @@ function Management(props) {
   const { dateOfPayment, status, feast } = props.notPaidBillItem;
   useEffect(() => {
     setIsSaved(status === 1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.notPaidBillItem]);
   const [isSaved, setIsSaved] = React.useState(status === 1);
   const { enqueueSnackbar } = useSnackbar();
