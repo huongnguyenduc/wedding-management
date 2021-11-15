@@ -164,10 +164,9 @@ export function UploadImage(image)
     {
         const data = new FormData()
         data.append("file", image)
-        data.append("name", "test")
-        data.append("upload_preset", "heheupload")
-        data.append("folder",'WeddingManagerment')
-        var url = "https://api.cloudinary.com/v1_1/hehohe/image/upload"
+        data.append("upload_preset", "wedding");
+        data.append("folder", "user_image");
+        var url = "https://api.cloudinary.com/v1_1/huong/image/upload";
 
         var option = {
             method: 'POST',
