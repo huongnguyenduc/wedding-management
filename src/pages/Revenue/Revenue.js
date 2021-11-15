@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 import React, {useEffect, useState} from 'react'
 import Grid from '@material-ui/core/Grid';
 import useStyles from "./RevenueStyle"
@@ -43,6 +44,7 @@ function Revenue() {
         GetFoodReport(month(), year(),setFoodReport,Success, error)
         GetServiceReport(month(), year(),setServiceReport,Success, error)
         GetLobbyReport(month(), year(), setLobbyReport,Success, error)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     },[revenueState])
     
     
@@ -109,6 +111,7 @@ function Revenue() {
 
     useEffect(()=>{
         InitMonthlyRevenueChart()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     },[monthlyReport])
 
     //Init data for Lobby report
@@ -127,6 +130,7 @@ function Revenue() {
 
    useEffect(()=>{
         InitMonthlyReport()
+   // eslint-disable-next-line react-hooks/exhaustive-deps
    },[lobbyReport])
 
     function a11yProps(index) {

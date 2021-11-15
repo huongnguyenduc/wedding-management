@@ -9,9 +9,9 @@ function RevenueTable(props){
     const classes = useStyles();
     const  [tableState, setTableState] = useState({keyword:'', order:'asc', orderBy:'name', page:0, rowsPerPage:5})
 
-    function FilterHandler(keyword){
-        setTableState({...tableState, keyword:keyword.toLowerCase()})
-    }
+    // function FilterHandler(keyword){
+    //     setTableState({...tableState, keyword:keyword.toLowerCase()})
+    // }
 
     function handleRequestSort(event, property){
         const isAsc = tableState.orderBy === property && tableState.order === 'asc';

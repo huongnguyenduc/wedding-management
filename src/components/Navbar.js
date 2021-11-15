@@ -50,10 +50,6 @@ function Navbar(props) {
         setUserData({fullName: fullname,fullname:fullname, image:image, role:role, username: username})
     },[])
 
-    function update()
-    {
-
-    }
     const [openUserDialog, setOpenUserDialog] = React.useState(false);
 
     const handleOpenUserDialog = () => {
