@@ -1,19 +1,39 @@
-import React, {useEffect} from 'react';
-import PropTypes from 'prop-types';
-import clsx from 'clsx';
-import { lighten, makeStyles } from '@material-ui/core/styles';
-import {Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel} from '@material-ui/core/';
-import {Toolbar, Typography, Paper, IconButton, Tooltip, FormControlLabel, Switch, Grid, TextField, Button} from '@material-ui/core/';
-import { Edit, Delete, Search } from '@material-ui/icons/';
-import clickRowFood from '../../actions/clickRowFood'
-import { useDispatch, useSelector } from 'react-redux'
-import normalState from '../../actions/foodState/normal'
-import editOrderState from '../../actions/foodState/editOrder'
-import {actDeleteTableFoodRequest} from '../../../../action/tableFood';
-import {EDIT_FOOD} from '../../reducers/foodState'
-import { useSnackbar } from 'notistack';
-import NumberFormat from 'react-number-format';
-import {indigo, red} from '@material-ui/core/colors';
+import React, { useEffect } from "react";
+import PropTypes from "prop-types";
+import clsx from "clsx";
+import { lighten, makeStyles } from "@material-ui/core/styles";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
+  TableSortLabel,
+} from "@material-ui/core/";
+import {
+  Toolbar,
+  Typography,
+  Paper,
+  IconButton,
+  Tooltip,
+  FormControlLabel,
+  Switch,
+  Grid,
+  TextField,
+  Button,
+} from "@material-ui/core/";
+import { Edit, Delete, Search } from "@material-ui/icons/";
+import clickRowFood from "../../actions/clickRowFood";
+import { useDispatch, useSelector } from "react-redux";
+import normalState from "../../actions/foodState/normal";
+import editOrderState from "../../actions/foodState/editOrder";
+import { actDeleteTableFoodRequest } from "../../../../action/tableFood";
+import { EDIT_FOOD } from "../../reducers/foodState";
+import { useSnackbar } from "notistack";
+import NumberFormat from "react-number-format";
+import { indigo, red } from "@material-ui/core/colors";
 
 var rows = [];
 
@@ -28,7 +48,7 @@ function descendingComparator(a, b, orderBy) {
 }
 
 function getComparator(order, orderBy) {
-  return order === 'desc'
+  return order === "desc"
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
@@ -44,40 +64,44 @@ function stableSort(array, comparator) {
 }
 
 const headCells = [
-  { id: 'name', numeric: false, disablePadding: true, label: 'Tên món ăn' },
-  { id: 'price', numeric: false, disablePadding: false, label: 'Đơn giá' },
-  { id: 'count', numeric: false, disablePadding: false, label: 'Số lượng' },
-  { id: 'totalPrice', numeric: false, disablePadding: false, label: 'Thành tiền' },
-  { id: 'note', numeric: false, disablePadding: false, label: 'Ghi chú' },
+  { id: "name", numeric: false, disablePadding: true, label: "Tên món ăn" },
+  { id: "price", numeric: false, disablePadding: false, label: "Đơn giá" },
+  { id: "count", numeric: false, disablePadding: false, label: "Số lượng" },
+  {
+    id: "totalPrice",
+    numeric: false,
+    disablePadding: false,
+    label: "Thành tiền",
+  },
+  { id: "note", numeric: false, disablePadding: false, label: "Ghi chú" },
 ];
 
 function EnhancedTableHead(props) {
-  const { classes,  order, orderBy, onRequestSort } = props;
+  const { classes, order, orderBy, onRequestSort } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
-  
+
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox">
-        </TableCell>
+        <TableCell padding="checkbox"></TableCell>
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align={headCell.numeric ? 'right' : 'left'}
-            padding={headCell.disablePadding ? 'none' : 'default'}
+            align={headCell.numeric ? "right" : "left"}
+            padding={headCell.disablePadding ? "none" : "default"}
             sortDirection={orderBy === headCell.id ? order : false}
           >
             <TableSortLabel
               active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : 'asc'}
+              direction={orderBy === headCell.id ? order : "asc"}
               onClick={createSortHandler(headCell.id)}
             >
               {headCell.label}
               {orderBy === headCell.id ? (
                 <span className={classes.visuallyHidden}>
-                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                  {order === "desc" ? "sorted descending" : "sorted ascending"}
                 </span>
               ) : null}
             </TableSortLabel>
@@ -93,7 +117,7 @@ EnhancedTableHead.propTypes = {
   numSelected: PropTypes.number.isRequired,
   onRequestSort: PropTypes.func.isRequired,
   onSelectAllClick: PropTypes.func.isRequired,
-  order: PropTypes.oneOf(['asc', 'desc']).isRequired,
+  order: PropTypes.oneOf(["asc", "desc"]).isRequired,
   orderBy: PropTypes.string.isRequired,
   rowCount: PropTypes.number.isRequired,
 };
@@ -104,7 +128,7 @@ const useToolbarStyles = makeStyles((theme) => ({
     paddingRight: theme.spacing(1),
   },
   highlight:
-    theme.palette.type === 'light'
+    theme.palette.type === "light"
       ? {
           color: theme.palette.secondary.main,
           backgroundColor: lighten(theme.palette.secondary.light, 0.85),
@@ -114,7 +138,7 @@ const useToolbarStyles = makeStyles((theme) => ({
           backgroundColor: theme.palette.secondary.dark,
         },
   title: {
-    flex: '1 1 100%',
+    flex: "1 1 100%",
   },
 }));
 
@@ -122,20 +146,29 @@ const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
   const { numSelected } = props;
   const dispatch = useDispatch();
-  const selectedRowFood = useSelector(state => state.selectedRowFood)
-  const selectedRowTable = useSelector(state => state.selectedRowTable)
+  const selectedRowFood = useSelector((state) => state.selectedRowFood);
+  const selectedRowTable = useSelector((state) => state.selectedRowTable);
   const { enqueueSnackbar } = useSnackbar();
-    const handleClickVariant = (variant, message) => {
-        enqueueSnackbar(message, { variant, autoHideDuration: 3000 });
-    };
+  const handleClickVariant = (variant, message) => {
+    enqueueSnackbar(message, { variant, autoHideDuration: 3000 });
+  };
   const onDeleteTableFood = () => {
-    if (confirm('Bạn chắc chắn muốn xóa ?')) { //eslint-disable-line
-      dispatch(actDeleteTableFoodRequest(selectedRowTable.id, selectedRowFood.food.id, deleteTableFoodSuccess, deleteTableFoodSuccess));
+    // eslint-disable-next-line no-restricted-globals
+    if (confirm("Bạn chắc chắn muốn xóa ?")) {
+      //eslint-disable-line
+      dispatch(
+        actDeleteTableFoodRequest(
+          selectedRowTable.id,
+          selectedRowFood.food.id,
+          deleteTableFoodSuccess,
+          deleteTableFoodSuccess
+        )
+      );
     }
-  }
+  };
   const deleteTableFoodSuccess = () => {
-      handleClickVariant("success", "Xóa thông tin món thành công!")
-  }
+    handleClickVariant("success", "Xóa thông tin món thành công!");
+  };
 
   // const deleteTableFoodFailure = () => {
   //     handleClickVariant("error", "Lỗi hệ thống. Xóa thông tin món thất bại!")
@@ -147,45 +180,85 @@ const EnhancedTableToolbar = (props) => {
         [classes.highlight]: numSelected > 0,
       })}
     >
-      {<Typography className={classes.title} variant="h6" id="tableTitle" component="div">
+      {
+        <Typography
+          className={classes.title}
+          variant="h6"
+          id="tableTitle"
+          component="div"
+        >
           Danh sách đặt món ăn
-        </Typography>}
+        </Typography>
+      }
 
       {numSelected > 1 ? (
         <>
-        <Tooltip title="Delete">
-          <IconButton aria-label="delete">
-            <Delete />
-          </IconButton>
-        </Tooltip>
+          <Tooltip title="Delete">
+            <IconButton aria-label="delete">
+              <Delete />
+            </IconButton>
+          </Tooltip>
         </>
       ) : numSelected > 0 && props.status === "order" ? (
         <>
-            <Tooltip title="Chỉnh sửa">
+          <Tooltip title="Chỉnh sửa">
             <Button
               aria-label="edit"
               variant="contained"
               className={classes.button}
-              startIcon={<Edit style={{color: "#fff", fontSize: "20px", marginLeft: "-15px" }} />}
-              style={{ borderRadius: 10, backgroundColor: indigo[400], fontSize: "10px", color: "#fff", width: 140, marginRight: "10px" }}
-              onClick={() => dispatch(editOrderState())}>
-                Sửa món
-              </Button>
-            </Tooltip>
-            <Tooltip title="Xóa">
+              startIcon={
+                <Edit
+                  style={{
+                    color: "#fff",
+                    fontSize: "20px",
+                    marginLeft: "-15px",
+                  }}
+                />
+              }
+              style={{
+                borderRadius: 10,
+                backgroundColor: indigo[400],
+                fontSize: "10px",
+                color: "#fff",
+                width: 140,
+                marginRight: "10px",
+              }}
+              onClick={() => dispatch(editOrderState())}
+            >
+              Sửa món
+            </Button>
+          </Tooltip>
+          <Tooltip title="Xóa">
             <Button
               aria-label="delete"
               variant="contained"
               className={classes.button}
-              startIcon={<Delete style={{color: "#fff", fontSize: "20px", marginLeft: "-15px" }} />}
-              style={{ borderRadius: 10, backgroundColor: red[400], fontSize: "10px", color: "#fff", width: 140, marginRight: "10px" }}
-              onClick={onDeleteTableFood}>
-                Xóa món
-              </Button>
-            </Tooltip>
+              startIcon={
+                <Delete
+                  style={{
+                    color: "#fff",
+                    fontSize: "20px",
+                    marginLeft: "-15px",
+                  }}
+                />
+              }
+              style={{
+                borderRadius: 10,
+                backgroundColor: red[400],
+                fontSize: "10px",
+                color: "#fff",
+                width: 140,
+                marginRight: "10px",
+              }}
+              onClick={onDeleteTableFood}
+            >
+              Xóa món
+            </Button>
+          </Tooltip>
         </>
-      ) : <></>
-      }
+      ) : (
+        <></>
+      )}
     </Toolbar>
   );
 };
@@ -196,10 +269,10 @@ EnhancedTableToolbar.propTypes = {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: '100%',
+    width: "100%",
   },
   paper: {
-    width: '100%',
+    width: "100%",
     marginBottom: theme.spacing(2),
   },
   table: {
@@ -207,56 +280,57 @@ const useStyles = makeStyles((theme) => ({
   },
   visuallyHidden: {
     border: 0,
-    clip: 'rect(0 0 0 0)',
+    clip: "rect(0 0 0 0)",
     height: 1,
     margin: -1,
-    overflow: 'hidden',
+    overflow: "hidden",
     padding: 0,
-    position: 'absolute',
+    position: "absolute",
     top: 20,
     width: 1,
   },
 }));
 
-
-
 function FoodOrderList(props) {
   const dispatch = useDispatch();
-  const currentFoodState = useSelector(state => state.foodState)
-  const [state, setState] = React.useState( {
-    searchValue: '',
+  const currentFoodState = useSelector((state) => state.foodState);
+  const [state, setState] = React.useState({
+    searchValue: "",
     data: props.rows,
     filterData: props.rows,
   });
   const handleSearch = (event) => {
-      let filteredDatas = [];
-      filteredDatas = state.data.filter((e) => {
-          let retVal = true;
-          let element = e["name"];
-          const regex = new RegExp(event.target.value, 'gi');
-          if (typeof element == 'string')
-              retVal = element.match(regex)
-          else return false;
-          return retVal;
-      })
-      setState({...state, filterData: filteredDatas, searchValue: event.target.value})
-  }
+    let filteredDatas = [];
+    filteredDatas = state.data.filter((e) => {
+      let retVal = true;
+      let element = e["name"];
+      const regex = new RegExp(event.target.value, "gi");
+      if (typeof element == "string") retVal = element.match(regex);
+      else return false;
+      return retVal;
+    });
+    setState({
+      ...state,
+      filterData: filteredDatas,
+      searchValue: event.target.value,
+    });
+  };
   useEffect(() => {
     if (props.rows)
-      setState({...state, data: (props.rows), filterData: (props.rows)});
-  }, [props.rows]) //eslint-disable-line
+      setState({ ...state, data: props.rows, filterData: props.rows });
+  }, [props.rows]); //eslint-disable-line
   rows = state.filterData;
   const classes = useStyles();
-  const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState( 'price');
+  const [order, setOrder] = React.useState("asc");
+  const [orderBy, setOrderBy] = React.useState("price");
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const handleRequestSort = (event, property) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
+    const isAsc = orderBy === property && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
   };
 
@@ -272,8 +346,8 @@ function FoodOrderList(props) {
   const handleClick = (event, name, row) => {
     if (currentFoodState.state === EDIT_FOOD) dispatch(normalState());
     dispatch(clickRowFood(row));
-    console.log(`tableFoodClick`)
-    console.log(row)
+    console.log(`tableFoodClick`);
+    console.log(row);
     setSelected([name]);
   };
 
@@ -292,101 +366,122 @@ function FoodOrderList(props) {
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+  const emptyRows =
+    rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
   return (
     <>
-    <Grid container spacing={1} alignItems="flex-end">
-          <Grid item xs={1} align='right'>
-              <Search />
-          </Grid>
-          <Grid item xs={4}>
-              <TextField 
-                  id="search" 
-                  fullWidth 
-                  label={"Tìm kiếm theo tên món ăn"}
-                  onChange={handleSearch}
-                  InputProps={{
-                      classes: {
-                          input: classes.resize,
-                      },
-                  }} />
-          </Grid>
+      <Grid container spacing={1} alignItems="flex-end">
+        <Grid item xs={1} align="right">
+          <Search />
+        </Grid>
+        <Grid item xs={4}>
+          <TextField
+            id="search"
+            fullWidth
+            label={"Tìm kiếm theo tên món ăn"}
+            onChange={handleSearch}
+            InputProps={{
+              classes: {
+                input: classes.resize,
+              },
+            }}
+          />
+        </Grid>
       </Grid>
-    <div className={classes.root}>
-      <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} status={props.status}/>
-        <TableContainer>
-          <Table
-            className={classes.table}
-            aria-labelledby="tableTitle"
-            size={dense ? 'small' : 'medium'}
-            aria-label="enhanced table"
-          >
-            <EnhancedTableHead
-              classes={classes}
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
-              rowCount={rows.length}
-            />
-            <TableBody>
-              {stableSort(rows, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
-                  const labelId = `enhanced-table-checkbox-${index}`;
-                  return (
-                    <TableRow
-                      hover
-                      onClick={(event) => handleClick(event, row.name, row)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.name}
-                      selected={isItemSelected}
-                    >
-                      <TableCell padding="checkbox">
-                      </TableCell>
-                      <TableCell component="th" id={labelId} scope="row" padding="none">
-                        {row.name}
-                      </TableCell>
-                      <TableCell align="left">
-                        <NumberFormat value={row.price} displayType={'text'} thousandSeparator={true} suffix={' đ'} style={{marginLeft: "-2px"}} />
-                      </TableCell>
-                      <TableCell align="left">{row.count}</TableCell>
-                      <TableCell align="left">
-                        <NumberFormat value={row.totalPrice} displayType={'text'} thousandSeparator={true} suffix={' đ'} style={{marginLeft: "-2px"}} />
-                      </TableCell>
-                      <TableCell align="left">{row.note}</TableCell>
-                    </TableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
+      <div className={classes.root}>
+        <Paper className={classes.paper}>
+          <EnhancedTableToolbar
+            numSelected={selected.length}
+            status={props.status}
+          />
+          <TableContainer>
+            <Table
+              className={classes.table}
+              aria-labelledby="tableTitle"
+              size={dense ? "small" : "medium"}
+              aria-label="enhanced table"
+            >
+              <EnhancedTableHead
+                classes={classes}
+                numSelected={selected.length}
+                order={order}
+                orderBy={orderBy}
+                onSelectAllClick={handleSelectAllClick}
+                onRequestSort={handleRequestSort}
+                rowCount={rows.length}
+              />
+              <TableBody>
+                {stableSort(rows, getComparator(order, orderBy))
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row, index) => {
+                    const isItemSelected = isSelected(row.name);
+                    const labelId = `enhanced-table-checkbox-${index}`;
+                    return (
+                      <TableRow
+                        hover
+                        onClick={(event) => handleClick(event, row.name, row)}
+                        role="checkbox"
+                        aria-checked={isItemSelected}
+                        tabIndex={-1}
+                        key={row.name}
+                        selected={isItemSelected}
+                      >
+                        <TableCell padding="checkbox"></TableCell>
+                        <TableCell
+                          component="th"
+                          id={labelId}
+                          scope="row"
+                          padding="none"
+                        >
+                          {row.name}
+                        </TableCell>
+                        <TableCell align="left">
+                          <NumberFormat
+                            value={row.unitPrice}
+                            displayType={"text"}
+                            thousandSeparator={true}
+                            suffix={" đ"}
+                            style={{ marginLeft: "-2px" }}
+                          />
+                        </TableCell>
+                        <TableCell align="left">{row.count}</TableCell>
+                        <TableCell align="left">
+                          <NumberFormat
+                            value={row.totalPrice}
+                            displayType={"text"}
+                            thousandSeparator={true}
+                            suffix={" đ"}
+                            style={{ marginLeft: "-2px" }}
+                          />
+                        </TableCell>
+                        <TableCell align="left">{row.note}</TableCell>
+                      </TableRow>
+                    );
+                  })}
+                {emptyRows > 0 && (
+                  <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
+                    <TableCell colSpan={6} />
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onChangePage={handleChangePage}
+            onChangeRowsPerPage={handleChangeRowsPerPage}
+          />
+        </Paper>
+        <FormControlLabel
+          control={<Switch checked={dense} onChange={handleChangeDense} />}
+          label="Khoảng cách dòng"
         />
-      </Paper>
-      <FormControlLabel
-        control={<Switch checked={dense} onChange={handleChangeDense} />}
-        label="Khoảng cách dòng"
-      />
-    </div>
+      </div>
     </>
   );
 }
