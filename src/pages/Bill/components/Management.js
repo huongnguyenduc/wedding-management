@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "white",
     position: "absolute",
     top: "910px",
-    right: "750px",
+    right: window.innerWidth * 0.39,
     width: "110px",
     justifyContent: "center",
   },

@@ -13,6 +13,7 @@ import { GetPolicy, GetShift } from "./connect";
 import { Alert } from "@material-ui/lab";
 import { actCloseError } from "./actions/actions";
 import { getCookie } from "../../action/Login";
+import { actFetchDepositPolicyRequest } from "../../action/depositPolicy";
 
 function Policy() {
   const classes = useStyles();
@@ -28,6 +29,7 @@ function Policy() {
   useEffect(() => {
     dispatch(GetPolicy());
     dispatch(GetShift());
+    dispatch(actFetchDepositPolicyRequest());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const privileges = JSON.parse(getCookie("privileges"));

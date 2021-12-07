@@ -21,6 +21,9 @@ import { Link } from "react-router-dom";
 import { lightBlue } from "@material-ui/core/colors";
 import { ArrowBack } from "@material-ui/icons";
 import { default as ErrorIcon } from "../../assets/svg/error.svg";
+import { actFetchPromotionsRequest } from "../../action/promotion";
+import { actFetchPromotionWeddingsRequest } from "../../action/promotionWedding";
+import { actFetchDepositPolicyRequest } from "../../action/depositPolicy";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -68,6 +71,9 @@ function DetailBill(props) {
     props.getNotPaidBill(props.match.params.weddingId);
     props.fetchWeddingServices(props.match.params.weddingId);
     props.fetchAllTable(props.match.params.weddingId);
+    props.getPromotions();
+    props.getPromotionWeddings(props.match.params.weddingId);
+    props.getDepositPolicy();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
@@ -76,7 +82,8 @@ function DetailBill(props) {
         <div className={classes.loadingPage}>
           <CircularProgress className={classes.loading} />
         </div>
-      ) : !props.notPaidBillItem.numberOfTables ? (
+      ) : !props.notPaidBillItem.numberOfTables ||
+        props.notPaidBillItem.feast.deposit <= 0 ? (
         <div className={classes.error}>
           <Link to="/bill">
             <IconButton edge="start" className={classes.backButton}>
@@ -90,13 +97,15 @@ function DetailBill(props) {
             </IconButton>
           </Link>
           <img src={ErrorIcon} width="90px" alt="" />
-          <Typography variant="h3">Chưa có thông tin đặt bàn</Typography>
+          <Typography variant="h3">
+            Chưa có thông tin đặt bàn / đặt cọc
+          </Typography>
           <Typography variant="h5" style={{ marginTop: "10px" }}>
             <Link
               to={`/wedding/${props.match.params.weddingId}/${props.notPaidBillItem.feast.id_lobby.id}/order`}
               style={{ color: "blue" }}
             >
-              Đặt bàn
+              Đặt bàn / Đặt cọc
             </Link>{" "}
             cho tiệc cưới này!
           </Typography>
@@ -175,7 +184,13 @@ function DetailBill(props) {
             </Grid>
             <Grid container spacing={2}>
               <Grid item md={6} xs={12} justifyContent="center">
-                <Payment bill={props.notPaidBillItem} />
+                <Payment
+                  bill={props.notPaidBillItem}
+                  promotions={props.promotions}
+                  oldPromotions={props.promotionWeddings}
+                  isSaved={props.notPaidBillItem.status === 1}
+                  minDepositPercent={props.depositPolicy}
+                />
               </Grid>
               <Grid
                 item
@@ -199,6 +214,9 @@ const mapStateToProps = (state) => {
     notPaidBillItem: state.notPaidBillItem,
     weddingServices: state.weddingServices,
     tables: state.tables,
+    promotions: state.promotions,
+    promotionWeddings: state.promotionWeddings,
+    depositPolicy: state.depositPolicy,
   };
 };
 
@@ -212,6 +230,15 @@ const mapDispatchToProps = (dispatch, props) => {
     },
     fetchAllTable: (idWedding) => {
       dispatch(actFetchTablesRequest(idWedding));
+    },
+    getPromotions: () => {
+      dispatch(actFetchPromotionsRequest());
+    },
+    getPromotionWeddings: (id) => {
+      dispatch(actFetchPromotionWeddingsRequest(id));
+    },
+    getDepositPolicy: () => {
+      dispatch(actFetchDepositPolicyRequest());
     },
   };
 };
