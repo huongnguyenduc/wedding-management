@@ -73,6 +73,9 @@ function PromotionUpdateDialog(props) {
     if ("refund" in fieldValues) {
       temp.refund = fieldValues.refund ? "" : "Không được bỏ trống";
     }
+    if ("minTotalBill" in fieldValues) {
+      temp.minTotalBill = fieldValues.minTotalBill ? "" : "Không được bỏ trống";
+    }
     if ("description" in fieldValues)
       temp.description = fieldValues.description ? "" : "Không được bỏ trống";
     setErrors({
@@ -100,13 +103,20 @@ function PromotionUpdateDialog(props) {
           onSubmit={(e) => {
             e.preventDefault();
             if (validate(values)) {
-              const { refund, description, specialDate, percentage, id } =
-                values;
+              const {
+                refund,
+                description,
+                specialDate,
+                percentage,
+                id,
+                minTotalBill,
+              } = values;
               onSubmit({
                 description,
                 specialDate: convertDateToStringDMY(specialDate),
                 percentage,
                 refund: parseInt(refund),
+                minTotalBill: parseInt(minTotalBill),
                 id,
               });
               console.log(values);
@@ -130,6 +140,17 @@ function PromotionUpdateDialog(props) {
             <Controls.Input
               className={classes.item}
               defaultValue=""
+              id="minTotalBill"
+              name="minTotalBill"
+              label="Giá trị tiệc tối thiểu"
+              value={values.minTotalBill}
+              onChange={handleInputChange}
+              error={errors.minTotalBill}
+              isMoney
+            />
+            <Controls.Input
+              className={classes.item}
+              defaultValue=""
               id="refund"
               name="refund"
               label="Giá trị khuyến mãi"
@@ -145,6 +166,7 @@ function PromotionUpdateDialog(props) {
               description={true}
               name="description"
               label="Mô tả"
+              multiline
               value={values.description}
               onChange={handleInputChange}
               error={errors.description}

@@ -3,6 +3,8 @@ import { Text, View, StyleSheet, Font } from "@react-pdf/renderer";
 import Infomation from "./infomation";
 import ServiceHeader from "./serviceheader";
 import ServiceRow from "./servicerow";
+import PromotionHeader from "./promotionheader";
+import PromotionRow from "./promotionrow";
 
 import RobotoFont from "./fonts/Roboto-Regular.ttf";
 import RobotoMedium from "./fonts/Roboto-Medium.ttf";
@@ -91,8 +93,10 @@ const styles = StyleSheet.create({
 
 function Invoice(props) {
   const bill = props.bill;
-  console.log(bill);
+  console.log("aaaa", bill);
   const service = props.service;
+  const promotions = props.promotions;
+  console.log("aaaaaaaaaaaaaaa", promotions);
   const state = {
     id: bill.id,
     dateOfPayment: convertDateToStringDMY(bill.dateOfPayment),
@@ -106,7 +110,13 @@ function Invoice(props) {
     deposit: formatVal(bill.feast.deposit),
     totalFine: formatVal(bill.totalFine),
     unpaidMoney: formatVal(bill.unpaidMoney),
-    //
+    regimeRefund: formatVal(
+      bill.feast.regimeRefund ? bill.feast.regimeRefund : 0
+    ),
+    weddingRefund: formatVal(
+      bill.feast.weddingRefund ? bill.feast.weddingRefund : 0
+    ),
+    reasonRefund: bill.feast.reasonRefund,
     services: service,
   };
   var elemServiceRow = state.services.map((services, index) => {
@@ -118,6 +128,18 @@ function Invoice(props) {
         quantity={services.count}
         unitprice={services.unitPrice}
         total={services.totalPrice}
+      />
+    );
+  });
+  var elemPromotionRow = promotions.map((promotion, index) => {
+    return (
+      <PromotionRow
+        key={promotion.regime.id}
+        index={index + 1}
+        name={promotion.regime.description}
+        quantity={promotion.regime.percentage}
+        unitprice={promotion.regime.minBillPrice}
+        total={promotion.regime.refund}
       />
     );
   });
@@ -142,9 +164,20 @@ function Invoice(props) {
         <ServiceHeader />
         {elemServiceRow}
       </View>
+      <View style={styles.container}>
+        <PromotionHeader />
+        {elemPromotionRow}
+      </View>
       <View style={styles.footer}>
         <View style={styles.note}>
           <Text style={styles.regular}>Ghi chú: {state.note}</Text>
+          {state.reasonRefund ? (
+            <Text style={styles.regular}>
+              Lí do hoàn tiền: {state.reasonRefund}
+            </Text>
+          ) : (
+            <></>
+          )}
         </View>
         <View style={styles.money}>
           <Text style={styles.regular}>
@@ -157,7 +190,11 @@ function Invoice(props) {
             Tổng tiền hóa đơn: {state.totalBill}
           </Text>
           <Text style={styles.regular}>Tiền đặt cọc: {state.deposit}</Text>
+          <Text style={styles.regular}>
+            Tiền khuyến mãi: {state.regimeRefund}
+          </Text>
           <Text style={styles.regular}>Tiền Phạt: {state.totalFine}</Text>
+          <Text style={styles.regular}>Hoàn tiền: {state.weddingRefund}</Text>
           <Text style={styles.regular}>Còn lại: {state.unpaidMoney}</Text>
         </View>
       </View>

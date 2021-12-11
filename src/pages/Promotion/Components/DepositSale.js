@@ -67,6 +67,12 @@ const headCells = [
     label: "Mốc ưu đãi (%)",
   },
   {
+    id: "minTotalBill",
+    numeric: false,
+    disablePadding: false,
+    label: "Giá trị tiệc tối thiểu",
+  },
+  {
     id: "refund",
     numeric: false,
     disablePadding: false,
@@ -165,6 +171,18 @@ const useToolbarStyles = makeStyles((theme) => ({
 }));
 
 const EnhancedTableToolbar = (props) => {
+  const { enqueueSnackbar } = useSnackbar();
+  const handleClickVariant = (variant, message) => {
+    enqueueSnackbar(message, { variant, autoHideDuration: 3000 });
+  };
+
+  const addSuccess = () => {
+    handleClickVariant("success", "Thêm khuyến mãi thành công!");
+  };
+
+  const addFailure = () => {
+    handleClickVariant("error", "Lỗi hệ thống. Thêm khuyến mãi thất bại!");
+  };
   const classes = useToolbarStyles();
   const [openUserDialog, setOpenUserDialog] = React.useState(false);
   const dispatch = useDispatch();
@@ -186,21 +204,11 @@ const EnhancedTableToolbar = (props) => {
     description: "",
     percentage: 0,
     refund: 0,
+    minTotalBill: 0,
     specialDate: null,
     id: 0,
   };
-  const { enqueueSnackbar } = useSnackbar();
-  const handleClickVariant = (variant, message) => {
-    enqueueSnackbar(message, { variant, autoHideDuration: 3000 });
-  };
 
-  const addSuccess = () => {
-    handleClickVariant("success", "Thêm khuyến mãi thành công!");
-  };
-
-  const addFailure = () => {
-    handleClickVariant("error", "Lỗi hệ thống. Thêm khuyến mãi thất bại!");
-  };
   return (
     <>
       <UserAddDialog
@@ -253,7 +261,7 @@ EnhancedTableToolbar.propTypes = {
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
-    maxWidth: 750,
+    maxWidth: 1250,
   },
   paper: {
     width: "100%",
@@ -307,8 +315,8 @@ function AccountList(props) {
   }, [props.rows]); // eslint-disable-line
   rows = state.filterData;
   const classes = useStyles();
-  const [order, setOrder] = React.useState("asc");
-  const [orderBy, setOrderBy] = React.useState("fullName");
+  const [order, setOrder] = React.useState("desc");
+  const [orderBy, setOrderBy] = React.useState("percentage");
   const [selected, setSelected] = React.useState([]);
   const [selectedRow, setSelectedRow] = React.useState([]);
   const [page, setPage] = React.useState(0);
@@ -463,6 +471,15 @@ function AccountList(props) {
                     >
                       <TableCell padding="checkbox"></TableCell>
                       <TableCell align="left">{row.percentage}</TableCell>
+                      <TableCell align="left">
+                        <NumberFormat
+                          value={row.minTotalBill}
+                          displayType={"text"}
+                          thousandSeparator={true}
+                          suffix={" đ"}
+                          style={{ marginLeft: "-2px" }}
+                        />
+                      </TableCell>
                       <TableCell align="left">
                         <NumberFormat
                           value={row.refund}

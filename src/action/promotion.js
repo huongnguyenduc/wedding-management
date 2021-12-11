@@ -37,10 +37,17 @@ export const actDeletePromotion = (id) => {
   };
 };
 
-export const actAddPromotionRequest = (promotion) => {
+export const actAddPromotionRequest = (
+  promotion,
+  updateSuccess,
+  updateFalure
+) => {
   return (dispatch) => {
     return callApi("regime", "POST", promotion).then((res) => {
-      if (res) dispatch(actAddPromotion(res.data));
+      if (res) {
+        dispatch(actAddPromotion(res.data));
+        updateSuccess();
+      } else updateFalure();
     });
   };
 };

@@ -37,16 +37,16 @@ const styles = StyleSheet.create({
     width: "8.33%",
   },
   name: {
-    width: "31.77%",
+    width: "58.54%",
   },
-  quantity: {
-    width: "16.77%",
-  },
-  unitprice: {
-    width: "20%",
-  },
+  // quantity: {
+  //     width: '16.77%',
+  // },
+  // unitprice: {
+  //     width: '25%',
+  // },
   total: {
-    width: "23.34%",
+    width: "33.34%",
   },
   regular: {
     fontFamily: "Roboto",
@@ -64,21 +64,12 @@ class ServiceRow extends Component {
         <View style={styles.name}>
           <Text style={styles.regular}> {this.props.name} </Text>
         </View>
-        <View style={styles.quantity}>
-          <Text> {this.props.quantity} </Text>
-        </View>
-        <View style={styles.unitprice}>
-          <Text>
-            {" "}
-            <NumberFormat
-              value={this.props.unitprice}
-              displayType={"text"}
-              thousandSeparator={true}
-              suffix={" đ"}
-              style={{ marginLeft: "-2px" }}
-            />{" "}
-          </Text>
-        </View>
+        {/* <View style={styles.quantity}>
+                <Text> { this.props.quantity } </Text>
+            </View>
+            <View style={styles.unitprice}>
+                <Text> <NumberFormat value={this.props.unitprice} displayType={'text'} thousandSeparator={true} suffix={' đ'} style={{marginLeft: "-2px"}} /> </Text>
+            </View> */}
         <View style={styles.total}>
           <Text>
             {" "}

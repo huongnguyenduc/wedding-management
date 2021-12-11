@@ -9,7 +9,6 @@ import {
 } from "@material-ui/core/";
 import NumberFormat from "react-number-format";
 import { green, red } from "@material-ui/core/colors";
-import { HelpOutline, CheckCircle, Cancel } from "@material-ui/icons/";
 import {
   Form,
   useForm,
@@ -18,10 +17,6 @@ import { useDispatch } from "react-redux";
 import { actUpdateWeddingMiniRequest } from "../../../action";
 import { useSnackbar } from "notistack";
 import Controls from "../../Promotion/Components/PromotionDialog/controls/Controls";
-
-const isValidNumber = (value) => {
-  return !isNaN(value) && !isNaN(parseFloat(value));
-};
 
 function convertYMDToDMY(date) {
   if (date == null) return;

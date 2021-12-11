@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
         borderRightWidth: 1,
     },
     name: {
-        width: '16.77%',
+        width: '31.77%',
         borderRightColor: borderColor,
         borderRightWidth: 1,
     },
@@ -51,12 +51,12 @@ const styles = StyleSheet.create({
         borderRightWidth: 1,
     },
     unitprice: {
-        width: '25%',
+        width: '20%',
         borderRightColor: borderColor,
         borderRightWidth: 1,
     },
     total: {
-        width: '33.34%',   
+        width: '23.34%',   
     },
     regular:{
         fontWeight: 400,

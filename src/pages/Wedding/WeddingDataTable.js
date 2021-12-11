@@ -22,8 +22,6 @@ import {
   Typography,
   Paper,
   Tooltip,
-  FormControlLabel,
-  Switch,
 } from "@material-ui/core/";
 import { Edit, Delete, Search, Add, Brightness1 } from "@material-ui/icons/";
 import clickRow from "./actions/index";
@@ -395,12 +393,12 @@ function EnhancedTable(props) {
   }, [props.weddings]); // eslint-disable-line
   rows = state.filterData;
   const classes = useStyles();
-  const [order, setOrder] = React.useState("asc");
-  const [orderBy, setOrderBy] = React.useState("groomName");
+  const [order, setOrder] = React.useState("desc");
+  const [orderBy, setOrderBy] = React.useState("dateOfOrganization");
   const [selected, setSelected] = React.useState([]);
   const [selectedRow, setSelectedRow] = React.useState([]);
   const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false);
+  const dense = false;
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [searchKind, setSearchKind] = React.useState({
     name: "Tên chú rể",
@@ -481,10 +479,6 @@ function EnhancedTable(props) {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
-  };
-
-  const handleChangeDense = (event) => {
-    setDense(event.target.checked);
   };
 
   const isSelected = (id) => selected.indexOf(id) !== -1;
@@ -644,10 +638,6 @@ function EnhancedTable(props) {
               onChangeRowsPerPage={handleChangeRowsPerPage}
             />
           </Paper>
-          <FormControlLabel
-            control={<Switch checked={dense} onChange={handleChangeDense} />}
-            label="Khoảng cách dòng"
-          />
         </div>
       </Grid>
     </Grid>

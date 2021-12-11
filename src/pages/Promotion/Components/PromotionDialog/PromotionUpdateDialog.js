@@ -51,6 +51,9 @@ function PromotionUpdateDialog(props) {
     if ("refund" in fieldValues) {
       temp.refund = fieldValues.refund ? "" : "Không được bỏ trống";
     }
+    if ("minTotalBill" in fieldValues) {
+      temp.minTotalBill = fieldValues.minTotalBill ? "" : "Không được bỏ trống";
+    }
     if ("description" in fieldValues)
       temp.description = fieldValues.description ? "" : "Không được bỏ trống";
     setErrors({
@@ -101,6 +104,17 @@ function PromotionUpdateDialog(props) {
             <Controls.Input
               className={classes.item}
               defaultValue=""
+              id="minTotalBill"
+              name="minTotalBill"
+              label="Giá trị tiệc tối thiểu"
+              value={values.minTotalBill}
+              onChange={handleInputChange}
+              error={errors.minTotalBill}
+              isMoney
+            />
+            <Controls.Input
+              className={classes.item}
+              defaultValue=""
               id="refund"
               name="refund"
               label="Giá trị khuyến mãi"
@@ -114,6 +128,7 @@ function PromotionUpdateDialog(props) {
               defaultValue=""
               id="description"
               description={true}
+              multiline
               name="description"
               label="Mô tả"
               value={values.description}

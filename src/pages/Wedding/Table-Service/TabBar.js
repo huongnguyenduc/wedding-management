@@ -21,6 +21,7 @@ import DepositDialog from "../../../components/DepositDialog/DepositDialog";
 import { actFetchPromotionsRequest } from "../../../action/promotion";
 import { actFetchPromotionWeddingsRequest } from "../../../action/promotionWedding";
 import { actFetchDepositPolicyRequest } from "../../../action/depositPolicy";
+import { useSnackbar } from "notistack";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -70,6 +71,15 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 10,
   },
 }));
+const totalTables = (tables) => {
+  let totalTables = 0;
+  if (tables)
+    tables.forEach((table) => {
+      totalTables +=
+        parseInt(table.numberTables) + parseInt(table.reverseTables);
+    });
+  return totalTables;
+};
 function TableServiceTabBar(props) {
   const classes = useStyles();
   const [value, setValue] = React.useState(1);
@@ -78,13 +88,22 @@ function TableServiceTabBar(props) {
     setValue(newValue);
   };
   const [isOpen, setIsOpen] = React.useState(false);
+  const { enqueueSnackbar } = useSnackbar();
+  const handleClickVariant = (variant, message) => {
+    enqueueSnackbar(message, { variant, autoHideDuration: 3000 });
+  };
 
+  const addFailure = () => {
+    handleClickVariant("error", "Vui lòng đặt đủ số lượng bàn trước!");
+  };
   const handleClickOpen = () => {
     props.getNotPaidBill(props.weddingId);
     props.getPromotions();
     props.getPromotionWeddings(props.weddingId);
     props.getDepositPolicy();
-    setIsOpen(true);
+    totalTables(props.tables.feastTables) >= props.recentLobby.minTableCategory
+      ? setIsOpen(true)
+      : addFailure();
   };
   const handleClose = () => {
     setIsOpen(false);
@@ -271,6 +290,7 @@ const mapStateToProps = (state) => {
     promotions: state.promotions,
     promotionWeddings: state.promotionWeddings,
     depositPolicy: state.depositPolicy,
+    recentLobby: state.lobbyItem,
     // currentTableState: state.tableState,
     // tableCategories: state.tableCategories,
     // selectedWedding: state.selectedRow,

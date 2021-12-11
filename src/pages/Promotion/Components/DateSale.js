@@ -67,6 +67,12 @@ const headCells = [
     label: "Ngày ưu đãi",
   },
   {
+    id: "minTotalBill",
+    numeric: false,
+    disablePadding: false,
+    label: "Giá trị tiệc tối thiểu",
+  },
+  {
     id: "refund",
     numeric: false,
     disablePadding: false,
@@ -186,6 +192,7 @@ const EnhancedTableToolbar = (props) => {
     description: "",
     percentage: 0,
     refund: 0,
+    minTotalBill: 0,
     specialDate: null,
     id: 0,
   };
@@ -253,7 +260,7 @@ EnhancedTableToolbar.propTypes = {
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
-    maxWidth: 750,
+    maxWidth: 1250,
   },
   paper: {
     width: "100%",
@@ -308,7 +315,7 @@ function AccountList(props) {
   rows = state.filterData;
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
-  const [orderBy, setOrderBy] = React.useState("fullName");
+  const [orderBy, setOrderBy] = React.useState("specialDate");
   const [selected, setSelected] = React.useState([]);
   const [selectedRow, setSelectedRow] = React.useState([]);
   const [page, setPage] = React.useState(0);
@@ -472,6 +479,15 @@ function AccountList(props) {
                     >
                       <TableCell padding="checkbox"></TableCell>
                       <TableCell align="left">{row.specialDate}</TableCell>
+                      <TableCell align="left">
+                        <NumberFormat
+                          value={row.minTotalBill}
+                          displayType={"text"}
+                          thousandSeparator={true}
+                          suffix={" đ"}
+                          style={{ marginLeft: "-2px" }}
+                        />
+                      </TableCell>
                       <TableCell align="left">
                         <NumberFormat
                           value={row.refund}

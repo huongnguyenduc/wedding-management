@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
   },
   select: {
     justifyContent: "space-evenly",
-    marginTop: "50px",
+    marginTop: "20px",
     display: "flex",
   },
   loading: {
@@ -44,6 +44,8 @@ function Account(props) {
           </div>
           <div className={classes.select}>
             <DepositSaleList rows={props.promotions} />
+          </div>
+          <div className={classes.select}>
             <DateSaleList rows={props.promotions} />
           </div>
         </MuiThemeProvider>

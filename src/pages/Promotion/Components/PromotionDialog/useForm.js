@@ -39,6 +39,11 @@ export function useForm(initialFValues, validateOnChange = false, validate) {
         ...values,
         [name]: value,
       });
+    if (name === "minTotalBill" && (isValidNumber(value) || value === ""))
+      setValues({
+        ...values,
+        [name]: value,
+      });
     if (name === "totalRefund" && (isValidNumber(value) || value === ""))
       setValues({
         ...values,

@@ -71,6 +71,9 @@ function PromotionAddDialog(props) {
     if ("refund" in fieldValues) {
       temp.refund = fieldValues.refund ? "" : "Không được bỏ trống";
     }
+    if ("minTotalBill" in fieldValues) {
+      temp.minTotalBill = fieldValues.minTotalBill ? "" : "Không được bỏ trống";
+    }
     if ("description" in fieldValues)
       temp.description = fieldValues.description ? "" : "Không được bỏ trống";
     setErrors({
@@ -98,12 +101,13 @@ function PromotionAddDialog(props) {
           onSubmit={(e) => {
             e.preventDefault();
             if (validate()) {
-              const { refund, description, specialDate } = values;
+              const { refund, description, specialDate, minTotalBill } = values;
               onSubmit({
                 description,
                 specialDate: convertDateToStringDMY(specialDate),
                 percentage: null,
                 refund: parseInt(refund),
+                minTotalBill: parseInt(minTotalBill),
               });
             }
           }}
@@ -123,6 +127,17 @@ function PromotionAddDialog(props) {
             <Controls.Input
               className={classes.item}
               defaultValue=""
+              id="minTotalBill"
+              name="minTotalBill"
+              label="Giá trị tiệc tối thiểu"
+              value={values.minTotalBill}
+              onChange={handleInputChange}
+              error={errors.minTotalBill}
+              isMoney
+            />
+            <Controls.Input
+              className={classes.item}
+              defaultValue=""
               id="refund"
               name="refund"
               label="Giá trị khuyến mãi"
@@ -137,6 +152,7 @@ function PromotionAddDialog(props) {
               id="description"
               name="description"
               label="Mô tả"
+              multiline
               value={values.description}
               onChange={handleInputChange}
               error={errors.description}

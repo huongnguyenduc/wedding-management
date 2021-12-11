@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
 function PdfView(props) {
   const bills = useSelector((state) => state.notPaidBillItem);
   const services = useSelector((state) => state.weddingServices);
+  const promotions = useSelector((state) => state.promotionWeddings);
   return (
     <>
       <PDFViewer className="w5-h7">
@@ -28,6 +29,7 @@ function PdfView(props) {
             <Invoice
               service={services.services ? services.services : []}
               bill={bills}
+              promotions={promotions}
             />
           </Page>
         </Document>

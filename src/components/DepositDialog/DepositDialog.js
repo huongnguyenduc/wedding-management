@@ -226,12 +226,13 @@ function DepositDialog({
     let promotionPrice = 0;
     for (let promotion of promotions) {
       if (
-        checkIsValidPercentPromotion(
+        (checkIsValidPercentPromotion(
           depositPercent,
           promotion.percentage,
           promotions
         ) ||
-        checkIsValidSpecialDate(organizationDate, promotion.specialDate)
+          checkIsValidSpecialDate(organizationDate, promotion.specialDate)) &&
+        totalTablePrice + totalServicePrice >= promotion.minTotalBill
       ) {
         promotionPrice += promotion.refund;
       }
@@ -242,12 +243,13 @@ function DepositDialog({
     let idPromotions = [];
     for (let promotion of promotions) {
       if (
-        checkIsValidPercentPromotion(
+        (checkIsValidPercentPromotion(
           depositPercent,
           promotion.percentage,
           promotions
         ) ||
-        checkIsValidSpecialDate(organizationDate, promotion.specialDate)
+          checkIsValidSpecialDate(organizationDate, promotion.specialDate)) &&
+        totalTablePrice + totalServicePrice >= promotion.minTotalBill
       ) {
         idPromotions.push(promotion.id);
       }
@@ -345,9 +347,9 @@ function DepositDialog({
               actUpdatePromotionWeddingRequest({
                 feastId: id,
                 newRegimeId: totalPromotions,
-                oldRegimeId: oldPromotions.map(
-                  (promotion) => promotion.regime.id
-                ),
+                oldRegimeId: oldPromotions
+                  ? oldPromotions.map((promotion) => promotion.regime.id)
+                  : [],
               })
             );
           }
@@ -476,15 +478,17 @@ function DepositDialog({
                       ))
                     : promotions.map((promotion) => (
                         <div style={{ marginBottom: "10px", lineHeight: 1.2 }}>
-                          {checkIsValidSpecialDate(
+                          {(checkIsValidSpecialDate(
                             organizationDate,
                             promotion.specialDate
                           ) ||
-                          checkIsValidPercentPromotion(
-                            depositPercent,
-                            promotion.percentage,
-                            promotions
-                          ) ? (
+                            checkIsValidPercentPromotion(
+                              depositPercent,
+                              promotion.percentage,
+                              promotions
+                            )) &&
+                          totalServicePrice + totalTablePrice >=
+                            promotion.minTotalBill ? (
                             <CheckCircle
                               style={{ fontSize: "16px", color: green[400] }}
                             />

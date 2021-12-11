@@ -1,5 +1,7 @@
 import * as Types from "./../constants/ActionTypes";
 import callApi from "./../utils/apiCaller";
+import { actGetNotPaidBillRequest } from "./notPaidBill";
+import { actFetchPromotionWeddingsRequest } from "./promotionWedding";
 
 export const actFetchWeddingsRequest = () => {
   return (dispatch) => {
@@ -57,7 +59,12 @@ export const actAddWeddingRequest = (
   console.log(wedding);
   return (dispatch) => {
     const { dateOfOrganization, idShift, lobbyId } = wedding;
-    var data = { dateOfOrganization, idShift, lobbyId };
+    var data = {
+      dateOfOrganization,
+      shiftId: idShift,
+      lobbyId,
+    };
+    console.log({ data });
     callApi("feast/check-exist", "PUT", data).then((res) => {
       if (res) {
         if (res.data === true) {
@@ -75,6 +82,7 @@ export const actAddWeddingRequest = (
           });
         }
       } else {
+        console.log(res);
         checkWeddingFailure();
       }
     });
@@ -117,7 +125,7 @@ export const actUpdateWeddingRequest = (
 ) => {
   return (dispatch) => {
     const { dateOfOrganization, idShift, lobbyId } = wedding;
-    var data = { dateOfOrganization, idShift, lobbyId };
+    var data = { dateOfOrganization, shiftId: idShift, lobbyId };
     if (
       oldDateUpdate === dateOfOrganization &&
       idShift === oldShift &&
@@ -136,7 +144,7 @@ export const actUpdateWeddingRequest = (
         }
       });
     } else
-      callApi("feast/check-exist", "PUT", data).then((res) => {
+      callApi("feast/check-exist", "GET", data).then((res) => {
         if (res) {
           if (res.data === true) {
             checkWeddingExist();
@@ -165,9 +173,11 @@ export const actUpdateWeddingMiniRequest = (
   updateDepositFailure,
   resetForm
 ) => {
-  return () => {
+  return (dispatch) => {
     return callApi(`feast`, "PUT", wedding).then((res) => {
       if (res) {
+        dispatch(actGetNotPaidBillRequest(wedding.id));
+        dispatch(actFetchPromotionWeddingsRequest(wedding.id));
         resetForm();
         updateDepositSuccess();
       } else {

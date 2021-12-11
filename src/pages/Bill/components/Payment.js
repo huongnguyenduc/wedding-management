@@ -10,13 +10,8 @@ import {
 } from "@material-ui/core/";
 import { withStyles } from "@material-ui/core/styles";
 import NumberFormat from "react-number-format";
-import { green, red } from "@material-ui/core/colors";
-import {
-  HelpOutline,
-  EditOutlined,
-  CheckCircle,
-  Cancel,
-} from "@material-ui/icons/";
+import { green } from "@material-ui/core/colors";
+import { HelpOutline, EditOutlined, CheckCircle } from "@material-ui/icons/";
 import DepositDialog from "../../../components/DepositDialog/DepositDialog";
 import RefundDialog from "./RefundDialog";
 const useStyles = makeStyles((theme) => ({
@@ -305,7 +300,7 @@ function Payment(props) {
                 </Tooltip>
                 <Typography variant="subtitle1">
                   <NumberFormat
-                    value={feast.regimeRefund}
+                    value={feast.regimeRefund ? feast.regimeRefund : 0}
                     displayType={"text"}
                     thousandSeparator={true}
                     suffix={" đ"}
