@@ -466,7 +466,7 @@ function AccountList(props) {
                 .map((row, index) => {
                   const isItemSelected = isSelected(row.id);
                   // const labelId = `enhanced-table-checkbox-${index}`;
-                  if (!row.specialDate) return null;
+                  // if (!row.specialDate) return null;
                   return (
                     <TableRow
                       hover

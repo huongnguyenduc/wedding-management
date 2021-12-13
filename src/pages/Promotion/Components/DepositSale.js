@@ -456,7 +456,7 @@ function AccountList(props) {
               {stableSort(rows, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  if (!row.percentage) return null;
+                  // if (!row.percentage) return null;
                   const isItemSelected = isSelected(row.id);
                   // const labelId = `enhanced-table-checkbox-${index}`;
                   return (

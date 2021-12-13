@@ -43,10 +43,26 @@ function Account(props) {
             <Typography variant="h4">Quản Lý Khuyến Mãi</Typography>
           </div>
           <div className={classes.select}>
-            <DepositSaleList rows={props.promotions} />
+            <DepositSaleList
+              rows={
+                props.promotions
+                  ? props.promotions.filter(
+                      (promotion) => promotion.specialDate === null
+                    )
+                  : []
+              }
+            />
           </div>
           <div className={classes.select}>
-            <DateSaleList rows={props.promotions} />
+            <DateSaleList
+              rows={
+                props.promotions
+                  ? props.promotions.filter(
+                      (promotion) => promotion.specialDate !== null
+                    )
+                  : []
+              }
+            />
           </div>
         </MuiThemeProvider>
       ) : (
