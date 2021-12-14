@@ -79,6 +79,8 @@ export const actUpdateNotPaidBillRequest = (
     return callApi(`bill/${id}`, "PUT", null).then((res) => {
       if (res) {
         dispatch(actUpdateNotPaidBill(res.data));
+        dispatch(actGetNotPaidBillRequest(id));
+        // console.log("aaaaaaaaaaaaa", res.data);
         savedBillSuccess();
       } else {
         savedBillFailure();
