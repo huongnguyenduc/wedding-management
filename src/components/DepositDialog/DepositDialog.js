@@ -380,7 +380,7 @@ function DepositDialog({
               marginBottom: "10px",
             }}
           >
-            <span>Tổng tiền hóa đơn</span>
+            <span>Tổng tiền bàn</span>
             <NumberFormat
               value={totalTablePrice}
               displayType={"text"}
